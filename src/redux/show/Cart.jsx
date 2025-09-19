@@ -28,11 +28,11 @@ const Cart = () => {
   return (
     <div className="mx-auto py-4 px-2">
       <div className="text-black hidden md:flex border-b m-auto max-w-7xl py-2 px-2">
-        <div className="flex w-[45%] justify-between">
+        <div className="flex w-[62%] justify-between">
           <h6>Product</h6>
           <h6>Price</h6>
         </div>
-        <div className="w-[50%] flex items-center justify-center">
+        <div className="w-[31%]  flex items-center justify-center">
           <h6>Quantity</h6>
         </div>
       </div>
