@@ -4,9 +4,11 @@ import Image from "next/image";
 import { ShoppingCart, Search, Phone, Menu, X } from "lucide-react";
 import { navLinks, icons } from "./HeaderData";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const cartItems = useSelector((state) => state.cart.items);
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -35,24 +37,22 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
-          {icons.map((item) => {
+          {icons.map((item, index) => {
             const IconComp = item.icon;
-            if (item.path) {
-          
-              return (
-                <Link
-                  key={item.id}
-                  href={item.path}
-                  className="p-2 rounded-full hidden md:block hover:bg-gray-100 transition"
-                  aria-label={item.label}
-                >
-                  <IconComp className="w-6 h-6 text-gray-700" />
-                </Link>
-              );
-            }
 
-          
-            return (
+            return item.path ? (
+              <Link
+                key={item.id}
+                href={item.path}
+                className="p-2 rounded-full relative hidden md:block hover:bg-gray-100 transition"
+                aria-label={item.label}
+              >
+                <div className="absolute flex  justify-center bg-red-500 items-center rounded-full h-4 w-4 top-0 right-0 ">
+                  {cartItems.length === 0 ? "0" : cartItems.length}
+                </div>
+                <IconComp className="w-5  h-5 text-gray-700" />
+              </Link>
+            ) : (
               <button
                 key={item.id}
                 className="p-2 rounded-full hidden md:block hover:bg-gray-100 transition"
@@ -62,6 +62,7 @@ const Header = () => {
               </button>
             );
           })}
+
           <button
             className="lg:hidden p-2 rounded-lg bg-red-500 hover:bg-gray-100"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -88,17 +89,29 @@ const Header = () => {
         </a>
       </div>
       <div></div>
-      <div className="absolute  md:hidden z-100 flex bottom-0  top-[100%] right-0 ">
+      <div className="absolute md:hidden z-100 flex bottom-0 top-[100%] right-10">
         {icons.map((item) => {
           const IconComp = item.icon;
-          return (
-            <button
+          return item.path ? (
+            <Link
               key={item.id}
-              className="p-2 rounded-full block md:hidden hover:bg-gray-100 transition"
+              href={item.path}
+              className="p-2 rounded-full text-white relative hover:bg-gray-100 transition"
               aria-label={item.label}
             >
-              <IconComp className="w-6 h-6 text-gray-700" />
-            </button>
+              <div className="absolute flex  justify-center bg-black items-center rounded-full h-5 w-5 top-0 right-0 ">
+                {cartItems.length === 0 ? "0" : cartItems.length}
+              </div>
+              <IconComp className="w-6 h-6 text-red-700" />
+            </Link>
+          ) : (
+            <div
+              key={item.id}
+              className="p-2 rounded-full hover:bg-gray-100 transition"
+              aria-label={item.label}
+            >
+              <IconComp className="w-6 h-6 text-red-500" />
+            </div>
           );
         })}
       </div>

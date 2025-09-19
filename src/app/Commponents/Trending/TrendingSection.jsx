@@ -2,16 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { trendingData } from "./TrendingData";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { addItem } from "../../../redux/slice/cartslice";
-
-import {
-  Heart,
-  Search,
-  ShoppingCart,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import Card from "../Card/Card";
 const categories = ["men", "women", "baby", "fashion"];
 
 const TrendingSection = () => {
@@ -60,7 +53,7 @@ const TrendingSection = () => {
   }, [activeCategory]);
 
   return (
-    <section className="py-10 px-4 bg-white">
+    <section className="py-10 px-4  bg-white">
       <div className="max-w-[2000px] lg:w-[90%] m-auto ">
         <div className="md:flex items-center justify-between mb-6 border-b-2">
           <h2 className="text-2xl font-bold text-black  mb-4">
@@ -84,7 +77,7 @@ const TrendingSection = () => {
           </div>
         </div>
 
-        <div className="relative w-full max-w-[2000px] lg:w-full m-auto">
+        <div className="relative w-full lg:w-full m-auto">
           <button
             onClick={() => handleScroll("left")}
             className="hidden md:flex absolute -left-8 top-1/2 -translate-y-1/2  z-10 hover:scale-110 transition"
@@ -92,46 +85,7 @@ const TrendingSection = () => {
             <ChevronLeft />
           </button>
 
-          <div
-            ref={scrollRef}
-            className="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-6 px-4"
-          >
-            {filteredData.map((item) => (
-              <div
-                key={item.id}
-                className="relative  flex-shrink-0 bg-white 
-                   w-[90%] sm:w-[70%] md:w-[30%] lg:w-[23%]"
-              >
-                <div className="relative group overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-
-                  <div className="absolute bg-white    bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <button className="bg-white text-black/80 font-light px-4 py-2 hover:bg-[#FF2020] transition">
-                      <Heart size={28} />
-                    </button>
-                    <button className="bg-white text-black/80 font-light px-2  py-2  hover:bg-[#FF2020] transition">
-                      <Search size={28} />
-                    </button>
-                    <button
-                      className="bg-white text-black/80 font-ligh px-4 py-2  hover:bg-[#FF2020] transition"
-                      onClick={() => dispatch(addItem(item))}
-                    >
-                      <ShoppingCart size={28} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-3 flex flex-col justify-center items-center">
-                  <h3 className="text-sm font-semibold text-black hover:text-[#FF2020] ">{item.name}</h3>
-                  <p className="text-gray-500">${item.price}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Card filteredData={filteredData} scrollRef={scrollRef} />
 
           <button
             onClick={() => handleScroll("right")}

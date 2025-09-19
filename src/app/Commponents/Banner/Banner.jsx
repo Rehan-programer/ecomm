@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { bannerData } from "./BannerData";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { navLinks, icons } from "../Header/HeaderData";
-
 const Banner = () => {
   const [current, setCurrent] = useState(0);
   const length = bannerData.length;
@@ -16,12 +14,9 @@ const Banner = () => {
     setCurrent((prev) => (prev === length - 1 ? 0 : prev + 1));
   };
 
-
   return (
     <section>
       <div className="relative w-full overflow-hidden max-w-[2000px]  m-auto">
-        
-          
         <div className="relative h-[40vh]  md:h-[50vh] lg:h-[90vh]   w-full">
           {bannerData.map((slide, index) => (
             <div
@@ -45,9 +40,7 @@ const Banner = () => {
                   <p className="text-sm uppercase tracking-widest mb-2">
                     {slide.miniHeading}
                   </p>
-                  <h2 className=" font-bold mb-4">
-                    {slide.bigHeading}
-                  </h2>
+                  <h2 className=" font-bold mb-4">{slide.bigHeading}</h2>
                   <p className=" mb-6">{slide.description}</p>
                   <button className="px-6 py-3 bg-black border-2 text-white hover:bg-transparent hover:border-2 hover:text-black rounded-sm shadow-md transition duration-500">
                     {slide.buttonText}

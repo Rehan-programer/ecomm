@@ -1,4 +1,5 @@
 import Men from "../Commponents/Categories/men/Men";
+import Card from "../Commponents/Card/Card"
 
  
 export default function Mens() {
@@ -6,6 +7,8 @@ export default function Mens() {
     <>
  
     <Men/>
+        {/* <Card filteredData={filteredData} scrollRef={scrollRef}/> */}
+    
     </>
   )
 }
