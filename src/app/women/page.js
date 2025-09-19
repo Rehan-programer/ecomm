@@ -1,11 +1,9 @@
 import Women from "../Commponents/Categories/women/Women";
-import { WomenProducts } from "../Commponents/Categories/Women/womenData";
-
-
+import { WomenData } from "../Commponents/Categories/women/WomenData";
 export default function Womens() {
   return (
     <>
-      <Women products={WomenProducts}/>
+      <Women products={WomenData}/>
     </>
   );
 }

@@ -1,4 +1,4 @@
-export const WomenProducts = [
+export const WomenData = [
   {
     id: 1,
     title: "Cashmere Tank + Bag",
