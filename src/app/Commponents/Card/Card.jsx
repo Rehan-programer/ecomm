@@ -17,7 +17,6 @@ const Card = ({ filteredData, scrollRef }) => {
           key={item.id}
           className="relative flex-shrink-0 bg-white w-[100%] md:w-[30%] lg:w-[24%]"
         >
-          {/* Image with hover */}
           <div className="relative w-full bg-black group overflow-hidden">
             <img
               src={item.image}
@@ -25,24 +24,29 @@ const Card = ({ filteredData, scrollRef }) => {
               className="w-[480px] md:w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-110"
             />
 
-            {/* Only Add to Cart Button on hover */}
             <div className="absolute bg-white bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <button
                 className="bg-white items-center text-black/80 font-light px-4 py-2 hover:bg-[#FF2020] transition"
                 onClick={() => dispatch(addItem(item))}
               >
-              
                 Add To Cart
               </button>
             </div>
           </div>
 
-          {/* Product Info */}
           <div className="p-3 flex flex-col justify-center items-center">
             <h3 className="text-sm font-semibold text-black hover:text-[#FF2020] ">
               {item.name}
             </h3>
             <p className="text-gray-500">${item.price}</p>
+            <div className=" bg-white  flex items-center justify-center gap-4 lg:hidden ">
+              <button
+                className=" items-center text-black/80 font-light px-4 py-2 bg-[#FF2020]"
+                onClick={() => dispatch(addItem(item))}
+              >
+                Add To Cart
+              </button>
+            </div>
           </div>
         </div>
       ))}
