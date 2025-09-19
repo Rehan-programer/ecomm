@@ -60,16 +60,17 @@ const TrendingSection = () => {
             Trending This Week
           </h2>
 
-          <div className="flex gap-6 ">
+          <div className="flex gap-6">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`capitalize font-medium leading-[3rem]   ${
-                  activeCategory === cat
-                    ? "text-[#BD7B2F] border-b-3 border-[#BD7B2F]"
-                    : "text-gray-500 hover:text-[#BD7B2F] hover:border-[#BD7B2F] hover:border-b-3"
-                }`}
+                className={`capitalize font-medium leading-[3rem] border-b-2 
+        ${
+          activeCategory === cat
+            ? "text-[#BD7B2F] border-[#BD7B2F]"
+            : "text-gray-500 border-transparent hover:text-[#BD7B2F] hover:border-[#BD7B2F]"
+        }`}
               >
                 {cat}
               </button>
