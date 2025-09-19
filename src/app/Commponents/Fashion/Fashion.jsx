@@ -15,7 +15,7 @@ const Fashion = () => {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-[300px]  md:h-[500px] lg:h-[350px] object-cover transform transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-[300px]  md:h-[400px] lg:h-[350px] object-cover transform transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute bottom-[-4%] lg:bottom-[-12%]  left-0 w-full gradient-bottom">
                 <div className="text-center py-6 transform transition-all duration-500 group-hover:-translate-y-10 ">
