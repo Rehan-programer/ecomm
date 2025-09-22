@@ -20,11 +20,12 @@ const handleScroll = (direction) => {
 
   const container = scrollRef.current;
   const card = container.querySelector("div");
-  const cardWidth = card ? card.offsetWidth : 380;
+  const cardWidth = card ? card.offsetWidth : 400;
 
   let itemsPerView = 1;
   if (window.innerWidth >= 1024) itemsPerView = 4;
   else if (window.innerWidth >= 768) itemsPerView = 2;
+
 
   const scrollAmount = cardWidth * itemsPerView;
 
@@ -70,8 +71,8 @@ const handleScroll = (direction) => {
                 className={`capitalize font-medium leading-[3rem] border-b-2 
                   ${
                     activeCategory === cat
-                      ? "text-[#BD7B2F] border-[#BD7B2F]"
-                      : "text-gray-500 border-transparent hover:text-[#BD7B2F] hover:border-[#BD7B2F]"
+                      ? "text-red-500 border-red-500"
+                      : "text-gray-500 border-transparent hover:text-red-500 hover:border-red-500"
                   }`}
               >
                 {cat}
@@ -83,7 +84,7 @@ const handleScroll = (direction) => {
         <div className="relative w-full lg:w-full m-auto">
           <button
             onClick={() => handleScroll("left")}
-            className=" text-black text-5xl hidden md:flex absolute -left-8 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition"
+            className=" text-black text-5xl hidden md:flex absolute -left-8 top-[40%] -translate-y-[40%] z-10 hover:scale-110 transition"
           >
             <ChevronLeft />
           </button>
@@ -96,7 +97,7 @@ const handleScroll = (direction) => {
 
           <button
             onClick={() => handleScroll("right")}
-            className=" text-black text-5xl hidden md:flex absolute -right-8 top-1/2 -translate-y-1/2  z-10 hover:scale-110 transition"
+            className=" text-black text-5xl hidden md:flex absolute -right-8 top-[40%] -translate-y-[30%]  z-10 hover:scale-110 transition"
           >
             <ChevronRight />
           </button>

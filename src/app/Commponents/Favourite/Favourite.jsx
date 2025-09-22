@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromFavourite } from "../../../redux/slice/favouriteslice"; // ✅ sahi import
+import { removeFromFavourite } from "../../../redux/slice/favouriteslice";
 import { Heart } from "lucide-react";
 
 const Favourite = () => {
@@ -35,7 +35,7 @@ const Favourite = () => {
           </div>
 
           <button
-            onClick={() => dispatch(removeFromFavourite(item.id))} // ✅ updated
+            onClick={() => dispatch(removeFromFavourite(item.id))}
             className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition"
           >
             <Heart size={18} fill="white" />
