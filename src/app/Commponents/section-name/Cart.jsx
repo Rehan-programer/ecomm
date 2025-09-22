@@ -7,7 +7,7 @@ import {
   decreaseQuantity,
   addItem,
   clearCart,
-} from "../slice/cartslice";
+} from "../../../redux/slice/cartslice";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);

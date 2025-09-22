@@ -1,10 +1,10 @@
-import Background from "../../redux/show/Backgorund";
-import Cart from "../../redux/show/Cart";
+import Background from "../Commponents/section-name/Backgorund";
+import Cart from "../Commponents/section-name/Cart";
 
 export default function CartPage() {
   return (
     <>
-      <Background/>
+      <Background title="Cart" pageName="Cart" />
       <Cart />
     </>
   );

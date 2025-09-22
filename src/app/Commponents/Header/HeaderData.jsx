@@ -1,4 +1,4 @@
-import { ShoppingCart, Search, Phone } from "lucide-react";
+import { ShoppingCart, Search,Heart } from "lucide-react";
 
 export const navLinks = [
   { name: "Home", path: "/" },
@@ -9,6 +9,6 @@ export const navLinks = [
 
 export const icons = [
   { id: 1, icon: Search, label: "Search" },
-  { id: 2, icon: Phone, label: "Phone" },
-  { id: 3, icon: ShoppingCart, label: "Cart", path:"/cart" },
+  { id: 3, icon: Heart, label: "Favourite", path: "/favourite" },
+  { id: 4, icon: ShoppingCart, label: "Cart", path: "/cart" },
 ];

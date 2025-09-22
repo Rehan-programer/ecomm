@@ -1,10 +1,10 @@
 import Banner from "./Commponents/Banner/Banner";
-import Card from "./Commponents/Card/Card";
 import Fashion from "./Commponents/Fashion/Fashion";
 import TrendingSection from "./Commponents/Trending/TrendingSection";
 import Testimonials from "./Commponents/testimonials/Testimonials";
-import YouLike from "./Commponents/You May Like/YouLike"
-
+import  "./Commponents/YouMayLike/YouMakeLike"
+import { YouMakeLikess } from "./Commponents/YouMayLike/YouMakeLike";
+import Features from "./Commponents/Features/Features";
 
 export default function Home() {
   return (
@@ -12,8 +12,9 @@ export default function Home() {
       <Banner />
       <Fashion />
       <TrendingSection />
-      < Testimonials/>
-      <YouLike/>
+      <Testimonials/>
+      <YouMakeLikess/>
+      <Features/>
     </>
   );
 }
