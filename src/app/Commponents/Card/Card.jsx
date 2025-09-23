@@ -67,7 +67,8 @@ const Card = ({ filteredData, scrollRef }) => {
             </div>
 
             <div className="p-4 text-center space-y-2">
-              <h3 className="text-base font-semibold text-gray-800 hover:text-[#FF2020] transition">
+              <h3 className="text-base font-semibold text-gray-800 hover:text-[#FF2020] transition " onClick={() => dispatch(openProductModal(item))}>
+                
                 {item.name}
               </h3>
               <p className="text-lg font-bold text-gray-700">${item.price}</p>

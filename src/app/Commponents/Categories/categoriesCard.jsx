@@ -6,10 +6,10 @@ import {
   addToFavourite,
   removeFromFavourite,
 } from "../../../redux/slice/favouriteslice";
-
 import { Heart } from "lucide-react";
+import Link from "next/link";
 
-const CategoriesCard = ({ data }) => {
+const CategoriesCard = ({ data, route }) => {
   const dispatch = useDispatch();
   const favourites = useSelector((state) => state.favourite.items);
 
@@ -23,15 +23,15 @@ const CategoriesCard = ({ data }) => {
   };
 
   return (
-    <div className="bg-white" >
-      <div className="flex    flex-wrap justify-center gap-6 mt-10  p-6">
+    <div className="bg-white">
+      <div className="flex flex-wrap justify-center gap-6 mt-10 p-6">
         {data.map((item) => {
           const isFav = favourites.some((fav) => fav.id === item.id);
 
           return (
             <div
               key={item.id}
-              className="relative flex-shrink-0  w-[100%] md:w-[30%] lg:w-[25%]"
+              className="relative flex-shrink-0 w-[100%] md:w-[30%] lg:w-[25%]"
             >
               <div className="relative w-full bg-black group overflow-hidden">
                 <button
@@ -42,16 +42,16 @@ const CategoriesCard = ({ data }) => {
                       : "bg-white text-gray-600 border-gray-300"
                   }`}
                 >
-                  <Heart
-                    size={22}
-                    strokeWidth={2}
-                  />
+                  <Heart size={22} strokeWidth={2} />
                 </button>
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-[480px] md:w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-110 hover:cursor-pointer"
-                />
+                <Link href={`/men/${item.id}`}>
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-[480px] md:w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-110 hover:cursor-pointer"
+                  />
+                </Link>
+
                 <div className="absolute bg-white bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                   <button
                     className="flex items-center gap-2 bg-[#FF2020] cursor-pointer text-white font-medium px-2 lg:px-5 py-2 shadow-md hover:bg-red-600 transition"
@@ -61,13 +61,22 @@ const CategoriesCard = ({ data }) => {
                   </button>
                 </div>
               </div>
-              <div className="p-3 flex flex-col justify-center items-center">
-                <h3 className="text-sm font-semibold text-black hover:text-[#FF2020] transition">
-                  {item.title}
+
+              <div className="p-4 flex flex-col justify-between items-center bg-white shadow-md rounded-2xl hover:shadow-lg transition duration-300">
+                <h3 className="text-lg font-semibold text-gray-800 cursor-pointer hover:text-[#FF2020] transition">
+                  <Link href={`/${route}/${item.id}`}>{item.title}</Link>
                 </h3>
-                <p className="text-gray-500">${item.price}</p>
+                <p className="text-gray-500 text-center text-sm mt-2">
+                  {item.description.slice(0, 90)}...
+                </p>
+                <p className="mt-2 text-sm font-medium text-gray-600">
+                  Size: <span className="text-red-500">{item.size}</span>
+                </p>
+                <p className="mt-1 text-lg font-bold text-gray-900">
+                  ${item.price}
+                </p>
                 <button
-                  className="mt-3 text-white block lg:hidden bg-red-500 px-4 py-2 hover:bg-red-600 transition"
+                  className="mt-4 w-full lg:hidden text-white bg-red-500 px-5 py-2 rounded-xl hover:bg-red-600 transition duration-300 shadow-sm"
                   onClick={() => dispatch(addItem(item))}
                 >
                   Add To Cart

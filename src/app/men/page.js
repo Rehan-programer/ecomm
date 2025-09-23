@@ -1,5 +1,5 @@
 import Men from "../Commponents/Categories/men/Men";
-import Card from "../Commponents/Card/Card"
+// import Card from "../Commponents/Card/Card"
 
  
 export default function Mens() {

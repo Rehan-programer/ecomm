@@ -24,17 +24,35 @@ const Header = () => {
             className="h-9 md:h-8 lg:h-10 w-auto object-contain"
           />
         </div>
-        <nav className="hidden lg:flex space-x-8 ">
+        <nav className="hidden lg:flex space-x-8 relative">
           {navLinks.map((link, index) => (
-            <Link
-              key={index}
-              href={link.path}
-              className="text-gray-700  hover:cursor-pointer text-lg font-semibold hover:text-[#FF2020] transition duration-300 ease-in-out"
-            >
-              {link.name}
-            </Link>
+            <div key={index} className="group relative">
+              <Link
+                href={link.path}
+                className="text-gray-700 hover:cursor-pointer text-lg font-semibold hover:text-[#FF2020] transition duration-300 ease-in-out"
+              >
+                {link.name}
+              </Link>
+              {link.dropdown && link.dropdown.length > 0 && (
+                <div className="absolute left-0 top-full hidden group-hover:block bg-white shadow-md rounded-md mt-2 w-48 z-50">
+                  <ul className="flex flex-col p-2">
+                    {link.dropdown.map((item, i) => (
+                      <li key={i}>
+                        <Link
+                          href={item.path}
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-[#FF2020] transition"
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           ))}
         </nav>
+
         <div className="flex items-center space-x-4">
           <div className="hidden lg:flex items-center space-x-4">
             {icons.map((item) => {

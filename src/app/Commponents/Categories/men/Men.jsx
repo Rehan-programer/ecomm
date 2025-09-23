@@ -16,7 +16,7 @@ const Men = () => {
           </p>
         </div>
 
-        <CategoriesCard data={menProducts} />
+        <CategoriesCard data={menProducts} route={"men"}/>
       </div>
     </section>
   );

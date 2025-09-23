@@ -15,7 +15,7 @@ const Women = ({}) => {
             <span>Women</span>
           </p>
         </div>
-        <CategoriesCard data={WomenData} />
+        <CategoriesCard data={WomenData} route={"women"} />
       </div>
     </section>
   );

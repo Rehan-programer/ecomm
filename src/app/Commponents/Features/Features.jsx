@@ -7,7 +7,7 @@ const FeatureCard = ({ Icon, title, subtitle, }) => {
     <div
       className={` shadow-xl rounded-2xl flex flex-col justify-center items-center gap-2 p-8 transition-all duration-300 ease-in-out hover:scale-[1.03] hover:shadow-xl`}
     >
-      <div className="text-4xl lg:text-5xl  text-indigo-600">
+      <div className="text-4xl lg:text-5xl  text-gray-500">
         <Icon />
       </div>
       <div className="text-center">
@@ -22,7 +22,6 @@ const ServicesSection = () => {
   return (
     <section className="w-full bg-whote  py-8">
       <div className="max-w-[2000px] lg:w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Heading */}
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-800">
             Our Services
@@ -31,8 +30,6 @@ const ServicesSection = () => {
             We provide top-notch services to make your shopping smooth and enjoyable.
           </p>
         </div>
-
-        {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <FeatureCard
             Icon={FaTruck}

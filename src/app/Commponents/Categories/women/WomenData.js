@@ -9,17 +9,12 @@ export const WomenData = [
     type: "Moisturizer",
     size: "Medium",
     color: "Beige",
-  },
-  {
-    id: 3,
-    title: "Wool Scarf",
-    image: "/img/trending-img/latest3.jpg.webp",
-    price: 60.0,
-    originalPrice: 85.0,
-    category: "Accessories",
-    type: "Scarf",
-    size: "One Size",
-    color: "Gray",
+    brand: "Urban Luxe",
+    material: "Cashmere Blend",
+    stock: 14,
+    rating: 4.6,
+    description:
+      "A premium cashmere tank paired with a matching bag. Soft texture, breathable fabric, and stylish design perfect for casual or semi-formal occasions.",
   },
   {
     id: 2,
@@ -31,6 +26,29 @@ export const WomenData = [
     type: "Shirt",
     size: "Large",
     color: "White",
+    brand: "Classic Wear",
+    material: "100% Cotton",
+    stock: 22,
+    rating: 4.3,
+    description:
+      "A versatile cotton shirt with a tailored fit. Lightweight, comfortable, and ideal for office wear or casual outings.",
+  },
+  {
+    id: 3,
+    title: "Wool Scarf",
+    image: "/img/trending-img/latest3.jpg.webp",
+    price: 60.0,
+    originalPrice: 85.0,
+    category: "Accessories",
+    type: "Scarf",
+    size: "One Size",
+    color: "Gray",
+    brand: "Winter Cozy",
+    material: "Pure Wool",
+    stock: 18,
+    rating: 4.7,
+    description:
+      "Luxurious wool scarf that provides excellent warmth and softness. Perfect accessory for layering in the winter season.",
   },
   {
     id: 4,
@@ -42,6 +60,12 @@ export const WomenData = [
     type: "Scarf",
     size: "One Size",
     color: "Gray",
+    brand: "Winter Cozy",
+    material: "Pure Wool",
+    stock: 12,
+    rating: 4.5,
+    description:
+      "Minimalist wool scarf with soft touch and durability. Keeps you warm without compromising on style.",
   },
   {
     id: 5,
@@ -53,6 +77,12 @@ export const WomenData = [
     type: "Scarf",
     size: "One Size",
     color: "Gray",
+    brand: "Winter Cozy",
+    material: "Pure Wool",
+    stock: 16,
+    rating: 4.4,
+    description:
+      "Classic wool scarf with a modern twist. Lightweight yet warm, designed for women who prefer timeless fashion pieces.",
   },
   {
     id: 6,
@@ -64,5 +94,11 @@ export const WomenData = [
     type: "Scarf",
     size: "One Size",
     color: "Gray",
+    brand: "Winter Cozy",
+    material: "Pure Wool",
+    stock: 10,
+    rating: 4.2,
+    description:
+      "A cozy and durable wool scarf. Perfect to pair with jackets and coats, offering both style and warmth.",
   },
 ];
