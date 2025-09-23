@@ -21,7 +21,7 @@ const FeatureCard = ({ Icon, title, subtitle, }) => {
 const ServicesSection = () => {
   return (
     <section className="w-full bg-whote  py-8">
-      <div className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[2000px] lg:w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-800">

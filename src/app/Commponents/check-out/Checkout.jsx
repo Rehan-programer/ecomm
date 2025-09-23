@@ -36,7 +36,6 @@ const Checkout = () => {
       <h2 className="text-2xl font-semibold mb-6 text-black">Checkout</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Shipping Info */}
         <div>
           <h3 className="text-lg font-semibold mb-4 text-black">Shipping Information</h3>
           {["name", "address", "phone"].map((field) => (

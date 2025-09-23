@@ -63,12 +63,12 @@ const handleScroll = (direction) => {
             Trending This Week
           </h2>
 
-          <div className="flex gap-6">
+          <div className="flex gap-6 hover:cursor-pointer">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`capitalize font-medium leading-[3rem] border-b-2 
+                className={`capitalize font-medium hover:cursor-pointer leading-[3rem] border-b-2 
                   ${
                     activeCategory === cat
                       ? "text-red-500 border-red-500"
@@ -84,7 +84,7 @@ const handleScroll = (direction) => {
         <div className="relative w-full lg:w-full m-auto">
           <button
             onClick={() => handleScroll("left")}
-            className=" text-black text-5xl hidden md:flex absolute -left-8 top-[40%] -translate-y-[40%] z-10 hover:scale-110 transition"
+            className=" text-black text-5xl hidden hover:cursor-pointer md:flex absolute -left-8 top-[40%] -translate-y-[40%] z-10 hover:scale-110 transition"
           >
             <ChevronLeft />
           </button>
@@ -97,7 +97,7 @@ const handleScroll = (direction) => {
 
           <button
             onClick={() => handleScroll("right")}
-            className=" text-black text-5xl hidden md:flex absolute -right-8 top-[40%] -translate-y-[30%]  z-10 hover:scale-110 transition"
+            className=" text-black hover:cursor-pointer text-5xl hidden md:flex absolute -right-8 top-[40%] -translate-y-[30%]  z-10 hover:scale-110 transition"
           >
             <ChevronRight />
           </button>

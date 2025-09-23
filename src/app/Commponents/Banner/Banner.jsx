@@ -16,7 +16,7 @@ const Banner = () => {
 
   return (
     <section>
-      <div className="relative w-full overflow-hidden bg-red-500  m-auto">
+      <div className="relative w-full overflow-hidden  m-auto">
         <div className="relative h-[40vh]  md:h-[50vh] lg:h-[50vh]  2xl:h-[90vh]  w-full">
           {bannerData.map((slide, index) => (
             <div

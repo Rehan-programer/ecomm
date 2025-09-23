@@ -23,7 +23,7 @@ const Fashion = () => {
                   <h5 className="text-white  mb-10 font-semibold">
                     {item.name}
                   </h5>
-                  <Link href={`/${item.category}`}>
+                  <Link href={item.category}>
                     <span className="text-gray-200 hover:text-[#FF2020] transition-colors duration-300">
                       Shop Now →
                     </span>

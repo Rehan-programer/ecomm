@@ -35,7 +35,7 @@ export const YouMakeLikess = () => {
         </h2>
         <button
           onClick={() => handleScroll("left")}
-          className="text-black hidden md:flex absolute left-2 lg:-left-10 top-1/2 -translate-y-1/2 z-10 
+          className="text-black hover:cursor-pointer hidden md:flex absolute left-2 lg:-left-10 top-1/2 -translate-y-1/2 z-10 
                      p-3 rounded-full hover:scale-110 transition"
         >
           <ChevronLeft />
@@ -50,7 +50,7 @@ export const YouMakeLikess = () => {
         </div>
         <button
           onClick={() => handleScroll("right")}
-          className=" text-black hidden md:flex absolute right-2 lg:-right-10 top-1/2 -translate-y-1/2 z-10 
+          className=" text-black hover:cursor-pointer hidden md:flex absolute right-2 lg:-right-10 top-1/2 -translate-y-1/2 z-10 
                       p-3 rounded-full hover:scale-110 transition"
         >
           <ChevronRight />

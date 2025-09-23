@@ -37,7 +37,7 @@ const Card = ({ filteredData, scrollRef }) => {
             <div className="overflow-hidden relative">
               <button
                 onClick={() => toggleFavourite(item)}
-                className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-md transition border ${
+                className={`absolute top-3 right-3 cursor-pointer z-10 p-2 rounded-full shadow-md transition border ${
                   isFav
                     ? "bg-red-500 text-white border-red-500"
                     : "bg-white text-gray-600 border-gray-300"
@@ -45,7 +45,6 @@ const Card = ({ filteredData, scrollRef }) => {
               >
                 <Heart
                   size={24}
-                  fill={isFav ? "red" : "none"}
                   strokeWidth={2}
                 />
               </button>
@@ -54,11 +53,11 @@ const Card = ({ filteredData, scrollRef }) => {
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-full object-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover bg-center transition-transform duration-500 group-hover:scale-110 hover:cursor-pointer"
                 />
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute bottom-4 cursor-pointer left-1/2 -translate-x-1/2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                   <button
-                    className="flex items-center gap-2 bg-[#FF2020] text-white font-medium px-5 py-2 shadow-md hover:bg-red-600 transition"
+                    className="flex items-center gap-2 bg-[#FF2020] cursor-pointer text-white font-medium px-5 py-2 shadow-md hover:bg-red-600 transition"
                     onClick={() => dispatch(addItem(item))}
                   >
                     <ShoppingCart size={18} /> Add to Cart
@@ -75,7 +74,7 @@ const Card = ({ filteredData, scrollRef }) => {
 
               <div className="lg:hidden">
                 <button
-                  className="mt-3 w-full flex items-center justify-center gap-2 bg-[#FF2020] text-white px-4 py-2 -md hover:bg-red-600 transition"
+                  className="mt-3 w-full hover:cursor-pointer flex items-center justify-center gap-2 bg-[#FF2020] text-white px-4 py-2 -md hover:bg-red-600 transition"
                   onClick={() => dispatch(addItem(item))}
                 >
                   <ShoppingCart size={18} /> Add to Cart
