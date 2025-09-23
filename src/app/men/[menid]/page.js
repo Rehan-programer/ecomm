@@ -39,7 +39,7 @@ export default function MenProductDetails({ params }) {
       <div className="relative flex-shrink-0">
         <button
           onClick={() => toggleFavourite(product)}
-          className={`absolute top-3 right-3 cursor-pointer z-10 p-2 rounded-full shadow-md transition border ${
+          className={`absolute top-0   right-10 lg:top-3 lg:right-3 cursor-pointer z-10 p-2 rounded-full shadow-md transition border ${
             isFav
               ? "bg-red-500 text-white border-red-500"
               : "bg-white text-gray-600 border-gray-300"
@@ -105,7 +105,7 @@ export default function MenProductDetails({ params }) {
 
         <div className="flex gap-4 pt-4">
           <button
-            className=" flex items-center justify-center gap-2 bg-[#FF2020] text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+            className=" flex items-center justify-center gap-2 bg-[#FF2020] text-white px-2 lg:px-4 py-2 rounded-md hover:bg-red-600 transition"
             onClick={() => dispatch(addItem(product))}
           >
             <ShoppingCart size={18} /> Add to Cart
