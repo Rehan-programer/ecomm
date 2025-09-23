@@ -112,7 +112,7 @@ export default function MenProductDetails({ params }) {
           </button>
           <button
             onClick={() => toggleFavourite(product)}
-            className={`flex items-center justify-center gap-2 px-6 py-2 rounded-md border transition ${
+            className={`flex items-center justify-center gap-2 px-2 lg:px-4 py-2 rounded-md border transition ${
               isFav
                 ? "bg-red-500 text-white border-red-500"
                 : "border-black text-black hover:bg-gray-100"
