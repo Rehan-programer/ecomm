@@ -44,7 +44,7 @@ const CategoriesCard = ({ data, route }) => {
                 >
                   <Heart size={22} strokeWidth={2} />
                 </button>
-                <Link href={`/men/${item.id}`}>
+                <Link href={`${route}/${item.id}`}>
                   <img
                     src={item.image}
                     alt={item.title}

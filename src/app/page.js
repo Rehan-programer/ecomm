@@ -5,6 +5,7 @@ import Testimonials from "./Commponents/testimonials/Testimonials";
 import  "./Commponents/YouMayLike/YouMakeLike"
 import { YouMakeLikess } from "./Commponents/YouMayLike/YouMakeLike";
 import Features from "./Commponents/Features/Features";
+import Faq from "./Commponents/faq/Faq"
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <TrendingSection />
       <Testimonials/>
       <YouMakeLikess/>
+      <Faq/>
       <Features/>
     </>
   );

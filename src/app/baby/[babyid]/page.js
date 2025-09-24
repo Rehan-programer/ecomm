@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { BabyProducts } from "../../Commponents/Categories/babyfashion/BabyData";
 import { ShoppingCart, Heart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,11 +13,13 @@ export default function MenProductDetails({ params }) {
   const resolvedParams = React.use(params);
   const { babyid } = resolvedParams;
 
-  console.log("params:", params);
-  console.log("womendetails:", babyid);
   const dispatch = useDispatch();
   const favourites = useSelector((state) => state.favourite.items);
   const product = BabyProducts.find((p) => String(p.id) === babyid);
+
+  // ✅ State for selected options
+  const [selectedSize, setSelectedSize] = useState(product?.size || "");
+  const [selectedColor, setSelectedColor] = useState(product?.color || "");
 
   if (!product) {
     return <div className="p-8 text-red-500">❌ Product not found</div>;
@@ -32,6 +34,15 @@ export default function MenProductDetails({ params }) {
     } else {
       dispatch(addToFavourite(item));
     }
+  };
+
+  const handleAddToCart = () => {
+    const itemWithSelection = {
+      ...product,
+      selectedSize,
+      selectedColor,
+    };
+    dispatch(addItem(itemWithSelection));
   };
 
   return (
@@ -54,7 +65,6 @@ export default function MenProductDetails({ params }) {
           className="w-72 h-72 object-cover rounded-xl shadow-md hover:scale-105 transition-transform duration-300"
         />
       </div>
-
       <div className="flex flex-col justify-between space-y-4 flex-1">
         <div>
           <p className="text-sm text-gray-500 uppercase tracking-wide">
@@ -67,7 +77,6 @@ export default function MenProductDetails({ params }) {
             {product.description}
           </p>
         </div>
-
         <div className="flex items-center gap-4">
           <span className="text-2xl font-semibold text-green-600">
             ${product.price}
@@ -78,19 +87,49 @@ export default function MenProductDetails({ params }) {
             </span>
           )}
         </div>
-
+        <div>
+          <p className="text-sm font-semibold text-gray-700 mb-2">
+            Select Size:
+          </p>
+          <div className="flex gap-2">
+            {["Small", "Medium", "Large"].map((size) => (
+              <button
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                className={`px-4 py-2 rounded-md border text-sm font-medium transition ${
+                  selectedSize === size
+                    ? "bg-black text-white border-black"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-gray-700 mb-2">
+            Select Color:
+          </p>
+          <div className="flex gap-2">
+            {["Red", "Blue", "Gray", "White"].map((color) => (
+              <button
+                key={color}
+                onClick={() => setSelectedColor(color)}
+                className={`px-4 py-2 rounded-md border text-sm font-medium transition ${
+                  selectedColor === color
+                    ? "bg-black text-white border-black"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                {color}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
           <p>
             <span className="font-semibold">Brand:</span> {product.brand}
-          </p>
-          <p>
-            <span className="font-semibold">Type:</span> {product.type}
-          </p>
-          <p>
-            <span className="font-semibold">Size:</span> {product.size}
-          </p>
-          <p>
-            <span className="font-semibold">Color:</span> {product.color}
           </p>
           <p>
             <span className="font-semibold">Material:</span> {product.material}
@@ -102,11 +141,10 @@ export default function MenProductDetails({ params }) {
             <span className="font-semibold">Rating:</span> ⭐ {product.rating}
           </p>
         </div>
-
         <div className="flex gap-4 pt-4">
           <button
-            className=" flex items-center justify-center gap-2 bg-[#FF2020] text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-            onClick={() => dispatch(addItem(product))}
+            className="flex items-center justify-center gap-2 bg-[#FF2020] text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+            onClick={handleAddToCart}
           >
             <ShoppingCart size={18} /> Add to Cart
           </button>
