@@ -1,4 +1,3 @@
-"use client";
 import { fashionData } from "./FashionData";
 import Link from "next/link";
 
@@ -8,7 +7,7 @@ const Fashion = () => {
       <div className="container max-w-[2000px] lg:w-[90%] px-2  w-full m-auto ">
         <div className="md:flex m-auto justify-center  gap-8 ">
           {fashionData.map((item) => (
-            <div
+            <Link href={item.category}
               key={item.id}
               className="group relative overflow-hidden shadow-md cursor-pointer 
               w-[96%]  lg:w-[550px] mb-4 lg:mb-10 m-auto  max-w-[580px]"
@@ -23,14 +22,14 @@ const Fashion = () => {
                   <h5 className="text-white  mb-10 font-semibold">
                     {item.name}
                   </h5>
-                  <Link href={item.category}>
+                  <p>
                     <span className="text-gray-200 hover:text-[#FF2020] transition-colors duration-300">
                       Shop Now →
                     </span>
-                  </Link>
+                  </p>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

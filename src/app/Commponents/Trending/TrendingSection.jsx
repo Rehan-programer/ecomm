@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { trendingData } from "./TrendingData";
+import products from "../ProductData.json"
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Card from "../Card/Card";
 
@@ -12,7 +12,7 @@ const TrendingSection = () => {
   const [isHovered, setIsHovered] = useState(false);
   const scrollRef = useRef(null);
 
-  const filteredData = trendingData.filter(
+  const filteredData = products.trendingData.filter(
     (item) => item.category === activeCategory
   );
 const handleScroll = (direction) => {

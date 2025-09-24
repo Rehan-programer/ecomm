@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import CategoriesCard from "../categoriesCard";
-import menProducts from "./MenData";
+import Products from "../../ProductData.json";
 
 const Men = () => {
   return (
@@ -16,7 +16,7 @@ const Men = () => {
           </p>
         </div>
 
-        <CategoriesCard data={menProducts} route={"men"}/>
+        <CategoriesCard data={Products.menProducts} route={"men"}/>
       </div>
     </section>
   );

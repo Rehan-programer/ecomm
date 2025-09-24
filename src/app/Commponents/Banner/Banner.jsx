@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { bannerData } from "./BannerData";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 const Banner = () => {
   const [current, setCurrent] = useState(0);
   const length = bannerData.length;
 
-  const prevSlide = () => {
-    setCurrent((prev) => (prev === 0 ? length - 1 : prev - 1));
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+       setCurrent((prev) => (prev === length - 1 ? 0 : prev + 1)) 
+      ;
+    }, 3000);
 
-  const nextSlide = () => {
-    setCurrent((prev) => (prev === length - 1 ? 0 : prev + 1));
-  };
+    return () => clearInterval(interval);
+  }, [length]);
 
   return (
     <section>
@@ -31,10 +31,10 @@ const Banner = () => {
             >
               <div className="relative  z-20 flex items-center h-full container mx-auto px-6">
                 <div
-                  className={`max-w-full w-full lg:w-[38%]  text-black ${
+                  className={`max-w-full  w-full lg:w-[38%]  text-black ${
                     slide.align === "right"
-                      ? "ml-auto text-center"
-                      : "mr-auto text-center"
+                      ? "ml-auto lg:mr-[2rem] text-left"
+                      : "mr-auto lg:ml-[3rem] text-left"
                   }`}
                 >
                   <p className="text-sm uppercase tracking-widest mb-2">
@@ -50,18 +50,7 @@ const Banner = () => {
             </div>
           ))}
         </div>
-        <button
-          onClick={prevSlide}
-          className="absolute hidden md:block top-1/2 left-0 -translate-y-1/2 bg-[#D4CECD] hover:bg-black  p-2 transition duration-500 ease-iwhite shadow-md z-30"
-        >
-          <ChevronLeft className="w-8 h-24 text-white" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute hidden md:block top-1/2 right-0 -translate-y-1/2 bg-[#D4CECD] hover:bg-black  p-2 transition duration-500 ease-iwhite shadow-md z-30"
-        >
-          <ChevronRight className="w-8 h-24 text-white" />
-        </button>
+     
       </div>
     </section>
   );

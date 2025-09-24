@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 import Card from "../Card/Card";
-import { YouLikeData } from "./YouLikeData";
+import products from "../ProductData.json";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const YouMakeLikess = () => {
@@ -14,10 +14,10 @@ export const YouMakeLikess = () => {
     const card = container.firstElementChild;
     const cardWidth = card ? card.offsetWidth : 500;
 
-    let itemsPerView = 1; 
+    let itemsPerView = 1;
     if (window.innerWidth >= 1024) itemsPerView = 4;
-    else if (window.innerWidth >= 768) itemsPerView = 2; 
-    else if (window.innerWidth <=768 ) itemsPerView = 1 ; 
+    else if (window.innerWidth >= 768) itemsPerView = 2;
+    else if (window.innerWidth <= 768) itemsPerView = 1;
 
     const scrollAmount = cardWidth * itemsPerView;
 
@@ -44,9 +44,7 @@ export const YouMakeLikess = () => {
           // ref={scrollRef}
           className="flex gap-4 lg:gap-8 overflow-x-auto scroll-smooth scrollbar-hide px-2"
         >
-         
-            <Card filteredData={YouLikeData} scrollRef={scrollRef} />
-   
+          <Card filteredData={products.youLikeData} scrollRef={scrollRef} />
         </div>
         <button
           onClick={() => handleScroll("right")}
