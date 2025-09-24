@@ -121,65 +121,7 @@ const Header = () => {
             })}
           </div>
 
-          {/* Mobile menu toggle button */}
-          <button
-            className="lg:hidden p-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* 📱 Mobile Navigation */}
-      {mobileOpen && (
-        <div className="lg:hidden absolute bg-white w-[50%] right-0 border-t shadow-md px-6 py-4 space-y-4">
-          <nav className="flex flex-col space-y-4">
-            {navLinks.map((link, index) => (
-              <div key={index}>
-                <button
-                  onClick={() =>
-                    setOpenDropdown(openDropdown === index ? null : index)
-                  }
-                  className="flex items-center justify-between w-full text-gray-700 text-base font-semibold hover:text-[#FF2020] transition"
-                >
-                  {link.name}
-                  {link.dropdown &&
-                    (openDropdown === index ? (
-                      <ChevronUp className="w-5 h-5" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5" />
-                    ))}
-                </button>
-
-                {/* Mobile dropdown */}
-                {link.dropdown && openDropdown === index && (
-                  <div className="mt-2  grid grid-cols-1 md:grid-cols-4 lg:grid-cols-1   space-y-4">
-                    {link.dropdown.map((item, i) => (
-                      <div key={i}>
-                        <h6 className="font-semibold text-gray-800 text-md mb-1">
-                          {item.name}
-                        </h6>
-                        <ul className=" text-gray-600 text-sm space-y-1">
-                          {item.subItems?.map((sub, idx) => (
-                            <li
-                              key={idx}
-                              className="hover:text-[#FF2020] cursor-pointer transition"
-                            >
-                              {sub}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
-
-          {/* Mobile Icons */}
-          <div className="flex space-x-6 pt-4 border-t">
+            <div className="flex space-x-3  border-t items-center">
             {icons.map((item) => {
               const IconComp = item.icon;
 
@@ -212,6 +154,67 @@ const Header = () => {
               );
             })}
           </div>
+
+          {/* Mobile menu toggle button */}
+          <button
+            className="lg:hidden p-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* 📱 Mobile Navigation */}
+      {mobileOpen && (
+        <div className="lg:hidden absolute top-18 right-0 h-screen bg-white w-[50%] border-l shadow-md px-6 py-4 space-y-4 overflow-y-auto">
+          <nav className="flex flex-col  space-y-4">
+            {navLinks.map((link, index) => (
+              <div key={index} className="">
+                <button
+                  onClick={() =>
+                    setOpenDropdown(openDropdown === index ? null : index)
+                  }
+                  className="flex items-center justify-between w-full text-gray-700 text-base font-semibold hover:text-[#FF2020] transition"
+                >
+                  {link.name}
+                  {link.dropdown &&
+                    (openDropdown === index ? (
+                      <ChevronUp className="w-5 h-5" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5" />
+                    ))}
+                </button>
+                
+
+                {/* Mobile dropdown */}
+                {link.dropdown && openDropdown === index && (
+                  <div className="mt-2  grid grid-cols-1 md:grid-cols-4 lg:grid-cols-1   space-y-4">
+                    {link.dropdown.map((item, i) => (
+                      <div key={i}>
+                        <h6 className="font-semibold text-gray-800 text-md mb-1">
+                          {item.name}
+                        </h6>
+                        <ul className=" text-gray-600 text-sm space-y-1">
+                          {item.subItems?.map((sub, idx) => (
+                            <li
+                              key={idx}
+                              className="hover:text-[#FF2020] cursor-pointer transition"
+                            >
+                              {sub}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          {/* Mobile Icons */}
+        
         </div>
       )}
     </header>
