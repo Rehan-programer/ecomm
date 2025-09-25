@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
 import {
@@ -12,6 +12,7 @@ import {
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const [showSummary, setShowSummary] = useState(false);
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -30,12 +31,12 @@ const Cart = () => {
     );
 
   return (
-    <section className=" py-10    m-auto">
-      <div className="container relative flex w-[86%] justify-between m-auto items-start">
-        <div className=" w-full lg:w-[68%]   p-4 rounded-md bg-white shadow-lg  items-start ">
-          <div className=" py-4 px-2  ">
-            <div className="text-black hidden md:flex border-b border-black/10  pb-4 px-2">
-              <div className="flex font-bold    w-full items-center justify-between">
+    <section className="py-10 m-auto">
+      <div className="container flex flex-col lg:flex-row w-[90%] justify-between m-auto items-start">
+        <div className="w-full lg:w-[68%] p-4 rounded-md bg-white shadow-lg items-start">
+          <div className="py-4 px-2">
+            <div className="text-black hidden md:flex border-b border-black/10 pb-4 px-2">
+              <div className="flex font-bold w-full items-center justify-between">
                 <h6>My Cart ({cartItems.length}) </h6>
                 <button
                   className="w-full md:w-auto bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition"
@@ -43,40 +44,36 @@ const Cart = () => {
                 >
                   Clear Cart
                 </button>
-              
               </div>
             </div>
 
-            <div className=" m-auto">
+            <div className="m-auto">
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col md:flex-row bg-blue-500 lg:felx-row justify-between items-center border-b border-black/10 py-4 gap-4"
+                  className="flex flex-col md:flex-row justify-between items-center border-b border-black/10 py-4 gap-4"
                 >
-                  <div className="flex bg-green-500   items-center gap-16 w-full md:w-[45%] lg:w-[85%] ">
+                  <div className="flex items-center gap-16 w-full md:w-[45%] lg:w-[85%]">
                     <img
                       src={item.image}
                       alt={item.title}
                       className="w-30 h-30 object-cover rounded"
                     />
-                    <div className="flex-col md:flex-row bg-black items-center justify-start ">
+                    <div className="flex-col items-center justify-start">
                       <h6 className="font-bold text-gray-800">{item.title}</h6>
 
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Brand:</span>{" "}
                         {item.brand}
                       </div>
-
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Color:</span>{" "}
                         {item.color}
                       </div>
-
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Size:</span>{" "}
                         {item.size}
                       </div>
-
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Price:</span> $
                         {item.price}
@@ -84,7 +81,7 @@ const Cart = () => {
                     </div>
                   </div>
 
-                  <div className=" flex flex-col items-center justify-center space-y-2">
+                  <div className="flex flex-col items-center justify-center space-y-2">
                     <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
                       <button
                         className="bg-black text-white px-3 py-1 rounded hover:bg-gray-300"
@@ -114,16 +111,29 @@ const Cart = () => {
                 </div>
               ))}
             </div>
+
+            <div className="lg:hidden mt-6">
+              <button
+                onClick={() => setShowSummary(!showSummary)}
+                className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600 transition"
+              >
+                {showSummary ? "Hide Order Summary" : "Show Order Summary"}
+              </button>
+            </div>
           </div>
         </div>
-        <div className=" rounded-md sticky top-22 md:absolute md:top-0 md:right-[50%]  h-auto">
-          <div className=" w-full  ">
-            <div className="mb-5   shadow-lg ">
-              {/* Coupons */}
-              <div className="  p-4 flex bg-white rounded-md  justify-center ">
-                <div className="space-y-2 flex flex-col ">
-                  <h6 className="font-semibold text-gray-700 ">Coupons</h6>
-                  <div className="  gap-2">
+
+        <div
+          className={`rounded-md sticky top-22 h-auto w-full lg:w-[30%] mt-6 lg:mt-0 transition-all duration-300 ${
+            showSummary ? "block" : "hidden lg:block"
+          }`}
+        >
+          <div className="w-full">
+            <div className="mb-5 shadow-lg">
+              <div className="p-4 flex bg-white rounded-md justify-center">
+                <div className="space-y-2 flex flex-col w-full">
+                  <h6 className="font-semibold text-gray-700">Coupons</h6>
+                  <div className="flex gap-2">
                     <input
                       type="text"
                       placeholder="Coupon code"
@@ -135,42 +145,34 @@ const Cart = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Your Order */}
             </div>
-            <div className="  bg-white p-4   rounded-md shadow-md ">
+
+            <div className="bg-white p-4 rounded-md shadow-md">
               <h6 className="font-semibold text-gray-700 pb-4 border-b border-black/10">
                 Your Order
               </h6>
-              <div className="flex justify-between text-gray-600 p-4 px-0  border-b border-black/10">
+              <div className="flex justify-between text-gray-600 p-4 px-0 border-b border-black/10">
                 <span>Subtotal ({cartItems.length})</span>
                 <span>${subtotal}</span>
               </div>
 
-              <div className="flex justify-between text-gray-600 p-4 px-0  border-b border-black/10">
+              <div className="flex justify-between text-gray-600 p-4 px-0 border-b border-black/10">
                 <span>Service Fee</span>
                 <span>${servicefee}</span>
               </div>
 
-              {/* Tax */}
-              <div className="flex justify-between text-gray-600 p-4 px-0  border-b border-black/10">
+              <div className="flex justify-between text-gray-600 p-4 px-0 border-b border-black/10">
                 <span>Tax</span>
                 <span>${tax}</span>
               </div>
 
-              {/* Credits */}
-              
-
-              {/* Total Payable */}
               <div className="flex justify-between font-bold text-lg mt-2 p-4 px-0 border-b text-black border-black/10">
                 <span>Total Payable</span>
                 <span>${totalpayable}</span>
               </div>
 
-              {/* Checkout Button */}
-
-              <Link href="/check-out" className="w-full md:w-auto p-4 px-0 ">
-                <button className="w-full  bg-red-500 text-white py-2 rounded mt-25 hover:bg-red-600 transition">
+              <Link href="/check-out" className="w-full md:w-auto p-4 px-0">
+                <button className="w-full bg-red-500 text-white py-2 rounded mt-4 hover:bg-red-600 transition">
                   Proceed to Checkout
                 </button>
               </Link>
