@@ -45,7 +45,6 @@ const Header = () => {
                       >
                         View collection
                       </Link>
-
                     </div>
                     <p className="text-gray-600 text-sm">{link.descripiton}</p>
                     <img
@@ -164,34 +163,46 @@ const Header = () => {
 
       {/* 📱 Mobile Navigation */}
       {mobileOpen && (
-        <div className="lg:hidden absolute top-18 right-0 h-screen bg-white w-[50%] border-l shadow-md px-6 py-4 space-y-4 overflow-y-auto">
-          <nav className="flex flex-col  space-y-4">
+        <div className="lg:hidden fixed top-16 right-0 h-screen bg-white w-[75%] sm:w-[60%] border-l shadow-md px-6 py-6 space-y-6 overflow-y-auto z-50">
+          <nav className="flex flex-col space-y-6">
             {navLinks.map((link, index) => (
-              <div key={index} className="">
-                <button
-                  onClick={() =>
-                    setOpenDropdown(openDropdown === index ? null : index)
-                  }
-                  className="flex items-center justify-between w-full text-gray-700 text-base font-semibold hover:text-[#FF2020] transition"
-                >
-                  {link.name}
-                  {link.dropdown &&
-                    (openDropdown === index ? (
-                      <ChevronUp className="w-5 h-5" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5" />
-                    ))}
-                </button>
+              <div key={index} className="space-y-2">
+                <div className="flex items-center justify-between w-full">
+                  {/* Main Link (Text only) */}
+                  <Link
+                    href={link.path}
+                    className="text-gray-700 text-base font-semibold hover:text-[#FF2020] transition"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
 
-                {/* Mobile dropdown */}
+                  {/* Chevron + whole div clickable */}
+                  {link.dropdown && (
+                    <div
+                      className="flex items-center gap-1 cursor-pointer flex-1 px-3 py-2 hover:bg-gray-100 rounded justify-end"
+                      onClick={() =>
+                        setOpenDropdown(openDropdown === index ? null : index)
+                      }
+                    >
+                      {openDropdown === index ? (
+                        <ChevronUp className="w-5 h-5 text-gray-700" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-700" />
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Dropdown */}
                 {link.dropdown && openDropdown === index && (
-                  <div className="mt-2  grid grid-cols-1 md:grid-cols-4 lg:grid-cols-1   space-y-4">
+                  <div className="mt-4 space-y-4 grid grid-cols-2">
                     {link.dropdown.map((item, i) => (
-                      <div key={i}>
-                        <h6 className="font-semibold text-gray-800 text-md mb-1">
+                      <div key={i} className="space-y-2">
+                        <h6 className="font-semibold text-gray-800 text-md">
                           {item.name}
                         </h6>
-                        <ul className=" text-gray-600 text-sm space-y-1">
+                        <ul className="text-gray-600 text-sm space-y-1 pl-2">
                           {item.subItems?.map((sub, idx) => (
                             <li
                               key={idx}
@@ -208,8 +219,6 @@ const Header = () => {
               </div>
             ))}
           </nav>
-
-          {/* Mobile Icons */}
         </div>
       )}
     </header>
