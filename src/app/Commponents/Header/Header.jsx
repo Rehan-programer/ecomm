@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { navLinks, icons } from "./HeaderData";
@@ -11,6 +11,41 @@ const Header = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const cartItems = useSelector((state) => state.cart.items);
   const favouriteItems = useSelector((state) => state.favourite.items);
+
+  const mobileMenuRef = useRef(null);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setMobileOpen(false);
+        setOpenDropdown(null);
+      }
+    }
+
+    if (mobileOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [mobileOpen]);
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -25,6 +60,7 @@ const Header = () => {
             className="h-9 md:h-8 w-auto object-contain"
           />
         </div>
+
         <nav className="hidden lg:flex space-x-8 relative">
           {navLinks.map((link, index) => (
             <div key={index} className="group relative">
@@ -53,7 +89,7 @@ const Header = () => {
                       className="w-full h-48 object-cover rounded-md mt-2"
                     />
                   </div>
-                  <div className="flex items-center   flex-row gap-6 w-[70%] p-6 rounded-md">
+                  <div className="flex items-center flex-row gap-6 w-[70%] p-6 rounded-md">
                     {link.dropdown.map((item, i) => (
                       <div key={i} className="flex-1 p-2">
                         <h6 className="font-semibold text-gray-800 text-lg mb-2">
@@ -80,15 +116,17 @@ const Header = () => {
             </div>
           ))}
         </nav>
-        <div className="flex  items-center space-x-4">
-          <div className=" hidden  lg:flex items-center space-x-4">
+
+        {/* 🛒 Icons */}
+        <div className="flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             {icons.map((item) => {
               const IconComp = item.icon;
               if (item.path) {
                 return (
                   <Link key={item.id} href={item.path} className="relative">
                     {item.label === "Cart" && (
-                      <div className="absolute  -top-2 -right-2 flex justify-center bg-red-500 text-white text-xs items-center rounded-full h-4 w-4">
+                      <div className="absolute -top-2 -right-2 flex justify-center bg-red-500 text-white text-xs items-center rounded-full h-4 w-4">
                         {cartItems.length}
                       </div>
                     )}
@@ -113,10 +151,9 @@ const Header = () => {
             })}
           </div>
 
-          <div className="space-x-3 flex lg:hidden   border-t items-center">
+          <div className="space-x-3 flex lg:hidden border-t items-center">
             {icons.map((item) => {
               const IconComp = item.icon;
-
               if (item.path) {
                 return (
                   <Link key={item.id} href={item.path} className="relative">
@@ -134,7 +171,6 @@ const Header = () => {
                   </Link>
                 );
               }
-
               return (
                 <button
                   key={item.id}
@@ -147,7 +183,6 @@ const Header = () => {
             })}
           </div>
 
-          {/* Mobile menu toggle button */}
           <button
             className="lg:hidden p-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -161,14 +196,15 @@ const Header = () => {
         </div>
       </div>
 
-      {/* 📱 Mobile Navigation */}
       {mobileOpen && (
-        <div className="lg:hidden fixed top-16 right-0 h-screen bg-white w-[75%] sm:w-[60%] border-l shadow-md px-6 py-6 space-y-6 overflow-y-auto z-50">
+        <div
+          ref={mobileMenuRef}
+          className="lg:hidden fixed top-16 right-0 h-screen bg-white w-[75%] sm:w-[60%] border-l shadow-md px-6 py-6 space-y-6 overflow-y-auto z-50"
+        >
           <nav className="flex flex-col space-y-6">
             {navLinks.map((link, index) => (
               <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between w-full">
-                  {/* Main Link (Text only) */}
                   <Link
                     href={link.path}
                     className="text-gray-700 text-base font-semibold hover:text-[#FF2020] transition"
@@ -177,7 +213,6 @@ const Header = () => {
                     {link.name}
                   </Link>
 
-                  {/* Chevron + whole div clickable */}
                   {link.dropdown && (
                     <div
                       className="flex items-center gap-1 cursor-pointer flex-1 px-3 py-2 hover:bg-gray-100 rounded justify-end"
@@ -194,7 +229,6 @@ const Header = () => {
                   )}
                 </div>
 
-                {/* Dropdown */}
                 {link.dropdown && openDropdown === index && (
                   <div className="mt-4 space-y-4 grid grid-cols-2">
                     {link.dropdown.map((item, i) => (
