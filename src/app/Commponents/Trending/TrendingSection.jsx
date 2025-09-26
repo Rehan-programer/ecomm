@@ -1,18 +1,20 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import products from "../ProductData.json"
+// import products from "../ProductData.json"
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Card from "../Card/Card";
+import Products from "../ProductData.json";
 
-const categories = ["men", "women", "baby", "fashion"];
+const categories = ["men", "women", "baby"];
+
 
 const TrendingSection = () => {
   const [activeCategory, setActiveCategory] = useState("men");
   const [isHovered, setIsHovered] = useState(false);
   const scrollRef = useRef(null);
 
-  const filteredData = products.trendingData.filter(
+  const filteredData = Products.trendingData?.filter(
     (item) => item.category === activeCategory
   );
 const handleScroll = (direction) => {
@@ -92,7 +94,7 @@ const handleScroll = (direction) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <Card filteredData={filteredData} scrollRef={scrollRef} />
+            <Card filteredData={filteredData} scrollRef={scrollRef} route={activeCategory} />
           </div>
 
           <button

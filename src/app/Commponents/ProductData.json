@@ -1,88 +1,101 @@
 {
   "trendingData": [
-    {
+   {
       "id": 1,
-      "name": "Men's Casual Jacket",
-      "price": 59.99,
+      "title": "Cashmere Baby Blanket",
+      "image": "/img/trending-img/latest1.jpg.webp",
+      "price": 98.0,
+      "originalPrice": 120.0,
       "category": "men",
-      "image": "/img/trending-img/latest1.jpg.webp"
+      "type": "Blanket",
+      "size": "Medium",
+      "color": "Beige",
+      "brand": "SoftNest",
+      "material": "Cashmere Blend",
+      "stock": 20,
+      "rating": 4.8,
+      "description": "Luxuriously soft cashmere baby blanket designed to keep your little one warm and cozy. Gentle on sensitive skin."
     },
     {
       "id": 2,
-      "name": "Men's Casual Jacket",
-      "price": 59.99,
-      "category": "men",
-      "image": "/img/trending-img/latest2.jpg.webp"
+      "title": "Cotton Baby Shirt",
+      "image": "/img/trending-img/latest2.jpg.webp",
+      "price": 79.0,
+      "originalPrice": 99.0,
+      "category": "baby",
+      "type": "Shirt",
+      "size": "Large",
+      "color": "White",
+      "brand": "TinyTrend",
+      "material": "100% Organic Cotton",
+      "stock": 18,
+      "rating": 4.6,
+      "description": "Soft and breathable cotton shirt for babies. Perfect for playtime and daily wear, ensuring comfort throughout the day."
     },
     {
       "id": 3,
-      "name": "Men's Casual Jacket",
-      "price": 59.99,
-      "category": "men",
-      "image": "/img/trending-img/latest3.jpg.webp"
+      "title": "Wool Baby Scarf",
+      "image": "/img/trending-img/latest3.jpg.webp",
+      "price": 60.0,
+      "originalPrice": 85.0,
+      "category": "women",
+      "type": "Scarf",
+      "size": "One Size",
+      "color": "Gray",
+      "brand": "WarmHug",
+      "material": "Pure Wool",
+      "stock": 15,
+      "rating": 4.7,
+      "description": "Soft wool baby scarf to keep your child warm during winters. Lightweight and safe for sensitive skin."
     },
     {
       "id": 4,
-      "name": "Men's Casual Jacket",
-      "price": 59.99,
-      "category": "men",
-      "image": "/img/trending-img/latest4.jpg.webp"
+      "title": "Knitted Baby Scarf",
+      "image": "/img/trending-img/latest4.jpg.webp",
+      "price": 60.0,
+      "originalPrice": 85.0,
+      "category": "fashion",
+      "type": "Scarf",
+      "size": "One Size",
+      "color": "Gray",
+      "brand": "BabyWarm",
+      "material": "Wool Blend",
+      "stock": 12,
+      "rating": 4.5,
+      "description": "Hand-knitted baby scarf designed with love. Provides warmth and adds a cute touch to baby outfits."
     },
     {
       "id": 5,
-      "name": "Men's Casual Jacket",
-      "price": 59.99,
+      "title": "Fleece Baby Scarf",
+      "image": "/img/trending-img/latest1.jpg.webp",
+      "price": 60.0,
+      "originalPrice": 85.0,
       "category": "men",
-      "image": "/img/trending-img/latest1.jpg.webp"
+      "type": "Scarf",
+      "size": "One Size",
+      "color": "Gray",
+      "brand": "CozyKid",
+      "material": "Soft Fleece",
+      "stock": 14,
+      "rating": 4.4,
+      "description": "Lightweight fleece baby scarf that provides extra warmth without irritation. Designed for all-day comfort."
     },
     {
       "id": 6,
-      "name": "Men's Sneakers",
-      "price": 89.99,
-      "category": "men",
-      "image": "/img/trending-img/latest2.jpg.webp"
-    },
-    {
-      "id": 7,
-      "name": "Women's Summer Dress",
-      "price": 45.0,
+      "title": "Wool Baby Wrap",
+      "image": "/img/trending-img/latest2.jpg.webp",
+      "price": 60.0,
+      "originalPrice": 85.0,
       "category": "women",
-      "image": "/img/trending-img/latest3.jpg.webp"
-    },
-    {
-      "id": 8,
-      "name": "Women's Handbag",
-      "price": 120.5,
-      "category": "women",
-      "image": "/img/trending-img/latest4.jpg.webp"
-    },
-    {
-      "id": 9,
-      "name": "Baby Onesie",
-      "price": 25.0,
-      "category": "baby",
-      "image": "/img/trending-img/latest1.jpg.webp"
-    },
-    {
-      "id": 10,
-      "name": "Baby Shoes",
-      "price": 19.99,
-      "category": "baby",
-      "image": "/img/trending-img/latest2.jpg.webp"
-    },
-    {
-      "id": 11,
-      "name": "Trendy Sunglasses",
-      "price": 30.0,
-      "category": "fashion",
-      "image": "/img/trending-img/latest3.jpg.webp"
-    },
-    {
-      "id": 12,
-      "name": "Classic Watch",
-      "price": 150.0,
-      "category": "fashion",
-      "image": "/img/trending-img/latest4.jpg.webp"
+      "type": "Wrap",
+      "size": "One Size",
+      "color": "Gray",
+      "brand": "LittleSnug",
+      "material": "Pure Wool",
+      "stock": 10,
+      "rating": 4.3,
+      "description": "A warm and stylish wool baby wrap. Perfect for outdoor strolls, keeping babies cozy and secure.",
+
     }
   ],
 
@@ -154,7 +167,7 @@
       "image": "/img/trending-img/latest2.jpg.webp",
       "price": 79.0,
       "originalPrice": 99.0,
-      "category": "Fashion",
+      "category": "women",
       "type": "Shirt",
       "size": "Large",
       "color": "White",

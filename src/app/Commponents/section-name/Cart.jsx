@@ -11,7 +11,7 @@ import Checkout from "../check-out/Checkout";
 import { useRouter } from "next/navigation";
 
 const Cart = () => {
-  const cartItems = useSelector((state) => state.cart.items);
+  const   cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const [showSummary, setShowSummary] = useState(false);
   const [checkout, setCheckout] = useState(false);

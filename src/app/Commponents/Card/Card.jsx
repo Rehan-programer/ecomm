@@ -8,8 +8,9 @@ import {
 } from "../../../redux/slice/favouriteslice";
 
 import { ShoppingCart, Heart } from "lucide-react";
+import Link from "next/link";
 
-const Card = ({ filteredData, scrollRef }) => {
+const Card = ({ filteredData, scrollRef , route  }) => {
   const dispatch = useDispatch();
   const favourites = useSelector((state) => state.favourite.items);
 
@@ -66,22 +67,29 @@ const Card = ({ filteredData, scrollRef }) => {
               </div>
             </div>
 
-            <div className="p-4 text-center space-y-2">
-              <h3 className="text-base font-semibold text-gray-800 hover:text-[#FF2020] transition " onClick={() => dispatch(openProductModal(item))}>
-                
-                {item.name}
-              </h3>
-              <p className="text-lg font-bold text-gray-700">${item.price}</p>
-
-              <div className="lg:hidden">
+               <div className="p-4 flex flex-col justify-between items-center bg-white shadow-md rounded-2xl hover:shadow-lg transition duration-300">
+                <h3 className="text-lg font-semibold text-gray-800 cursor-pointer hover:text-[#FF2020] transition">
+                  <Link href={`/${route}/${item.id}`}>{item.title}</Link>
+                </h3>
+                {/* <p className="text-gray-500 text-center text-sm mt-2">
+                  {item.description.slice(0, 90)}...
+                </p> */}
+                <p className="mt-2 text-sm font-medium text-gray-600">
+                  Size: <span className="text-red-500">{item.size}</span>
+                </p>
+                <p className="text-gray-500 text-center text-sm mt-2">
+                  {item.description?.slice(0, 100)}...
+                </p>
+                <p className="mt-1 text-lg font-bold text-gray-900">
+                  ${item.price}
+                </p>
                 <button
-                  className="mt-3 w-full hover:cursor-pointer flex items-center justify-center gap-2 bg-[#FF2020] text-white px-4 py-2 -md hover:bg-red-600 transition"
+                  className="mt-4 w-full lg:hidden text-white bg-red-500 px-5 py-2 rounded-xl hover:bg-red-600 transition duration-300 shadow-sm"
                   onClick={() => dispatch(addItem(item))}
                 >
-                  <ShoppingCart size={18} /> Add to Cart
+                  Add To Cart
                 </button>
               </div>
-            </div>
           </div>
         );
       })}

@@ -24,14 +24,14 @@ const CategoriesCard = ({ data, route }) => {
 
   return (
     <div className="bg-white">
-      <div className="flex flex-wrap justify-center gap-6 mt-10 p-6">
+      <div className=" grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:w-[90%] m-auto w-full max-w-[2000px]  justify-center gap-6 mt-10 p-6">
         {data.map((item) => {
           const isFav = favourites.some((fav) => fav.id === item.id);
 
           return (
             <div
               key={item.id}
-              className="relative flex-shrink-0 w-[100%] md:w-[30%] lg:w-[25%]"
+              className="relative  w-[100%]"
             >
               <div className="relative w-full bg-black group overflow-hidden">
                 <button
