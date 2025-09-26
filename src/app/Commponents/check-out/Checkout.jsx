@@ -7,11 +7,21 @@ const Checkout = () => {
   const cartItems = useSelector(({ cart }) => cart.items);
   const dispatch = useDispatch();
 
-  const [form, setForm] = useState({ name: "", address: "", phone: "" });
+  const [form, setForm] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    email: "",
+  });
 
-  const total = cartItems.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
+  const total = cartItems.reduce(
+    (sum, { price, quantity }) => sum + price * quantity,
+    0
+  );
 
-  const handleChange = ({ target: { name, value } }) => setForm((f) => ({ ...f, [name]: value }));
+  const handleChange = ({ target }) => {
+    setForm((p) => ({ ...p, [target?.name]: target?.value }));
+  };
 
   const placeOrder = () => {
     if (!form.name || !form.address || !form.phone) {
@@ -25,60 +35,141 @@ const Checkout = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto p-6 bg-[#F3EAD8] rounded shadow text-center text-gray-600 py-20">
+      <div className="max-w-4xl mx-auto  bg-[#F3EAD8] rounded shadow text-center text-gray-600 ">
         Your cart is empty.
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-[#F3EAD8] mt-6 rounded shadow">
-      <h2 className="text-2xl font-semibold mb-6 text-black">Checkout</h2>
+    <div className="max-w-[2000px] py-8 px-4 md:px-0  md:py-4   md:bg-blue-600 mx-auto  md:px-4 lg:px-10  bg-white rounded-2xl shadow-lg ">
+      <h2 className="text-3xl font-bold mb-4 text-center border-b pb-4 text-black/80">
+        Checkout
+      </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h3 className="text-lg font-semibold mb-4 text-black">Shipping Information</h3>
-          {["name", "address", "phone"].map((field) => (
+      <div className="grid grid-col-1 md:grid-cols-2 lg:grid-cols-2 md:gap-4 lg:gap-10">
+        {/* Shipping Information */}
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+          <h3 className="text-xl font-semibold mb-6 text-gray-800">
+            Shipping Information
+          </h3>
+
+          <div className="mb-5">
+            <label
+              htmlFor="name"
+              className="block text-sm font-bold text-red-500 mb-2"
+            >
+              Full Name
+            </label>
             <input
-              key={field}
+              id="name"
               type="text"
-              name={field}
-              placeholder={field === "name" ? "Full Name" : field.charAt(0).toUpperCase() + field.slice(1)}
-              value={form[field]}
+              name="name"
+              placeholder="Enter your full name"
+              value={form.name}
               onChange={handleChange}
-              className="w-full border border-black text-black p-3 rounded mb-4"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
-          ))}
+          </div>
+
+          <div className="mb-5">
+            <label
+              htmlFor="address"
+              className="block text-sm font-bold text-red-500 mb-2"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Enter your address"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <div className="mb-5">
+            <label
+              htmlFor="address"
+              className="block text-sm font-bold text-red-500 mb-2"
+            >
+              Address
+            </label>
+            <input
+              id="address"
+              type="text"
+              name="address"
+              placeholder="Enter your address"
+              value={form.address}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <div className="mb-5">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-bold text-red-500 mb-2"
+            >
+              Phone
+            </label>
+            <input
+              id="phone"
+              type="text"
+              name="phone"
+              placeholder="Enter phone number"
+              value={form.phone}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
         </div>
 
-        {/* Order Summary */}
-        <div>
-          <h3 className="text-lg font-semibold mb-4 text-black">Order Summary</h3>
-          <ul className="divide-y divide-gray-200 mb-6 max-h-96 overflow-y-auto text-black">
-            {cartItems.map(({ id, title, image, price,name, quantity }) => (
-              <li key={id} className="flex items-center justify-between py-3">
-                <div className="flex items-center gap-4">
-                  <img src={image} alt={title} className="w-20 h-20 object-cover rounded" />
-                  <div>
-                    <p className="font-semibold">{name}</p>
-                    <p className="text-sm text-gray-700">Qty: {quantity}</p>
+      
+        <div className="bg-gray-50 flex flex-col justify-between p-6 rounded-xl border border-gray-200">
+          <div>
+            <h3 className="text-xl font-semibold mb-6 text-gray-800">
+              Order Summary
+            </h3>
+            <ul className="divide-y divide-gray-200 mb-6 max-h-80 overflow-y-auto pr-2 scrollbar-hide">
+              {cartItems.map(({ id, title, image, price, name, quantity }) => (
+                <li key={id} className="flex items-center  justify-between py-4">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={image}
+                      alt={title}
+                      className="w-16 h-16 object-cover rounded-lg border"
+                    />
+                    <div>
+                      <p className="font-bold text-gray-900">{name}</p>
+                      <p className="font-bold text-gray-900">{title}</p>
+                      <p className="text-sm text-gray-900">
+                        <span className="font-bold">Qty:</span> {quantity}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <span>${(price * quantity).toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="flex justify-between font-semibold text-black text-lg">
+                  <span className="font-medium lg:mt-2 mt-10  text-gray-800">
+                    ${(price * quantity).toFixed(2)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex justify-between font-semibold text-lg text-gray-900 border-t pt-4">
             <span>Total:</span>
             <span>${total.toFixed(2)}</span>
           </div>
         </div>
       </div>
 
-      <div className="mt-8 text-right">
+   
+      <div className="mt-4 text-right">
         <button
           onClick={placeOrder}
-          className="bg-red-500 text-white px-8 py-3 rounded hover:bg-red-600 transition font-semibold"
+          className="bg-red-500 text-white px-8 py-3 rounded-lg hover:bg-red-600 transition font-semibold shadow-md"
         >
           Place Order
         </button>

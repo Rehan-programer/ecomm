@@ -4,22 +4,33 @@ import Image from "next/image";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { navLinks, icons } from "./HeaderData";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { openProductModal } from "../../../redux/slice/productslice"; 
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // Search state
   const cartItems = useSelector((state) => state.cart.items);
   const favouriteItems = useSelector((state) => state.favourite.items);
-
+  const dispatch = useDispatch();
   const mobileMenuRef = useRef(null);
+  const router = useRouter();
+
+  
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const term = searchTerm.trim().toLowerCase();
+    if (term === "men") router.push("/men");
+    else if (term === "women") router.push("/women");
+    else if (term === "baby") router.push("/baby");
+    else router.push("/");
+    setSearchTerm("");
+  };
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
@@ -61,7 +72,6 @@ const Header = () => {
           />
         </div>
 
-      
         <nav className="hidden lg:flex space-x-8 relative">
           {navLinks.map((link, index) => (
             <div
@@ -76,7 +86,6 @@ const Header = () => {
               </Link>
               {link.dropdown && link.dropdown.length > 0 && (
                 <div className="w-full transition-all duration-300 ease-in-out left-0 top-10 bg-white pt-[2%] right-0 max-w-[2000px] m-auto lg:w-[87%] fixed opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-2 transform hidden group-hover:flex shadow-lg mt-2 z-50 justify-between">
-               
                   <div className="flex flex-col gap-4 w-[30%] p-4 justify-center bg-gray-100 transition-all duration-300 ease-in-out">
                     <div className="flex items-center gap-2 w-full justify-between">
                       <h4 className="text-xl font-bold text-gray-800">
@@ -84,7 +93,7 @@ const Header = () => {
                       </h4>
                       <Link
                         href={link.path}
-                        className=" cursor-pointer border-1 p-2 text-sm font-medium text-black hover:text-[#FF2020] transition-colors duration-300"
+                        className="cursor-pointer border-1 p-2 text-sm font-medium text-black hover:text-[#FF2020] transition-colors duration-300"
                       >
                         View collection
                       </Link>
@@ -124,11 +133,33 @@ const Header = () => {
           ))}
         </nav>
 
-      
+    
         <div className="flex items-center space-x-4">
+          
+          <div className="relative hidden lg:flex">
+            <form onSubmit={handleSearchSubmit} className="w-full flex">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search (men, women, baby)..."
+                className="border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-red-500 w-full"
+              />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
+                🔍
+              </button>
+            </form>
+          </div>
+
           <div className="hidden lg:flex items-center space-x-4">
             {icons.map((item) => {
               const IconComp = item.icon;
+              const handleClick = () => {
+                if (item.label === "ProductModal") dispatch(openProductModal());
+              };
               if (item.path) {
                 return (
                   <Link key={item.id} href={item.path} className="relative">
@@ -142,7 +173,10 @@ const Header = () => {
                         {favouriteItems.length}
                       </div>
                     )}
-                    <IconComp className="w-6 h-6 text-gray-700 transition-colors duration-300 ease-in-out hover:text-[#FF2020]" />
+                    <IconComp
+                      className="w-6 h-6 text-gray-700 transition-colors duration-300 ease-in-out hover:text-[#FF2020]"
+                      onClick={handleClick}
+                    />
                   </Link>
                 );
               }
@@ -151,6 +185,7 @@ const Header = () => {
                   key={item.id}
                   className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 ease-in-out"
                   aria-label={item.label}
+                  onClick={handleClick}
                 >
                   <IconComp className="w-6 h-6 text-gray-700" />
                 </button>
@@ -158,9 +193,13 @@ const Header = () => {
             })}
           </div>
 
+ 
           <div className="space-x-3 flex lg:hidden border-t items-center">
             {icons.map((item) => {
               const IconComp = item.icon;
+              const handleClick = () => {
+                if (item.label === "ProductModal") dispatch(openProductModal());
+              };
               if (item.path) {
                 return (
                   <Link key={item.id} href={item.path} className="relative">
@@ -174,7 +213,10 @@ const Header = () => {
                         {favouriteItems.length}
                       </div>
                     )}
-                    <IconComp className="w-6 h-6 text-gray-700 transition-colors duration-300 ease-in-out hover:text-[#FF2020]" />
+                    <IconComp
+                      className="w-6 h-6 text-gray-700 transition-colors duration-300 ease-in-out hover:text-[#FF2020]"
+                      onClick={handleClick}
+                    />
                   </Link>
                 );
               }
@@ -183,6 +225,7 @@ const Header = () => {
                   key={item.id}
                   className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 ease-in-out"
                   aria-label={item.label}
+                  onClick={handleClick}
                 >
                   <IconComp className="w-6 h-6 text-gray-700" />
                 </button>
@@ -190,6 +233,7 @@ const Header = () => {
             })}
           </div>
 
+  
           <button
             className="lg:hidden p-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-300 ease-in-out"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -203,15 +247,35 @@ const Header = () => {
         </div>
       </div>
 
-  
+    
       {mobileOpen && (
         <div
           ref={mobileMenuRef}
           className="lg:hidden fixed top-16 right-0 h-screen bg-white w-[75%] sm:w-[60%] border-l shadow-md px-6 py-6 space-y-6 overflow-y-auto z-50 transition-all duration-300 ease-in-out"
         >
+      
+          <form onSubmit={handleSearchSubmit} className="mb-6 w-full flex">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search (men, women, baby)..."
+              className="border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-red-500 w-full"
+            />
+            <button
+              type="submit"
+              className="absolute right-8 top-1/2 -translate-y-1/2"
+            >
+              🔍
+            </button>
+          </form>
+
           <nav className="flex flex-col space-y-6">
             {navLinks.map((link, index) => (
-              <div key={index} className="space-y-2 transition-all duration-300 ease-in-out">
+              <div
+                key={index}
+                className="space-y-2 transition-all duration-300 ease-in-out"
+              >
                 <div className="flex items-center justify-between w-full">
                   <Link
                     href={link.path}

@@ -1,18 +1,33 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Link from "next/link";
 import {
   removeItem,
   decreaseQuantity,
   addItem,
   clearCart,
 } from "../../../redux/slice/cartslice";
+import Checkout from "../check-out/Checkout";
+import { useRouter } from "next/navigation";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const [showSummary, setShowSummary] = useState(false);
+  const [checkout, setCheckout] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (checkout) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [checkout]);
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -22,6 +37,16 @@ const Cart = () => {
   const servicefee = 150;
   const tax = 6.0;
   const totalpayable = subtotal + servicefee + tax;
+
+  const handleCheckout = () => {
+  if (window.innerWidth < 1024) {
+ 
+    router.push("/check-out");
+  } else {
+
+    setCheckout(true);
+  }
+};
 
   if (cartItems.length === 0)
     return (
@@ -33,6 +58,7 @@ const Cart = () => {
   return (
     <section className="py-10 m-auto">
       <div className="container flex flex-col lg:flex-row w-[90%] justify-between m-auto items-start">
+        {/* Cart Items */}
         <div className="w-full lg:w-[68%] p-4 rounded-md bg-white shadow-lg items-start">
           <div className="py-4 px-2">
             <div className="text-black hidden md:flex border-b border-black/10 pb-4 px-2">
@@ -61,7 +87,6 @@ const Cart = () => {
                     />
                     <div className="flex-col items-center justify-start">
                       <h6 className="font-bold text-gray-800">{item.title}</h6>
-
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Brand:</span>{" "}
                         {item.brand}
@@ -171,13 +196,36 @@ const Cart = () => {
                 <span>${totalpayable}</span>
               </div>
 
-              <Link href="/check-out" className="w-full md:w-auto p-4 px-0">
-                <button className="w-full bg-red-500 text-white py-2 rounded mt-4 hover:bg-red-600 transition">
+              <div className="w-full md:w-auto p-4 px-0">
+                <button
+                  onClick={handleCheckout}
+                  className="w-full bg-red-500 text-white py-2 rounded mt-4 hover:bg-red-600 transition"
+                >
                   Proceed to Checkout
                 </button>
-              </Link>
+              </div>
             </div>
           </div>
+
+          {checkout && (
+            <div className="fixed inset-0 top-18 z-50 flex items-center justify-center">
+              <div
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setCheckout(false)}
+              >
+                <button
+                  onClick={() => setCheckout(false)}
+                  className="absolute text-white bg-red-500 py-2 px-3 rounded-full top-3 z-100 right-18 hover:text-black"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="relative bg-white rounded-lg shadow-lg md:w-[90%] lg:w-[60%]  overflow-hidden z-50 overflow-y-auto ">
+                <Checkout />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
