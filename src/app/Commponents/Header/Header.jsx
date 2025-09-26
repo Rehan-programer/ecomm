@@ -6,7 +6,8 @@ import { navLinks, icons } from "./HeaderData";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { openProductModal } from "../../../redux/slice/productslice"; 
+import { openProductModal } from "../../../redux/slice/productslice";
+import Products from "../ProductData.json"
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -18,16 +19,23 @@ const Header = () => {
   const mobileMenuRef = useRef(null);
   const router = useRouter();
 
-  
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    const term = searchTerm.trim().toLowerCase();
-    if (term === "men") router.push("/men");
-    else if (term === "women") router.push("/women");
-    else if (term === "baby") router.push("/baby");
-    else router.push("/");
-    setSearchTerm("");
-  };
+const handleSearchSubmit = (e) => {
+  e.preventDefault();
+  const term = searchTerm.trim().toLowerCase();
+
+  const found = navLinks.find(
+    (link) => link.name.toLowerCase() === term
+  );
+
+  if (found) {
+    router.push(found.path);
+  } else {
+  alert("Page not found");
+}
+
+
+  setSearchTerm("");
+};
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -251,16 +259,18 @@ const Header = () => {
           className="lg:hidden fixed top-16 right-0 h-screen bg-white w-[75%] sm:w-[60%] border-l shadow-md px-6 py-6 space-y-6 overflow-y-auto z-50 transition-all duration-300 ease-in-out"
         >
       
-         <form onSubmit={handleSearchSubmit} className="w-full flex">
-              <input
+         <form onSubmit={handleSearchSubmit} className="w-full ">
+              <div className="flex justify-center w-full items-center border border-black/80  rounded-[8px] focus:border-red-500">
+                <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search..."
-                className="border rounded-[8px] px-4 py-2 text-sm text-black focus:outline-none focus:border-red-500 w-full"
+                className="  px-4 py-2 text-sm text-black focus:outline-none focus:border-red-500 w-full"
                 />
+                <Search className="  text-black mr-2" />
            
-                <Search className="absolute right-[12%] lg:right-3 text-black top-[3.2%] md:top-[3%] lg:top-[18%] -translate-y-1/" />
+              </div>
            
             </form>
 

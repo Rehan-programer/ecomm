@@ -12,11 +12,11 @@ export default function Home() {
     <>
       <Banner />
       <Fashion />
+      <Features/>
       <TrendingSection />
       <Testimonials/>
       <YouMakeLikess/>
       <Faq/>
-      <Features/>
     </>
   );
 }

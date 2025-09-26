@@ -5,9 +5,9 @@ import { FaTruck, FaCreditCard, FaMoneyBillWave, FaHeadset } from "react-icons/f
 const FeatureCard = ({ Icon, title, subtitle, }) => {
   return (
     <div
-      className={` shadow-xl rounded-2xl flex flex-col justify-center items-center gap-2 p-8 transition-all duration-300 ease-in-out hover:scale-[1.03] hover:shadow-xl`}
+      className={`group flex flex-col justify-center items-center gap-2 p-8 transition-all rounded-2xl duration-600 ease-in-out hover:translate-y-[-8px] hover:shadow-2xl hover:border border-red-500`}
     >
-      <div className="text-4xl lg:text-5xl  text-gray-500">
+      <div className="text-4xl lg:text-5xl text-black  group-hover:text-red-400 hover:transition duration-500 ease-in-out text-gray-500a">
         <Icon />
       </div>
       <div className="text-center">
