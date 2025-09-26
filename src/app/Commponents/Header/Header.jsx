@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp,Search, } from "lucide-react";
 import { navLinks, icons } from "./HeaderData";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
@@ -142,15 +142,12 @@ const Header = () => {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search (men, women, baby)..."
-                className="border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-red-500 w-full"
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-              >
-                🔍
-              </button>
+                placeholder="Search..."
+                className="border rounded-[8px] px-4 py-2 text-sm text-black focus:outline-none focus:border-red-500 w-full"
+                />
+           
+                <Search className="absolute right-3 text-black top-[18%] -translate-y-1/" />
+           
             </form>
           </div>
 
@@ -254,21 +251,18 @@ const Header = () => {
           className="lg:hidden fixed top-16 right-0 h-screen bg-white w-[75%] sm:w-[60%] border-l shadow-md px-6 py-6 space-y-6 overflow-y-auto z-50 transition-all duration-300 ease-in-out"
         >
       
-          <form onSubmit={handleSearchSubmit} className="mb-6 w-full flex">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search (men, women, baby)..."
-              className="border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-red-500 w-full"
-            />
-            <button
-              type="submit"
-              className="absolute right-8 top-1/2 -translate-y-1/2"
-            >
-              🔍
-            </button>
-          </form>
+         <form onSubmit={handleSearchSubmit} className="w-full flex">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search..."
+                className="border rounded-[8px] px-4 py-2 text-sm text-black focus:outline-none focus:border-red-500 w-full"
+                />
+           
+                <Search className="absolute right-[12%] lg:right-3 text-black top-[3.2%] md:top-[3%] lg:top-[18%] -translate-y-1/" />
+           
+            </form>
 
           <nav className="flex flex-col space-y-6">
             {navLinks.map((link, index) => (

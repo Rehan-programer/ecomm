@@ -42,13 +42,13 @@ const Checkout = () => {
   }
 
   return (
-    <div className="max-w-[2000px] py-8 px-4 md:px-0  md:py-4   md:bg-blue-600 mx-auto  md:px-4 lg:px-10  bg-white rounded-2xl shadow-lg ">
+    <div className="max-w-[2000px] py-8 px-4 md:px-0  md:py-4  mx-auto   lg:px-10  bg-white rounded-2xl shadow-lg ">
       <h2 className="text-3xl font-bold mb-4 text-center border-b pb-4 text-black/80">
         Checkout
       </h2>
 
       <div className="grid grid-col-1 md:grid-cols-2 lg:grid-cols-2 md:gap-4 lg:gap-10">
-        {/* Shipping Information */}
+    
         <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <h3 className="text-xl font-semibold mb-6 text-gray-800">
             Shipping Information
