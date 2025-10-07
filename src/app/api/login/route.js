@@ -5,7 +5,7 @@ export async function POST(req) {
   try {
     const { email, password } = await req.json();
 
-    // Check if user exists
+ 
     const [rows] = await db.query("SELECT * FROM signup WHERE `email` = ?", [email]);
     if (rows.length === 0) {
       return Response.json({ message: "User not found" }, { status: 404 });

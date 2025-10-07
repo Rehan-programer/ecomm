@@ -5,18 +5,17 @@ export async function POST(req) {
   try {
     const { firstName, lastName, email, password, confirmPassword } = await req.json();
 
-    // Check password match
     if (password !== confirmPassword) {
       return Response.json({ message: "Passwords do not match" }, { status: 400 });
     }
 
-    // Check if email exists
+ 
     const [existing] = await db.query("SELECT * FROM signup WHERE `email` = ?", [email]);
     if (existing.length > 0) {
       return Response.json({ message: "Email already exists" }, { status: 400 });
     }
 
-    // Hash password
+   
     const hashedPassword = await bcrypt.hash(password, 10);
     const hashedConfirm = await bcrypt.hash(confirmPassword, 10);
 

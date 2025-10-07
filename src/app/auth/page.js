@@ -40,13 +40,13 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f9fafb] px-4 py-10 overflow-hidden">
-      <div className="relative w-full max-w-5xl h-[600px] bg-white rounded-3xl shadow-2xl overflow-hidden">
+      <div className="hidden md:block relative w-full max-w-5xl h-[600px] bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div
           className={`absolute top-0 left-0 w-[200%] h-full flex transition-transform duration-700 ease-in-out ${
             isLogin ? "translate-x-0" : "-translate-x-1/2"
           }`}
         >
-          <div className="w-1/2 flex flex-col items-start justify-center bg-white p-10">
+          <div className="w-full lg:w-1/2 flex flex-col items-start justify-center bg-white p-10">
             <form
               onSubmit={handleSubmit}
               className="w-full max-w-sm flex flex-col gap-4"
@@ -60,7 +60,7 @@ export default function AuthPage() {
                 placeholder="Email"
                 onChange={handleChange}
                 required
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
               />
               <input
                 type="password"
@@ -68,7 +68,7 @@ export default function AuthPage() {
                 placeholder="Password"
                 onChange={handleChange}
                 required
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
               />
               <button
                 type="submit"
@@ -79,7 +79,7 @@ export default function AuthPage() {
             </form>
           </div>
 
-          <div className="w-1/2 flex flex-col items-end justify-center bg-white p-10">
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-center bg-white lg:items-end lg:justify-center p-10">
             <form
               onSubmit={handleSubmit}
               className="w-full max-w-sm flex flex-col gap-4"
@@ -93,7 +93,7 @@ export default function AuthPage() {
                 placeholder="First Name"
                 onChange={handleChange}
                 required
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
               />
               <input
                 type="text"
@@ -101,7 +101,7 @@ export default function AuthPage() {
                 placeholder="Last Name"
                 onChange={handleChange}
                 required
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
               />
               <input
                 type="email"
@@ -109,7 +109,7 @@ export default function AuthPage() {
                 placeholder="Email"
                 onChange={handleChange}
                 required
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
               />
               <input
                 type="password"
@@ -117,7 +117,7 @@ export default function AuthPage() {
                 placeholder="Password"
                 onChange={handleChange}
                 required
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
               />
               <input
                 type="password"
@@ -125,7 +125,7 @@ export default function AuthPage() {
                 placeholder="Confirm Password"
                 onChange={handleChange}
                 required
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
               />
               <button
                 type="submit"
@@ -165,22 +165,92 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .h-[600px] {
-            height: auto !important;
-          }
-          .w-[200%] {
-            flex-direction: column !important;
-            width: 100% !important;
-            transform: none !important;
-          }
-          .absolute {
-            position: relative !important;
-            width: 100% !important;
-          }
-        }
-      `}</style>
+      <div className="block md:hidden w-full max-w-sm bg-white rounded-2xl shadow-lg p-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <h1 className="text-2xl font-bold text-[#17232D] text-center mb-2">
+            {isLogin ? "Login to Account" : "Create Account"}
+          </h1>
+
+          {!isLogin && (
+            <>
+              <input
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                onChange={handleChange}
+                required
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+              />
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                onChange={handleChange}
+                required
+                className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+              />
+            </>
+          )}
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+            className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+          />
+          {!isLogin && (
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              onChange={handleChange}
+              required
+              className="p-3 border text-black rounded-lg focus:ring-2 focus:ring-[#ff3d3d] outline-none"
+            />
+          )}
+
+          <button
+            type="submit"
+            className="mt-2 py-3 bg-[#ff3d3d] text-white rounded-lg font-semibold hover:bg-[#e33636] transition-all duration-300"
+          >
+            {isLogin ? "Login" : "Sign Up"}
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-gray-600 mt-4">
+          {isLogin ? (
+            <>
+              Don’t have an account?{" "}
+              <button
+                onClick={() => setIsLogin(false)}
+                className="text-[#ff3d3d] font-semibold hover:underline"
+              >
+                Sign Up
+              </button>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <button
+                onClick={() => setIsLogin(true)}
+                className="text-[#ff3d3d] font-semibold hover:underline"
+              >
+                Login
+              </button>
+            </>
+          )}
+        </p>
+      </div>
     </div>
   );
 }
