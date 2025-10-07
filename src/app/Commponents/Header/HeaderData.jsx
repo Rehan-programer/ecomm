@@ -51,7 +51,8 @@
   ];
 
   export const icons = [
+    // { id: 1, icon: Search, label: "Search" },
     { id: 2, icon: ShoppingCart, label: "Cart", path: "/cart" },
     { id: 3, icon: Heart, label: "Favourite", path: "/favourite" },
-    { id: 3, icon: User, label: "User", path: "/signup" },
+    { id: 4, icon: User, label: "User", path: "/auth" },
   ];
