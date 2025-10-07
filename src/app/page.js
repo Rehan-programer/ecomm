@@ -15,7 +15,7 @@ export default function Home() {
       <Features/>
       <TrendingSection />
       <Testimonials/>
-      <YouMakeLikess/>
+      {/* <YouMakeLikess/> */}
       <Faq/>
     </>
   );

@@ -64,6 +64,7 @@ const Card = ({ filteredData, scrollRef , route  }) => {
                     <ShoppingCart size={18} /> Add to Cart
                   </button>
                 </div>
+                
               </div>
             </div>
 
@@ -75,10 +76,10 @@ const Card = ({ filteredData, scrollRef , route  }) => {
                   {item.description.slice(0, 90)}...
                 </p> */}
                 <p className="mt-2 text-sm font-medium text-gray-600">
-                  Size: <span className="text-red-500">{item.size}</span>
+                  <span className="font-bold">Size:</span> <span className="text-black">{item.size}</span>
                 </p>
-                <p className="text-gray-500 text-center text-sm mt-2">
-                  {item.description?.slice(0, 100)}...
+                <p className="mt-2 text-sm font-medium text-gray-600">
+                 <span className="font-bold">Color</span> <span className="text-black">{item.color}</span>
                 </p>
                 <p className="mt-1 text-lg font-bold text-gray-900">
                   ${item.price}

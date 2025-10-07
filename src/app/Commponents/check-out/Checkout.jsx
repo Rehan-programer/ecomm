@@ -134,7 +134,7 @@ const Checkout = () => {
               Order Summary
             </h3>
             <ul className="divide-y divide-gray-200 mb-6 max-h-80 overflow-y-auto pr-2 scrollbar-hide">
-              {cartItems.map(({ id, title, image, price, name, quantity }) => (
+              {cartItems.map(({ id, title, image, price, name, quantity,color,size }) => (
                 <li key={id} className="flex items-center  justify-between py-4">
                   <div className="flex items-center gap-4">
                     <img
@@ -145,6 +145,8 @@ const Checkout = () => {
                     <div>
                       <p className="font-bold text-gray-900">{name}</p>
                       <p className="font-bold text-gray-900">{title}</p>
+                      <span className="font-medium text-gray-900 block">Color:{color}</span>
+                      <span className="font-medium text-gray-900 block">Size:{size}</span>
                       <p className="text-sm text-gray-900">
                         <span className="font-bold">Qty:</span> {quantity}
                       </p>

@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { bannerData } from "./BannerData";
+import Link from "next/link";
 const Banner = () => {
   const [current, setCurrent] = useState(0);
   const length = bannerData.length;
 
   useEffect(() => {
     const interval = setInterval(() => {
-       setCurrent((prev) => (prev === length - 1 ? 0 : prev + 1)) 
-      ;
+      setCurrent((prev) => (prev === length - 1 ? 0 : prev + 1));
     }, 3000);
 
     return () => clearInterval(interval);
@@ -43,14 +43,16 @@ const Banner = () => {
                   <h2 className=" font-bold mb-4">{slide.bigHeading}</h2>
                   <p className=" mb-6">{slide.description}</p>
                   <button className="px-6 py-3 bg-black border-2 text-white hover:bg-transparent hover:border-2 hover:text-black rounded-sm shadow-md transition duration-500">
-                    {slide.buttonText}
+                    <Link
+                      href={slide.path}>
+                      {slide.buttonText}
+                    </Link>
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-     
       </div>
     </section>
   );

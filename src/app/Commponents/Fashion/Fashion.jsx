@@ -3,8 +3,8 @@ import Link from "next/link";
 
 const Fashion = () => {
   return (
-    <section className="bg-white md:px-4 py-10">
-      <div className="container max-w-[2000px] lg:w-[90%] px-2  w-full m-auto ">
+    <section className="bg-white  py-10">
+      <div className="container max-w-[2000px] lg:w-[90%]   w-full m-auto ">
         <div className="md:flex m-auto justify-center  gap-8 ">
           {fashionData.map((item) => (
             <Link href={item.category}

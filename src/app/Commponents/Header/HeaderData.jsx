@@ -1,4 +1,4 @@
-  import { ShoppingCart,  Heart } from "lucide-react";
+  import { ShoppingCart,  Heart,User } from "lucide-react";
 
   export const navLinks = [
     { 
@@ -44,10 +44,14 @@
         { name: "Baby Care", subItems: ["Diapers", "Wipes", "Baby Lotion", "Shampoo", "Baby Powder"] },
       ] 
     },
+    { 
+      name: "Contact-Us", 
+      path: "/contact",
+    },
   ];
 
   export const icons = [
-    // { id: 1, icon: Search, label: "Search" },
     { id: 2, icon: ShoppingCart, label: "Cart", path: "/cart" },
     { id: 3, icon: Heart, label: "Favourite", path: "/favourite" },
+    { id: 3, icon: User, label: "User", path: "/signup" },
   ];

@@ -59,7 +59,7 @@ const handleScroll = (direction) => {
 
   return (
     <section className="py-10 px-4 bg-white">
-      <div className="max-w-[2000px] lg:w-[90%] md:w-[90%] m-auto">
+      <div className="max-w-[2000px]  px-4 lg:w-[90%] md:w-[90%] m-auto">
         <div className="md:flex items-center justify-between mb-6 border-b-2">
           <h2 className="text-2xl font-bold text-black mb-4">
             Trending This Week
