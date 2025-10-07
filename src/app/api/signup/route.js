@@ -3,23 +3,30 @@ import { db } from "../../../lib/db";
 
 export async function POST(req) {
   try {
-    const { firstName, lastName, email, password, confirmPassword } = await req.json();
+    const { firstName, lastName, email, password, confirmPassword } =
+      await req.json();
 
     if (password !== confirmPassword) {
-      return Response.json({ message: "Passwords do not match" }, { status: 400 });
+      return Response.json(
+        { message: "Passwords do not match" },
+        { status: 400 }
+      );
     }
 
- 
-    const [existing] = await db.query("SELECT * FROM signup WHERE `email` = ?", [email]);
+    const [existing] = await db.query(
+      "SELECT * FROM signup WHERE `email` = ?",
+      [email]
+    );
     if (existing.length > 0) {
-      return Response.json({ message: "Email already exists" }, { status: 400 });
+      return Response.json(
+        { message: "Email already exists" },
+        { status: 400 }
+      );
     }
 
-   
     const hashedPassword = await bcrypt.hash(password, 10);
     const hashedConfirm = await bcrypt.hash(confirmPassword, 10);
 
-    // Insert user
     await db.query(
       "INSERT INTO signup (`first-name`, `last-name`, `email`, `password`, `confirm-password`) VALUES (?, ?, ?, ?, ?)",
       [firstName, lastName, email, hashedPassword, hashedConfirm]

@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
           async
           defer
         ></script>
-        <script src="https://apis.google.com/js/api.js"></script>
+        {/* <script src="https://apis.google.com/js/api.js"></script> */}
       </Head>
 
       <body>
