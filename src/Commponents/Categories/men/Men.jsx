@@ -27,7 +27,7 @@ const Men = () => {
 
     fetchProducts();
   }, []);
-console.log('menProducts============>',menProducts);
+
 
   return (
     <section className="w-full">

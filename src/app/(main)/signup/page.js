@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import TransitionWrapper from "../Commponents/TransitionWrapper";
+import TransitionWrapper from "../../../Commponents/TransitionWrapper";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
