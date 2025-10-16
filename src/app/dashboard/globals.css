@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: white;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+@layer base {
+  h1 {
+    @apply text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl;
+  }
+  h2 {
+    @apply text-2xl sm:text-2xl md:text-4xl lg:text-[30px] 2xl:text-5xl;
+  }
+  h3 {
+    @apply text-[24px] sm:text-4xl md:text-3xl lg:text-[26px] 2xl:text-5xl;
+  }
+  h4 {
+    @apply text-[24px] sm:text-xl md:text-2xl lg:text-3xl 2xl:text-5xl;
+  }
+  h5 {
+    @apply text-[20px]  md:text-[24px] lg:text-[24px] 2xl:text-2xl;
+  }
+  h6 {
+    @apply text-sm sm:text-base md:text-lg lg:text-[18px] 2xl:text-2xl;
+  }
+  p {
+    @apply text-[16px]  md:text-[14px] lg:text-[16px] xl:text-[18px];
+  }
+}
+
+.gradient-bottom {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+
+/* global.css */
+/* global.css */
+.transition-max-height {
+  max-height: 0; /* default closed */
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.transition-max-height.open {
+  max-height: 500px; /* apne content ke liye adjust karo */
+}
+
+
+
+/* @layer utilities {
+  .animate-slideUp {
+    animation: slideUp 1s ease-out forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+} */

@@ -5,7 +5,6 @@ export async function POST(req) {
   try {
     const { email, password } = await req.json();
 
- 
     const [rows] = await db.query("SELECT * FROM signup WHERE `email` = ?", [email]);
     if (rows.length === 0) {
       return Response.json({ message: "User not found" }, { status: 404 });
@@ -18,9 +17,16 @@ export async function POST(req) {
       return Response.json({ message: "Invalid password" }, { status: 401 });
     }
 
-    return Response.json({ message: "Login successful!" }, { status: 200 });
+    const { password: _, ...safeUser } = user;
+
+    return Response.json({
+      message: "Login successful!",
+      user: safeUser,
+    }, { status: 200 });
+
   } catch (error) {
     console.error("❌ Login Error:", error);
     return Response.json({ message: "Server error" }, { status: 500 });
   }
 }
+  

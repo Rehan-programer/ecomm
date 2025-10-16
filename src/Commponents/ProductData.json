@@ -1,0 +1,119 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "Cashmere Tank + Bag",
+      "description": "A premium cashmere tank paired with a stylish matching bag. Soft, breathable, and designed for comfort and elegance.",
+      "price": 98.0,
+      "originalPrice": 120.0,
+      "category": "Clothing",
+      "subCategory": "Tank Top",
+      "collection": "men",
+      "brand": "Urban Luxe",
+      "size": "Medium",
+      "color": "#F5F5DC",
+      "material": "Cashmere Blend",
+      "stock": 12,
+      "rating": 4.5,
+      "tags": ["trending", "bestseller"],
+      "image": "/img/trending-img/latest1.jpg.webp",
+      "variants": [
+        { "variantId": "v1", "color": "#F5F5DC", "size": "Medium", "stock": 12 }
+      ],
+      "dateAdded": "2025-10-09T12:00:00Z",
+      "discount": { "amount": 18.33, "type": "percentage" }
+    },
+    {
+      "id": 2,
+      "title": "Cotton Shirt",
+      "description": "A classic cotton shirt with a tailored fit. Comfortable for daily wear and perfect for both casual and formal occasions.",
+      "price": 79.0,
+      "originalPrice": 99.0,
+      "category": "Clothing",
+      "subCategory": "Shirt",
+      "collection": "men",
+      "brand": "Classic Wear",
+      "size": "Large",
+      "color": "#FFFFFF",
+      "material": "100% Cotton",
+      "stock": 20,
+      "rating": 4.2,
+      "tags": ["bestseller"],
+      "image": "/img/trending-img/latest2.jpg.webp",
+      "variants": [
+        { "variantId": "v2", "color": "#FFFFFF", "size": "Large", "stock": 20 }
+      ],
+      "dateAdded": "2025-10-09T12:00:00Z",
+      "discount": { "amount": 20.2, "type": "percentage" }
+    },
+    {
+      "id": 3,
+      "title": "Cashmere Tank + Bag",
+      "description": "A premium cashmere tank paired with a matching bag. Soft texture, breathable fabric, and stylish design perfect for casual or semi-formal occasions.",
+      "price": 98.0,
+      "originalPrice": 120.0,
+      "category": "Clothing",
+      "subCategory": "Tank Top",
+      "collection": "women",
+      "brand": "Urban Luxe",
+      "size": "Medium",
+      "color": "#F5F5DC",
+      "material": "Cashmere Blend",
+      "stock": 14,
+      "rating": 4.6,
+      "tags": ["trending"],
+      "image": "/img/trending-img/latest1.jpg.webp",
+      "variants": [
+        { "variantId": "v1", "color": "#F5F5DC", "size": "Medium", "stock": 14 }
+      ],
+      "dateAdded": "2025-10-09T12:00:00Z",
+      "discount": { "amount": 18.33, "type": "percentage" }
+    },
+    {
+      "id": 4,
+      "title": "Cashmere Baby Blanket",
+      "description": "Luxuriously soft cashmere baby blanket designed to keep your little one warm and cozy. Gentle on sensitive skin.",
+      "price": 98.0,
+      "originalPrice": 120.0,
+      "category": "Baby Products",
+      "subCategory": "Blanket",
+      "collection": "baby",
+      "brand": "SoftNest",
+      "size": "Medium",
+      "color": "#F5F5DC",
+      "material": "Cashmere Blend",
+      "stock": 20,
+      "rating": 4.8,
+      "tags": ["new", "bestseller"],
+      "image": "/img/trending-img/latest1.jpg.webp",
+      "variants": [
+        { "variantId": "v1", "color": "#F5F5DC", "size": "Medium", "stock": 20 }
+      ],
+      "dateAdded": "2025-10-09T12:00:00Z",
+      "discount": { "amount": 18.33, "type": "percentage" }
+    },
+    {
+      "id": 5,
+      "title": "Cashmere Tank + Bag",
+      "description": "A premium cashmere tank paired with a stylish matching bag. Soft, breathable, and designed for comfort and elegance.",
+      "price": 98.0,
+      "originalPrice": 120.0,
+      "category": "Clothing",
+      "subCategory": "Tank Top",
+      "collection": "men",
+      "brand": "Urban Luxe",
+      "size": "Medium",
+      "color": "#F5F5DC",
+      "material": "Cashmere Blend",
+      "stock": 12,
+      "rating": 4.5,
+      "tags": ["trending", "bestseller"],
+      "image": "/img/trending-img/latest1.jpg.webp",
+      "variants": [
+        { "variantId": "v1", "color": "#F5F5DC", "size": "Medium", "stock": 12 }
+      ],
+      "dateAdded": "2025-10-09T12:00:00Z",
+      "discount": { "amount": 18.33, "type": "percentage" }
+    }
+  ]
+}
