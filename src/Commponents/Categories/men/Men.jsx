@@ -15,7 +15,7 @@ const Men = () => {
        
           const filtered = data.filter(
             (product) =>
-              product.Category?.toLowerCase() === "men" ||
+              product.category?.toLowerCase() === "men" ||
               product.category?.toLowerCase() === "men"
           );
           setMenProducts(filtered);
