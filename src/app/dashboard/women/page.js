@@ -5,11 +5,11 @@ import { useState } from "react";
 import {
   deleteProduct,
   addProduct,
-} from "../../../redux/slice/womenproductslice";
+} from "../../../redux/slice/babyproductslice";
 
-export default function WomenProductsPage() {
+export default function BabyProductsPage() {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.womenProducts);
+  const { products } = useSelector((state) => state.babyProducts);
   console.log("products======>", products);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -124,7 +124,7 @@ export default function WomenProductsPage() {
   return (
     <div className="bg-gray-50 min-h-screen p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl text-black font-bold">women Products</h1>
+        <h1 className="text-2xl text-black font-bold">baby Products</h1>
         <button
           onClick={() => setShowModal(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"

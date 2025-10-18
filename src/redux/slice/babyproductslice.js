@@ -1,8 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Fetch Baby Products from backend
-export const fetchBabyProducts = createAsyncThunk(
-  "babyProducts/fetchBabyProducts",
+export const fetchbabyProducts = createAsyncThunk(
+  "babyProducts/fetchbabyProducts",
   async () => {
     const res = await fetch("/api/products?category=baby");
     const data = await res.json();
@@ -10,44 +9,37 @@ export const fetchBabyProducts = createAsyncThunk(
   }
 );
 
-const initialState = {
-  products: [],
-  status: "idle",
-};
-
 const babyProductsSlice = createSlice({
   name: "babyProducts",
-  initialState,
+  initialState: {
+    products: [],
+    status: "idle",
+  },
   reducers: {
     addProduct: (state, action) => {
       state.products.unshift(action.payload);
     },
-    deleteProduct: (state, action) => { 
+
+    deleteProduct: (state, action) => {
       state.products = state.products.filter(
         (product) => product._id !== action.payload
       );
     },
-    updateProduct: (state, action) => {
-      const index = state.products.findIndex(
-        (product) => product._id === action.payload._id
-      );
-      if (index !== -1) state.products[index] = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBabyProducts.pending, (state) => {
+      .addCase(fetchbabyProducts.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchBabyProducts.fulfilled, (state, action) => {
+      .addCase(fetchbabyProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.products = action.payload;
       })
-      .addCase(fetchBabyProducts.rejected, (state) => {
+      .addCase(fetchbabyProducts.rejected, (state) => {
         state.status = "failed";
       });
   },
 });
 
-export const { addProduct, deleteProduct, updateProduct } = babyProductsSlice.actions;
+export const { addProduct, deleteProduct } = babyProductsSlice.actions;
 export default babyProductsSlice.reducer;
