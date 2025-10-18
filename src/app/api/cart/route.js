@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Cart from "@/models/Cart";
+import Cart from "../../models/cart";
 import { connectDB } from "../../../lib/db";
 
 // ✅ GET: Fetch user's cart
