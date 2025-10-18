@@ -10,6 +10,7 @@ import {
 export default function WomenProductsPage() {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.womenProducts);
+  console.log("products======>", products);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productStates, setProductStates] = useState({});
@@ -122,9 +123,8 @@ export default function WomenProductsPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen p-4">
-      
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl text-black font-bold">Women Products</h1>
+        <h1 className="text-2xl text-black font-bold">women Products</h1>
         <button
           onClick={() => setShowModal(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
@@ -133,7 +133,6 @@ export default function WomenProductsPage() {
         </button>
       </div>
 
-   
       {selectedProducts.length > 0 && (
         <div className="flex items-center gap-3 mb-4 bg-white shadow-md rounded-lg p-3">
           <p className="font-medium text-gray-700">
@@ -148,7 +147,6 @@ export default function WomenProductsPage() {
           </button>
         </div>
       )}
-
 
       <div className="overflow-x-auto bg-white shadow-md rounded-xl">
         <table className="w-full text-left border-separate border-spacing-y-2">
@@ -180,12 +178,12 @@ export default function WomenProductsPage() {
           <tbody>
             {products.length > 0 ? (
               products.map((item) => {
-                const currentState = productStates[item.id] ?? true;
+                const currentState = productStates[item._id] ?? true;
                 return (
                   <tr
-                    key={item.id}
+                    key={item._id}
                     className={`transition-all duration-150 ${
-                      selectedProducts.includes(item.id)
+                      selectedProducts.includes(item._id)
                         ? "bg-blue-50"
                         : "hover:bg-gray-50"
                     }`}
@@ -193,8 +191,8 @@ export default function WomenProductsPage() {
                     <td className="p-3 text-center">
                       <input
                         type="checkbox"
-                        checked={selectedProducts.includes(item.id)}
-                        onChange={() => toggleSelect(item.id)}
+                        checked={selectedProducts.includes(item._id)}
+                        onChange={() => toggleSelect(item._id)}
                       />
                     </td>
                     <td className="p-3">
@@ -268,7 +266,6 @@ export default function WomenProductsPage() {
         </table>
       </div>
 
-      
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[450px] relative">
@@ -277,7 +274,6 @@ export default function WomenProductsPage() {
             </h2>
 
             <form onSubmit={handleAddProduct} className="space-y-3">
-          
               <input
                 type="text"
                 name="image"
@@ -286,7 +282,6 @@ export default function WomenProductsPage() {
                 placeholder="Image URL"
                 className="w-full border text-black p-2 rounded-md"
               />
-
               <input
                 type="text"
                 name="title"
@@ -295,7 +290,6 @@ export default function WomenProductsPage() {
                 placeholder="Product Name"
                 className="w-full border text-black p-2 rounded-md"
               />
-
               <input
                 type="text"
                 name="category"
@@ -304,8 +298,7 @@ export default function WomenProductsPage() {
                 placeholder="Category"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-          =
+              =
               <input
                 type="number"
                 name="price"
@@ -314,9 +307,6 @@ export default function WomenProductsPage() {
                 placeholder="Price"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-          
-           
               <div>
                 <p className="text-sm font-semibold text-gray-700 mb-2">
                   Select Sizes:
@@ -345,7 +335,6 @@ export default function WomenProductsPage() {
                   ))}
                 </div>
 
-             
                 {form.size.length > 0 && (
                   <p className="text-sm text-gray-600 mt-2">
                     Selected Sizes:{" "}
@@ -355,7 +344,6 @@ export default function WomenProductsPage() {
                   </p>
                 )}
               </div>
-
               <div className="mt-3">
                 <p className="text-sm font-semibold text-gray-700 mb-2">
                   Select Colors:
@@ -406,8 +394,6 @@ export default function WomenProductsPage() {
                   </div>
                 )}
               </div>
-
-        
               <input
                 type="text"
                 name="brand"
@@ -416,8 +402,6 @@ export default function WomenProductsPage() {
                 placeholder="Brand"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-          
               <input
                 type="number"
                 name="stock"
@@ -426,8 +410,6 @@ export default function WomenProductsPage() {
                 placeholder="Quantity"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-          
               <select
                 name="status"
                 value={form.status}
@@ -437,8 +419,6 @@ export default function WomenProductsPage() {
                 <option value="In Stock">In Stock</option>
                 <option value="Out of Stock">Out of Stock</option>
               </select>
-
-          
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -448,8 +428,6 @@ export default function WomenProductsPage() {
                 />
                 <span>Active</span>
               </label>
-
-        
               <div className="flex justify-end gap-3 mt-4">
                 <button
                   type="button"

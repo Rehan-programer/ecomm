@@ -12,6 +12,8 @@ import {
 export default function BabyProductsPage() {
   const dispatch = useDispatch();
   const { products, status } = useSelector((state) => state.babyProducts);
+  console.log("products", products);
+  
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -21,7 +23,7 @@ export default function BabyProductsPage() {
     category: "Baby",
     price: "",
     size: [],
-    color: [],
+    color: [],  
     brand: "",
     stock: "",
     status: "In Stock",

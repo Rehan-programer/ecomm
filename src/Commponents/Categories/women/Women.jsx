@@ -8,25 +8,19 @@ const Women = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("/api/products?category=women");
         const data = await res.json();
-
         if (res.ok) {
-       
-          const filtered = data.filter(
-            (product) =>
-              product.Category?.toLowerCase() === "women" ||
-              product.category?.toLowerCase() === "women"
-          );
-          setWomenProducts(filtered);
+          setWomenProducts(data);
         }
       } catch (error) {
-        console.error("Error fetching women products:", error);
+        console.error("Error fetching men products:", error);
       }
     };
 
     fetchProducts();
   }, []);
+
 
   return (
     <section>

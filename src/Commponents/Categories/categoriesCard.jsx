@@ -110,7 +110,7 @@ export default function CategoriesCard({ data, route }) {
                 <div className="p-4 flex flex-col justify-between items-center text-center">
                   <h3 className="text-lg font-semibold text-gray-800 hover:text-[#FF2020] transition">
                     <Link href={`${route}/${item.id}`}>
-                      {item.product || "Unnamed Product"}
+                      {item.title || "Unnamed Product"}
                     </Link>
                   </h3>
 

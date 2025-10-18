@@ -8,25 +8,19 @@ const Baby = () => {
     useEffect(() => {
       const fetchProducts = async () => {
         try {
-          const res = await fetch("/api/products");
+          const res = await fetch("/api/products?category=baby");
           const data = await res.json();
-  
           if (res.ok) {
-         
-            const filtered = data.filter(
-              (product) =>
-                product.Category?.toLowerCase() === "baby" ||
-                product.category?.toLowerCase() === "baby"
-            );
-            setBabyProducts(filtered);
+            setBabyProducts(data);
           }
         } catch (error) {
-          console.error("Error fetching baby products:", error);
+          console.error("Error fetching men products:", error);
         }
       };
   
       fetchProducts();
     }, []);
+  
   return (
     <section>
       <div className="container  max-w-[2000px]  mx-auto py-10 bg-[#F3EAD8]">

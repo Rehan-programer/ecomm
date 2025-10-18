@@ -8,17 +8,10 @@ const Men = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("/api/products?category=men");
         const data = await res.json();
-
         if (res.ok) {
-       
-          const filtered = data.filter(
-            (product) =>
-              product.category?.toLowerCase() === "men" ||
-              product.category?.toLowerCase() === "men"
-          );
-          setMenProducts(filtered);
+          setMenProducts(data);
         }
       } catch (error) {
         console.error("Error fetching men products:", error);
@@ -27,7 +20,6 @@ const Men = () => {
 
     fetchProducts();
   }, []);
-
 
   return (
     <section className="w-full">

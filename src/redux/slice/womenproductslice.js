@@ -3,9 +3,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 export const fetchWomenProducts = createAsyncThunk(
   "womenProducts/fetchWomenProducts",
   async () => {
-    const res = await fetch("/api/products");
+    const res = await fetch("/api/products?category=women");
     const data = await res.json();
-    return data.filter((product) => product.Category === "Women");
+    return data;
   }
 );
 
