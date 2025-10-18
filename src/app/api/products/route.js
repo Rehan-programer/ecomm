@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "../../../lib/db";
 import Product from "../../models/product";
 
-
+// POST: Add new product
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -35,6 +35,7 @@ export async function POST(req) {
   }
 }
 
+// GET: Fetch products (case-insensitive)
 export async function GET(req) {
   try {
     await connectDB();
@@ -44,7 +45,8 @@ export async function GET(req) {
 
     let filter = {};
     if (category) {
-      filter.category = category.toLowerCase();
+      // Case-insensitive regex search
+      filter.category = { $regex: new RegExp(`^${category}$`, "i") };
     }
 
     const products = await Product.find(filter);
@@ -60,6 +62,7 @@ export async function GET(req) {
   }
 }
 
+// DELETE: Delete a product
 export async function DELETE(req) {
   try {
     await connectDB();

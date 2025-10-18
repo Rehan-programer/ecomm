@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchbabyProducts = createAsyncThunk(
-  "babyProducts/fetchbabyProducts",
+export const fetchBabyProducts = createAsyncThunk(
+  "babyProducts/fetchBabyProducts",
   async () => {
     const res = await fetch("/api/products?category=baby");
     const data = await res.json();
@@ -19,7 +19,6 @@ const babyProductsSlice = createSlice({
     addProduct: (state, action) => {
       state.products.unshift(action.payload);
     },
-
     deleteProduct: (state, action) => {
       state.products = state.products.filter(
         (product) => product._id !== action.payload
@@ -28,14 +27,14 @@ const babyProductsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchbabyProducts.pending, (state) => {
+      .addCase(fetchBabyProducts.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchbabyProducts.fulfilled, (state, action) => {
+      .addCase(fetchBabyProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.products = action.payload;
       })
-      .addCase(fetchbabyProducts.rejected, (state) => {
+      .addCase(fetchBabyProducts.rejected, (state) => {
         state.status = "failed";
       });
   },
