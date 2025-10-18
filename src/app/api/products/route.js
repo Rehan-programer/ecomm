@@ -46,7 +46,7 @@ export async function GET(req) {
     let filter = {};
     if (category) {
       // Case-insensitive regex search
-      filter.category = { $regex: new RegExp(`^${category}$`, "i") };
+      filter.category = { $regex: `^${category}$`, $options: "i" };
     }
 
     const products = await Product.find(filter);
