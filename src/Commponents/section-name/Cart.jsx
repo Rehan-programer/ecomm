@@ -30,7 +30,7 @@ const Cart = () => {
   }, [checkout]);
 
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.Price * item.quantity,
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
   const subtotal = totalPrice;
@@ -79,15 +79,15 @@ const Cart = () => {
                 >
                   <div className="flex items-center gap-16 w-full md:w-[45%] lg:w-[85%]">
                     <img
-                      src={item.Image}
-                      alt={item.Product}
+                      src={item.image}
+                      alt={item.product}
                       className="w-30 h-30 object-cover rounded"
                     />
                     <div className="flex-col items-center justify-start">
-                      <h6 className="font-bold text-gray-800">{item.Title}</h6>
+                      <h6 className="font-bold text-gray-800">{item.title}</h6>
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Brand:</span>{" "}
-                        {item.Brand}
+                        {item.brand}
                       </div>
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Color:</span>{" "}
@@ -108,7 +108,7 @@ const Cart = () => {
 
                       <div className="text-gray-600 text-left">
                         <span className="text-black font-bold">Price:</span> $
-                        {item.Price}
+                        {item.price}
                       </div>
                     </div>
                   </div>

@@ -35,8 +35,8 @@ function OrdersTable({ orders }) {
         {orders.map((order) => (
           <tr key={order.id} className="text-black">
             <td className="p-2 border">{order.id}</td>
-            <td className="p-2 border">{order.Customer}</td>
-            <td className="p-2 border">${order.total_amount}</td>
+            <td className="p-2 border">{order.customer}</td>
+            <td className="p-2 border">${order.totalAmount}</td>
           </tr>
         ))}
       </tbody>

@@ -1,76 +1,50 @@
-import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
+import { connectDB } from "../../../lib/db";
+import Product from "../../models/product";
 
-// GET products
-export async function GET(req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const category = searchParams.get("Category") || searchParams.get("category");
-
-    let sql = "SELECT * FROM products";
-    const values = [];
-
-    if (category) {
-      sql += " WHERE LOWER(Category) = LOWER(?)";
-      values.push(category);
-    }
-
-    const [rows] = await db.query(sql, values);
-    return NextResponse.json(rows);
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return NextResponse.json({ message: "Error fetching products" }, { status: 500 });
-  }
-}
-
-// POST add product
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { image, title, category, price, size, color, brand, stock, active } = body;
+    await connectDB();
 
-    const sql = `
-      INSERT INTO products 
-      (Image, Product, Category, Price, Size, Color, Brand, Quantity, Stock, Active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    const values = [
-      image || "",
-      title || "",
-      category || "",
-      price || 0,
-      Array.isArray(size) ? size.join(",") : size || "",
-      Array.isArray(color) ? color.join(",") : color || "",
-      brand || "",
-      stock || 0,
-      stock > 0 ? "In Stock" : "Out of Stock",
-      active ? 1 : 0,
-    ];
-
-    const [result] = await db.query(sql, values);
-
-    return NextResponse.json({
-      message: "Product added successfully!",
-      product: { id: result.insertId, image, title, category, price, size, color, brand, stock, active }
+    const newProduct = new Product({
+      ...body,
+      size: Array.isArray(body.size) ? body.size : [],
+      color: Array.isArray(body.color) ? body.color : [],
+      stock: Number(body.stock) || 0,
+      createdAt: new Date(),
     });
+
+    await newProduct.save();
+
+    return new Response(JSON.stringify({ message: "Product added successfully", product: newProduct }), { status: 201 });
   } catch (error) {
-    console.error("Error adding product:", error);
-    return NextResponse.json({ message: "Error adding product", error: error.message }, { status: 500 });
+    console.error(error);
+    return new Response(JSON.stringify({ error: "Failed to add product" }), { status: 500 });
   }
 }
 
-// DELETE product
+export async function GET(req) {
+  try {
+    await connectDB();
+    const products = await Product.find({}).sort({ createdAt: -1 });
+    return new Response(JSON.stringify(products), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: "Failed to fetch products" }), { status: 500 });
+  }
+}
+
 export async function DELETE(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+    await connectDB();
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+    if (!id) return new Response(JSON.stringify({ error: "Product ID required" }), { status: 400 });
 
-    if (!id) return NextResponse.json({ message: "Missing product ID" }, { status: 400 });
-
-    await db.query("DELETE FROM products WHERE id = ?", [id]);
-    return NextResponse.json({ message: "Product deleted successfully!" });
+    await Product.findByIdAndDelete(id);
+    return new Response(JSON.stringify({ id, message: "Product deleted successfully" }), { status: 200 });
   } catch (error) {
-    console.error("Error deleting product:", error);
-    return NextResponse.json({ message: "Error deleting product" }, { status: 500 });
+    console.error(error);
+    return new Response(JSON.stringify({ error: "Failed to delete product" }), { status: 500 });
   }
 }

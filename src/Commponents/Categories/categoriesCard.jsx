@@ -44,16 +44,16 @@ export default function CategoriesCard({ data, route }) {
             const isFav = favourites.some((fav) => fav.id === item.id);
 
             // ✅ Convert backend strings into arrays
-            const sizes = item.Size
-              ? Array.isArray(item.Size)
-                ? item.Size
-                : item.Size.split(",").map((s) => s.trim())
+            const sizes = item.size
+              ? Array.isArray(item.size)
+                ? item.size
+                : item.size.split(",").map((s) => s.trim())
               : [];
 
-            const colors = item.Color
-              ? Array.isArray(item.Color)
-                ? item.Color
-                : item.Color.split(",").map((c) => c.trim())
+            const colors = item.color
+              ? Array.isArray(item.color)
+                ? item.color
+                : item.color.split(",").map((c) => c.trim())
               : [];
 
             const selectedColor = selectedColorMap[item.id] || null;
@@ -62,7 +62,7 @@ export default function CategoriesCard({ data, route }) {
 
             return (
               <div
-                key={item.id}
+                key={item._id}
                 className="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
               >
                 <div className="relative w-full bg-black group overflow-hidden">
@@ -81,8 +81,8 @@ export default function CategoriesCard({ data, route }) {
                   {/* 🖼️ Product Image */}
                   <Link href={`${route}/${item.id}`}>
                     <img
-                      src={item.Image || "/fallback.jpg"}
-                      alt={item.Product}
+                      src={item.image || "/fallback.jpg"}
+                      alt={item.product}
                       className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   </Link>
@@ -110,13 +110,13 @@ export default function CategoriesCard({ data, route }) {
                 <div className="p-4 flex flex-col justify-between items-center text-center">
                   <h3 className="text-lg font-semibold text-gray-800 hover:text-[#FF2020] transition">
                     <Link href={`${route}/${item.id}`}>
-                      {item.Product || "Unnamed Product"}
+                      {item.product || "Unnamed Product"}
                     </Link>
                   </h3>
 
                   <p className="text-sm mt-1 text-gray-600">
                     Brand:{" "}
-                    <span className="text-red-500">{item.Brand || "N/A"}</span>
+                    <span className="text-red-500">{item.brand || "N/A"}</span>
                   </p>
 
                   {colors?.length > 0 && (
@@ -155,7 +155,7 @@ export default function CategoriesCard({ data, route }) {
                   )}
 
                   <p className="mt-3 text-lg font-bold text-gray-900">
-                    ${item.Price}
+                    ${item.price}
                   </p>
 
                   <button
@@ -164,11 +164,7 @@ export default function CategoriesCard({ data, route }) {
                       (colors.length > 0 && !selectedColor) ||
                       (sizes.length > 0 && !selectedSize)
                     }
-                    onClick={() =>
-                      dispatch(
-                        addItem(item)
-                      )
-                    }
+                    onClick={() => dispatch(addItem(item))}
                   >
                     Add To Cart
                   </button>

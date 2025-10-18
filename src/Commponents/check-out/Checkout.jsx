@@ -16,7 +16,7 @@ const Checkout = () => {
   });
 
   const total = cartItems.reduce(
-    (sum, { Price, quantity }) => sum + Price * quantity,
+    (sum, { price, quantity }) => sum + price * quantity,
     0
   );
 
@@ -24,46 +24,50 @@ const Checkout = () => {
     setForm((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
-const placeOrder = async () => {
-  if (!form.name || !form.address || !form.phone) {
-    alert("⚠️ Please fill all the fields before placing order");
-    return;
-  }
-
-  // ✅ Match backend route.js structure exactly
-  const orderData = {
-    Customer: form.name,
-    Address: form.address,
-    Phone: form.phone,
-    items: cartItems,
-  };
-
-  try {
-    const res = await fetch("/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      alert("✅ Order placed successfully!");
-      console.log("✅ Order saved to DB:", data); 
-
-      // 🟢 Update Redux
-     
-      dispatch(clearCart());
-    } else {
-      console.error("❌ Backend error:", data);
-      alert("Failed to place order. Try again later!");
+  const placeOrder = async () => {
+    if (!form.name || !form.address || !form.phone) {
+      alert("⚠️ Please fill all the fields before placing order");
+      return;
     }
-  } catch (error) {
-    console.error("❌ Error placing order:", error);
-    alert("Something went wrong while placing order.");
-  }
-};
 
+    const orderData = {
+      customer: form.name,
+      address: form.address,
+      phone: form.phone,
+      items: cartItems.map((item) => ({
+        productId: item.id, 
+        productName: item.title,
+        price: item.price,
+        quantity: item.quantity,
+        color: item.selectedColor || "",
+        size: item.selectedSize || "",
+        brand: item.brand,
+      })),
+    };
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("✅ Order placed successfully!");
+        console.log("✅ Order saved to DB:", data);
+
+        dispatch(clearCart());
+      } else {
+        console.error("❌ Backend error:", data);
+        alert("Failed to place order. Try again later!");
+      }
+    } catch (error) {
+      console.error("❌ Error placing order:", error);
+      alert("Something went wrong while placing order.");
+    }
+  };
 
   if (cartItems.length === 0) {
     return (
@@ -117,10 +121,10 @@ const placeOrder = async () => {
               {cartItems.map(
                 ({
                   id,
-                  Title,
-                  Image,
-                  Price,
-                  Brand,
+                  title,
+                  image,
+                  price,
+                  brand,
                   selectedColor,
                   selectedSize,
                   quantity,
@@ -131,14 +135,14 @@ const placeOrder = async () => {
                   >
                     <div className="flex items-center gap-4">
                       <img
-                        src={Image}
-                        alt={Title}
+                        src={image}
+                        alt={title}
                         className="w-16 h-16 object-cover rounded-lg border"
                       />
                       <div>
-                        <p className="font-bold text-gray-900">{Title}</p>
+                        <p className="font-bold text-gray-900">{title}</p>
                         <span className="font-medium text-gray-900 block">
-                          Brand: {Brand}
+                          Brand: {brand}
                         </span>
                         <span className="font-medium text-gray-900 block">
                           Color: {selectedColor || "N/A"}
@@ -152,7 +156,7 @@ const placeOrder = async () => {
                       </div>
                     </div>
                     <span className="font-medium lg:mt-2 mt-10 text-gray-800">
-                      ${(Price * quantity).toFixed(2)}
+                      ${(price * quantity).toFixed(2)}
                     </span>
                   </li>
                 )

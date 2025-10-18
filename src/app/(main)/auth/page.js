@@ -15,40 +15,37 @@ export default function AuthPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const url = isLogin ? "/api/login" : "/api/signup";
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const url = isLogin ? "/api/login" : "/api/signup";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    const data = await res.json();
-    alert(data.message);
+      const data = await res.json();
+      alert(data.message);
 
-    if (res.ok) {
-      if (isLogin) {
-        // ✅ Make sure API returns user data
-        if (data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
+      if (res.ok) {
+        if (isLogin) {
+          if (data.user) {
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 300);
+        } else {
+          setIsLogin(true);
         }
-
-        // ✅ Small delay to ensure data is written
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 300);
-      } else {
-        setIsLogin(true);
       }
+    } catch (err) {
+      alert("Something went wrong");
+      console.error("❌ Auth Error:", err);
     }
-  } catch (err) {
-    alert("Something went wrong");
-    console.error("❌ Auth Error:", err);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f9fafb] px-4 py-10 overflow-hidden">
@@ -242,22 +239,22 @@ const handleSubmit = async (e) => {
         <p className="text-center text-sm text-gray-600 mt-4">
           {isLogin ? (
             <>
-              Don’t have an account?{" "}
-              <button
-                onClick={() => setIsLogin(false)}
-                className="text-[#ff3d3d] font-semibold hover:underline"
-              >
-                Sign Up
-              </button>
-            </>
-          ) : (
-            <>
               Already have an account?{" "}
               <button
                 onClick={() => setIsLogin(true)}
                 className="text-[#ff3d3d] font-semibold hover:underline"
               >
                 Login
+              </button>
+            </>
+          ) : (
+            <>
+              Don’t have an account?{" "}
+              <button
+                onClick={() => setIsLogin(false)}
+                className="text-[#ff3d3d] font-semibold hover:underline"
+              >
+                Sign Up
               </button>
             </>
           )}

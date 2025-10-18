@@ -20,10 +20,13 @@ export const fetchOrderItems = createAsyncThunk(
   "orders/fetchOrderItems",
   async (orderId = "", { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/api/orderitems${orderId ? `?orderId=${orderId}` : ""}`);
+      const response = await axios.get(`/api/orderitems?orderId=${orderId}`);
+
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to fetch order items");
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch order items"
+      );
     }
   }
 );
@@ -34,9 +37,11 @@ export const updateOrderStatus = createAsyncThunk(
   async ({ id, status }, { rejectWithValue }) => {
     try {
       const response = await axios.put("/api/orders", { id, status });
-      return response.data; // returns updated order object
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to update order status");
+      return rejectWithValue(
+        error.response?.data || "Failed to update order status"
+      );
     }
   }
 );
@@ -82,14 +87,14 @@ const ordersSlice = createSlice({
 
       // Update order status
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
-        const updated = action.payload;
+        const updated = action.payload.order; // ✅ access the nested object
         const index = state.orders.findIndex((o) => o.id === updated.id);
         if (index !== -1) {
-          state.orders[index] = updated;
+          state.orders[index].status = updated.status;
         }
 
         if (state.selectedOrder?.id === updated.id) {
-          state.selectedOrder = updated;
+          state.selectedOrder.status = updated.status;
         }
       });
   },

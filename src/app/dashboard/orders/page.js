@@ -74,12 +74,12 @@ const Orders = () => {
               {orders.map((order) => (
                 <tr key={order.id}>
                   <td className="p-2 border text-black">{order.id}</td>
-                  <td className="p-2 border text-black">{order.Customer}</td>
+                  <td className="p-2 border text-black">{order.customer}</td>
                   <td className="p-2 border text-black">
-                    ${order.total_amount}
+                    ${order.totalAmount}
                   </td>
                   <td className="p-2 border text-black">
-                    {order.payment_method}
+                    {order.paymentMethod}
                   </td>
                   <td
                     className={`p-2 border font-semibold ${
@@ -93,8 +93,9 @@ const Orders = () => {
                     {order.status}
                   </td>
                   <td className="p-2 border text-black">
-                    {order["Placed At"]}
+                    {new Date(order.placedAt).toLocaleString()}
                   </td>
+
                   <td className="p-2 border text-black text-center space-x-2">
                     <button
                       onClick={() => dispatch(selectOrder(order))}
@@ -147,13 +148,13 @@ const Orders = () => {
 
           <div className="space-y-2 mb-6 text-black">
             <p>
-              <strong>Customer:</strong> {selectedOrder.Customer}
+              <strong>Customer:</strong> {selectedOrder.customer}
             </p>
             <p>
               <strong>Address:</strong> {selectedOrder.address}
             </p>
             <p>
-              <strong>Phone:</strong> {selectedOrder.Phone}
+              <strong>Phone:</strong> {selectedOrder.phone}
             </p>
             <p>
               <strong>Status:</strong>{" "}
@@ -187,8 +188,8 @@ const Orders = () => {
             </thead>
             <tbody>
               {(orderItems || []).map((item) => (
-                <tr key={item.id}>
-                  <td className="p-2 border text-black">{item.product_name}</td>
+                <tr key={item._id}>
+                  <td className="p-2 border text-black">{item.productName}</td>
                   <td className="p-2 border text-black">${item.price}</td>
                   <td className="p-2 border text-black">{item.quantity}</td>
                   <td className="p-2 border text-black">{item.color}</td>

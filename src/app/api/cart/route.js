@@ -1,29 +1,29 @@
 import { NextResponse } from "next/server";
-import { db } from "../../../lib/db";
+import Cart from "@/models/Cart";
+import { connectDB } from "../../../lib/db";
 
-// GET cart items
+// ✅ GET: Fetch user's cart
 export async function GET(req) {
   try {
-    const url = new URL(req.url);
-    const userId = url.searchParams.get("userId") || "guest";
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId") || "guest";
 
-    const [rows] = await db.query("SELECT * FROM carts WHERE userId = ?", [
-      userId,
-    ]);
-
-    return NextResponse.json(rows);
+    const cart = await Cart.find({ userId }).populate("productId");
+    return NextResponse.json(cart);
   } catch (error) {
-    console.error("Failed to fetch cart:", error);
+    console.error("❌ Failed to fetch cart:", error);
     return NextResponse.json(
-      { message: "Failed to fetch cart" },
+      { message: "Failed to fetch cart", error: error.message },
       { status: 500 }
     );
   }
 }
 
-// POST add/update cart item
+// ✅ POST: Add or Update Cart Item
 export async function POST(req) {
   try {
+    await connectDB();
     const body = await req.json();
     const {
       userId = "guest",
@@ -35,55 +35,49 @@ export async function POST(req) {
       quantity,
       image,
     } = body;
-    console.log("values====>", body);
 
-    const [existingRows] = await db.query(
-      "SELECT * FROM `carts` WHERE userId = ? AND productId = ? AND color = ? AND size = ?",
-      [userId, productId, color, size]
-    );
+    // Find existing item
+    const existingItem = await Cart.findOne({ userId, productId, color, size });
 
-    let addedItem;
-
-    if (existingRows.length > 0) {
-      const newQuantity = existingRows[0].quantity + quantity;
-      await db.query("UPDATE carts SET quantity = ? WHERE id = ?", [
-        newQuantity,
-        existingRows[0].id,
-      ]);
-      addedItem = { ...existingRows[0], quantity: newQuantity };
-    } else {
-      const [result] = await db.query(
-        "INSERT INTO carts (userId, productId, name, color, size, price, quantity, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [userId, productId, name, color, size, price, quantity, image]
-      );
-      addedItem = {
-        id: result.insertId,
-        userId,
-        productId,
-        name,
-        color,
-        size,
-        price,
-        quantity,
-        image,
-      };
+    if (existingItem) {
+      existingItem.quantity += quantity;
+      await existingItem.save();
+      return NextResponse.json({
+        message: "Cart updated",
+        item: existingItem,
+      });
     }
 
-    return NextResponse.json(addedItem);
+    const newItem = await Cart.create({
+      userId,
+      productId,
+      name,
+      color,
+      size,
+      price,
+      quantity,
+      image,
+    });
+
+    return NextResponse.json({
+      message: "Item added to cart",
+      item: newItem,
+    });
   } catch (error) {
-    console.error("Failed to add item to cart:", error);
+    console.error("❌ Failed to add to cart:", error);
     return NextResponse.json(
-      { message: "Failed to add item to cart" },
+      { message: "Failed to add to cart", error: error.message },
       { status: 500 }
     );
   }
 }
 
-// DELETE cart item
+// ✅ DELETE: Remove item from cart
 export async function DELETE(req) {
   try {
-    const url = new URL(req.url);
-    const cartId = url.searchParams.get("id");
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const cartId = searchParams.get("id");
 
     if (!cartId)
       return NextResponse.json(
@@ -91,12 +85,12 @@ export async function DELETE(req) {
         { status: 400 }
       );
 
-    await db.query("DELETE FROM carts WHERE id = ?", [cartId]);
+    await Cart.findByIdAndDelete(cartId);
     return NextResponse.json({ message: "Item removed from cart" });
   } catch (error) {
-    console.error("Failed to delete cart item:", error);
+    console.error("❌ Failed to delete item:", error);
     return NextResponse.json(
-      { message: "Failed to delete cart item" },
+      { message: "Failed to delete item", error: error.message },
       { status: 500 }
     );
   }

@@ -1,24 +1,24 @@
 "use client";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   deleteProduct,
   addProduct,
+  updateProduct,
+  fetchBabyProducts,
 } from "../../../redux/slice/babyproductslice";
 
 export default function BabyProductsPage() {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.babyProducts);
+  const { products, status } = useSelector((state) => state.babyProducts);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [productStates, setProductStates] = useState({});
   const [showModal, setShowModal] = useState(false);
-
   const [form, setForm] = useState({
     image: "",
     title: "",
-    category: "",
+    category: "Baby",
     price: "",
     size: [],
     color: [],
@@ -28,6 +28,10 @@ export default function BabyProductsPage() {
     active: true,
   });
 
+  useEffect(() => {
+    if (status === "idle") dispatch(fetchBabyProducts());
+  }, [dispatch, status]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
@@ -35,11 +39,7 @@ export default function BabyProductsPage() {
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
-
-    if (!form.title || !form.price) {
-      alert("⚠️ Please fill in product title and price.");
-      return;
-    }
+    if (!form.title || !form.price) return alert("Title & Price required!");
 
     try {
       const res = await fetch("/api/products", {
@@ -47,17 +47,13 @@ export default function BabyProductsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
-
       if (res.ok) {
-        alert(data.message || "✅ Product added successfully!");
-        dispatch(addProduct(data.product));
-
+        dispatch(addProduct(data));
         setForm({
           image: "",
           title: "",
-          category: "",
+          category: "Baby",
           price: "",
           size: [],
           color: [],
@@ -66,14 +62,11 @@ export default function BabyProductsPage() {
           status: "In Stock",
           active: true,
         });
-
         setShowModal(false);
-      } else {
-        alert("❌ Failed to add product.");
-      }
+      } else alert("Failed to add product!");
     } catch (err) {
-      console.error("Error adding product:", err);
-      alert("❌ Error adding product.");
+      console.error(err);
+      alert("Error adding product!");
     }
   };
 
@@ -84,56 +77,54 @@ export default function BabyProductsPage() {
   };
 
   const toggleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedProducts(products.map((p) => p.id));
-    } else {
-      setSelectedProducts([]);
-    }
+    if (e.target.checked) setSelectedProducts(products.map((p) => p._id));
+    else setSelectedProducts([]);
   };
 
   const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete selected products?")) {
-      try {
-        console.log("Deleting IDs:", selectedProducts);
-
-        await Promise.all(
-          selectedProducts.map((id) =>
-            fetch(`/api/products?id=${id}`, { method: "DELETE" })
-          )
-        );
-
-        selectedProducts.forEach((id) => dispatch(deleteProduct(id)));
-
-        alert("🗑️ Selected products deleted successfully!");
-        setSelectedProducts([]);
-      } catch (error) {
-        console.error("Error deleting products:", error);
-        alert("❌ Failed to delete products.");
-      }
+    if (!confirm("Delete selected products?")) return;
+    try {
+      await Promise.all(
+        selectedProducts.map((id) =>
+          fetch(`/api/products?id=${id}`, { method: "DELETE" })
+        )
+      );
+      selectedProducts.forEach((id) => dispatch(deleteProduct(id)));
+      setSelectedProducts([]);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete products!");
     }
   };
 
-  const handleToggleState = (id) => {
-    setProductStates((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const handleToggleActive = async (product) => {
+    const updated = { ...product, active: !product.active };
+    try {
+      const res = await fetch(`/api/products?id=${product._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ active: updated.active }),
+      });
+      const data = await res.json();
+      if (res.ok) dispatch(updateProduct(data));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update product!");
+    }
   };
 
   return (
     <div className="bg-gray-50 min-h-screen p-4">
-      
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl text-black font-bold">Baby Products</h1>
+        <h1 className="text-2xl font-bold text-black">Baby Products</h1>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
         >
           + Add Product
         </button>
       </div>
 
-   
       {selectedProducts.length > 0 && (
         <div className="flex items-center gap-3 mb-4 bg-white shadow-md rounded-lg p-3">
           <p className="font-medium text-gray-700">
@@ -142,13 +133,12 @@ export default function BabyProductsPage() {
           </p>
           <button
             onClick={handleDelete}
-            className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 transition"
+            className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
           >
             Delete
           </button>
         </div>
       )}
-
 
       <div className="overflow-x-auto bg-white shadow-md rounded-xl">
         <table className="w-full text-left border-separate border-spacing-y-2">
@@ -168,116 +158,68 @@ export default function BabyProductsPage() {
               <th className="p-3">Product</th>
               <th className="p-3">Category</th>
               <th className="p-3">Price</th>
-              <th className="p-3">Size</th>
-              <th className="p-3">Color</th>
-              <th className="p-3">Brand</th>
-              <th className="p-3">Qty</th>
-              <th className="p-3 text-center">Stock</th>
+              <th className="p-3">Stock</th>
               <th className="p-3 text-center">Active</th>
             </tr>
           </thead>
-
           <tbody>
-            {products.length > 0 ? (
-              products.map((item) => {
-                const currentState = productStates[item.id] ?? true;
-                return (
-                  <tr
-                    key={item.id}
-                    className={`transition-all duration-150 ${
-                      selectedProducts.includes(item.id)
-                        ? "bg-blue-50"
-                        : "hover:bg-gray-50"
-                    }`}
-                  >
-                    <td className="p-3 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedProducts.includes(item.id)}
-                        onChange={() => toggleSelect(item.id)}
-                      />
-                    </td>
-                    <td className="p-3">
-                      <img
-                        src={item.image || "/img/no-image.png"}
-                        alt={item.title}
-                        className="w-16 h-16 object-cover bg-center rounded-md shadow-sm"
-                      />
-                    </td>
-                    <td className="p-3 font-medium text-black">{item.title}</td>
-                    <td className="p-3 text-gray-600">{item.category}</td>
-                    <td className="p-3 text-gray-700 font-semibold">
-                      ${item.price}
-                    </td>
-                    <td className="p-3 text-gray-600">
-                      {Array.isArray(item.size)
-                        ? item.size.join(", ")
-                        : item.size}
-                    </td>
-                    <td className="p-3">
-                      <div className="flex gap-1">
-                        {Array.isArray(item.color)
-                          ? item.color.map((clr, i) => (
-                              <div
-                                key={i}
-                                className="w-5 h-5 rounded-full border border-gray-300"
-                                style={{ backgroundColor: clr }}
-                                title={clr}
-                              ></div>
-                            ))
-                          : item.color}
-                      </div>
-                    </td>
-
-                    <td className="p-3 text-gray-600">{item.brand}</td>
-                    <td className="p-3 text-gray-600">{item.stock}</td>
-                    <td className="p-3 text-center">
-                      <span
-                        className={
-                          item.stock > 0
-                            ? "text-green-600 font-semibold"
-                            : "text-red-600 font-semibold"
-                        }
-                      >
-                        {item.stock > 0 ? "In Stock" : "Out of Stock"}
-                      </span>
-                    </td>
-                    <td className="p-3 text-center">
-                      <button
-                        onClick={() => handleToggleState(item.id)}
-                        className={`w-24 py-1 rounded-full text-white font-semibold transition-colors duration-200 ${
-                          currentState
-                            ? "bg-green-500 hover:bg-green-600"
-                            : "bg-red-500 hover:bg-red-600"
-                        }`}
-                      >
-                        {currentState ? "Active" : "Inactive"}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
+            {products.length === 0 ? (
               <tr>
-                <td colSpan="11" className="text-center p-6 text-gray-500">
+                <td colSpan="7" className="text-center p-6 text-gray-500">
                   No products found
                 </td>
               </tr>
+            ) : (
+              products.map((item) => (
+                <tr
+                  key={item._id}
+                  className={`transition-all duration-150 ${
+                    selectedProducts.includes(item._id)
+                      ? "bg-blue-50"
+                      : "hover:bg-gray-50"
+                  }`}
+                >
+                  <td className="p-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedProducts.includes(item._id)}
+                      onChange={() => toggleSelect(item._id)}
+                    />
+                  </td>
+                  <td className="p-3">
+                    <img
+                      src={item.image || "/img/no-image.png"}
+                      alt={item.title}
+                      className="w-16 h-16 object-cover rounded-md"
+                    />
+                  </td>
+                  <td className="p-3 font-medium">{item.title}</td>
+                  <td className="p-3 text-gray-600">{item.category}</td>
+                  <td className="p-3 font-semibold">${item.price}</td>
+                  <td className="p-3 text-gray-600">{item.stock}</td>
+                  <td className="p-3 text-center">
+                    <button
+                      onClick={() => handleToggleActive(item)}
+                      className={`px-4 py-1 rounded-full text-white ${
+                        item.active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"
+                      }`}
+                    >
+                      {item.active ? "Active" : "Inactive"}
+                    </button>
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
       </div>
 
-      
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[450px] relative">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">
-              Add New Product
-            </h2>
-
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Add New Product</h2>
             <form onSubmit={handleAddProduct} className="space-y-3">
-          
               <input
                 type="text"
                 name="image"
@@ -286,7 +228,6 @@ export default function BabyProductsPage() {
                 placeholder="Image URL"
                 className="w-full border text-black p-2 rounded-md"
               />
-
               <input
                 type="text"
                 name="title"
@@ -295,17 +236,6 @@ export default function BabyProductsPage() {
                 placeholder="Product Name"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-              <input
-                type="text"
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                placeholder="Category"
-                className="w-full border text-black p-2 rounded-md"
-              />
-
-          =
               <input
                 type="number"
                 name="price"
@@ -314,100 +244,6 @@ export default function BabyProductsPage() {
                 placeholder="Price"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-          
-           
-              <div>
-                <p className="text-sm font-semibold text-gray-700 mb-2">
-                  Select Sizes:
-                </p>
-                <div className="flex gap-2 flex-wrap">
-                  {["S", "M", "L", "XL", "XXL"].map((size) => (
-                    <button
-                      type="button"
-                      key={size}
-                      onClick={() => {
-                        setForm((prev) => ({
-                          ...prev,
-                          size: prev.size.includes(size)
-                            ? prev.size.filter((s) => s !== size)
-                            : [...prev.size, size],
-                        }));
-                      }}
-                      className={`px-3 py-1 rounded-md border transition-all duration-150 ${
-                        form.size.includes(size)
-                          ? "bg-blue-600 text-white border-blue-600 shadow-md"
-                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-
-             
-                {form.size.length > 0 && (
-                  <p className="text-sm text-gray-600 mt-2">
-                    Selected Sizes:{" "}
-                    <span className="font-semibold text-blue-600">
-                      {form.size.join(", ")}
-                    </span>
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-3">
-                <p className="text-sm font-semibold text-gray-700 mb-2">
-                  Select Colors:
-                </p>
-                <div className="flex gap-3 flex-wrap items-center">
-                  {[
-                    "#000",
-                    "#fffff",
-                    "#0000FF",
-                    "#FF0000",
-                    "#008000",
-                    "#808080",
-                    "beige",
-                  ].map((clr) => (
-                    <div
-                      key={clr}
-                      onClick={() =>
-                        setForm((prev) => ({
-                          ...prev,
-                          color: prev.color.includes(clr)
-                            ? prev.color.filter((c) => c !== clr)
-                            : [...prev.color, clr],
-                        }))
-                      }
-                      className={`w-8 h-8 rounded-full border-2 cursor-pointer transition-all duration-200 ${
-                        form.color.includes(clr)
-                          ? "border-blue-600 scale-110 shadow-md"
-                          : "border-gray-300 hover:scale-105"
-                      }`}
-                      style={{ backgroundColor: clr }}
-                    ></div>
-                  ))}
-                </div>
-
-                {form.color.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2 mt-2">
-                    {form.color.map((clr) => (
-                      <div key={clr} className="flex items-center gap-1">
-                        <div
-                          className="w-5 h-5 rounded-full border"
-                          style={{ backgroundColor: clr }}
-                        ></div>
-                        <span className="text-sm text-gray-700 capitalize">
-                          {clr}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-        
               <input
                 type="text"
                 name="brand"
@@ -416,8 +252,6 @@ export default function BabyProductsPage() {
                 placeholder="Brand"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-          
               <input
                 type="number"
                 name="stock"
@@ -426,8 +260,6 @@ export default function BabyProductsPage() {
                 placeholder="Quantity"
                 className="w-full border text-black p-2 rounded-md"
               />
-
-          
               <select
                 name="status"
                 value={form.status}
@@ -437,8 +269,6 @@ export default function BabyProductsPage() {
                 <option value="In Stock">In Stock</option>
                 <option value="Out of Stock">Out of Stock</option>
               </select>
-
-          
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -449,7 +279,6 @@ export default function BabyProductsPage() {
                 <span>Active</span>
               </label>
 
-        
               <div className="flex justify-end gap-3 mt-4">
                 <button
                   type="button"
