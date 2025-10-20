@@ -13,9 +13,11 @@ import womenProductsReducer from "../slice/womenproductslice";
 import babyProductsReducer from "../slice/babyproductslice";
 import collectionProductsReducer from "../slice/collectionslice";
 import orderReducer from "../slice/orderslice";
+import userReducer from "../slice/userslice";
 
 
 const rootReducer = combineReducers({
+  user: userReducer,
   cart: cartReducer,
   favourite: favouriteReducer,
   product: productReducer,

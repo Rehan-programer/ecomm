@@ -7,7 +7,8 @@ import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { openProductModal } from "../../redux/slice/productslice";
-import Products from "../ProductData.json";
+import { LogOut, User } from "lucide-react";
+import { logout } from "../../redux/slice/userslice";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -15,9 +16,11 @@ const Header = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Search state
   const cartItems = useSelector((state) => state.cart.items);
   const favouriteItems = useSelector((state) => state.favourite.items);
+  const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const mobileMenuRef = useRef(null);
   const router = useRouter();
+  console.log(" Current logged in user:", user);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -227,6 +230,26 @@ const Header = () => {
                 </button>
               );
             })}
+
+            {user ? (
+              <button
+                onClick={() => {
+                  dispatch(logout());
+                  router.push("/auth");
+                }}
+                className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+              >
+                <LogOut size={18} /> Logout
+              </button>
+            ) : (
+              <Link
+                href="/auth"
+                className="p-2 rounded-full hover:bg-gray-100 transition"
+                title="Login"
+              >
+                <User className="w-6 h-6 text-gray-700 hover:text-[#FF2020]" />
+              </Link>
+            )}
           </div>
 
           <div className="space-x-3 flex lg:hidden border-t items-center">
@@ -266,6 +289,25 @@ const Header = () => {
                 </button>
               );
             })}
+            {user ? (
+              <button
+                onClick={() => {
+                  dispatch(logout());
+                  router.push("/auth");
+                }}
+                className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+              >
+                <LogOut size={18} /> Logout
+              </button>
+            ) : (
+              <Link
+                href="/auth"
+                className="p-2 rounded-full hover:bg-gray-100 transition"
+                title="Login"
+              >
+                <User className="w-6 h-6 text-gray-700 hover:text-[#FF2020]" />
+              </Link>
+            )}
           </div>
 
           <button

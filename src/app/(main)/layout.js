@@ -5,9 +5,25 @@ import "./globals.css";
 
 import Header from "../../Commponents/Header/Header";
 import Footer from "../../Commponents/Footer/Footer";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "../../redux/store/store";
-import Head from "next/head"; 
+import Head from "next/head";
+import { useEffect } from "react";
+import { setUserFromLocalStorage } from "../../redux/slice/userslice";
+
+// ✅ Custom wrapper to restore user from localStorage
+function ReduxInitializer({ children }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      dispatch(setUserFromLocalStorage(JSON.parse(storedUser)));
+    }
+  }, [dispatch]);
+
+  return children;
+}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,20 +39,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <Head>
-        
         <script
           src="https://accounts.google.com/gsi/client"
           async
           defer
         ></script>
-        {/* <script src="https://apis.google.com/js/api.js"></script> */}
       </Head>
 
       <body>
         <Provider store={store}>
-          <Header />
-          {children}
-          <Footer />
+          <ReduxInitializer>
+            <Header />
+            {children}
+            <Footer />
+          </ReduxInitializer>
         </Provider>
       </body>
     </html>

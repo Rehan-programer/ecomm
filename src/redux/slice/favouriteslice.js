@@ -7,11 +7,16 @@ const favouriteslice = createSlice({
   },
   reducers: {
     addToFavourite: (state, action) => {
-      state.items.push(action.payload);
+      const exists = state.items.find(
+        (item) => item._id === action.payload._id
+      );
+      if (!exists) {
+        state.items.push(action.payload);
+      }
     },
     removeFromFavourite: (state, action) => {
       state.items = state.items.filter(
-        (item) => item.id !== action.payload
+        (item) => item._id !== action.payload._id
       );
     },
   },

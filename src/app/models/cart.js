@@ -8,9 +8,9 @@ const CartSchema = new mongoose.Schema(
     },
     productId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Product", // reference to Product model
+      ref: "Product", 
       required: true,
-    },
+    },      
     name: {
       type: String,
       required: true,

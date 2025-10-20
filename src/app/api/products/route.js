@@ -39,28 +39,25 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     await connectDB();
-
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category");
+    console.log("Category param:", category);
 
     let filter = {};
     if (category) {
-      // Case-insensitive regex search
-      filter.category = { $regex: `^${category}$`, $options: "i" };
+      // Case-insensitive regex filter
+      filter.category = { $regex: new RegExp(`^${category}$`, 'i') };
     }
 
     const products = await Product.find(filter);
-    console.log("Fetched products:", products.length);
-
+    console.log("Fetched products:", products); // <-- Yahan check karo
     return NextResponse.json(products, { status: 200 });
   } catch (err) {
     console.error("Error fetching products:", err);
-    return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
   }
 }
+
 
 // DELETE: Delete a product
 export async function DELETE(req) {

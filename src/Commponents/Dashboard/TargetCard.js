@@ -1,14 +1,75 @@
 "use client";
+import { useEffect, useState } from "react";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 
-export default function TargetCard({ target }) {
-  const chartData = [
-    { name: "Progress", value: target.percent, fill: "#6366F1" },
-  ];
+export default function TargetCard() {
+  const [target, setTarget] = useState({
+    percent: 0,
+    change: 0,
+    earn: 0,
+    target: 0,
+    revenue: 0,
+    today: 0,
+  });
+
+  useEffect(() => {
+    const fetchTargetData = async () => {
+      try {
+        const res = await fetch("/api/orders");
+        const data = await res.json();
+        if (!Array.isArray(data)) return;
+
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        const filterByDate = (start, end) =>
+          data.filter((o) => {
+            const d = new Date(o.createdAt);
+            return d >= start && d <= end;
+          });
+
+        const monthOrders = filterByDate(startOfMonth, now);
+        const lastMonthOrders = filterByDate(startOfLastMonth, endOfLastMonth);
+        const todayOrders = filterByDate(startOfToday, now);
+
+        const monthRevenue = monthOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        const lastMonthRevenue = lastMonthOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        const todayRevenue = todayOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+
+      
+        const targetAmount = 50000;
+
+        const percent = ((monthRevenue / targetAmount) * 100).toFixed(1);
+        const change = lastMonthRevenue
+          ? (((monthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100).toFixed(1)
+          : 0;
+
+        setTarget({
+          percent,
+          change,
+          earn: todayRevenue,
+          target: (targetAmount / 1000).toFixed(1), 
+          revenue: (monthRevenue / 1000).toFixed(1),
+          today: (todayRevenue / 1000).toFixed(1),
+        });
+      } catch (error) {
+        console.error("❌ Error fetching target data:", error);
+      }
+    };
+
+    fetchTargetData();
+
+   
+  }, []);
+
+  const chartData = [{ name: "Progress", value: target.percent, fill: "#6366F1" }];
 
   return (
-    <div className="flex flex-col rounded-[20px]  shadow-lg bg-[#0000000f] h-auto ">
-      <div className="bg-white p-[20px] mb-4 rounded-[20px] shadow-lg ">
+    <div className="flex flex-col rounded-[20px] shadow-lg bg-[#0000000f] h-auto">
+      <div className="bg-white p-[20px] mb-4 rounded-[20px] shadow-lg">
         <h2 className="text-lg font-semibold text-gray-700 mb-2">
           Monthly Target
         </h2>
@@ -17,7 +78,7 @@ export default function TargetCard({ target }) {
         </p>
 
         <div className="flex justify-center items-center relative">
-          <ResponsiveContainer width="100%"  height={200} >
+          <ResponsiveContainer width="100%" height={200}>
             <RadialBarChart
               innerRadius="90%"
               outerRadius="100%"
@@ -31,22 +92,28 @@ export default function TargetCard({ target }) {
           </ResponsiveContainer>
 
           <div className="absolute top-[30%] text-center">
-            <h5 className=" font-semibold text-gray-800">
+            <h5 className="font-semibold text-gray-800">
               {target.percent}%
             </h5>
-            <p className="text-green-500 text-sm font-semibold">
-              +{target.change}%
+            <p
+              className={`text-sm font-semibold ${
+                target.change >= 0 ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {target.change >= 0 ? "+" : ""}
+              {target.change}%
             </p>
           </div>
         </div>
 
-        <p className="text-center text-sm text-gray-500 ">
+        <p className="text-center text-sm text-gray-500">
           You earn ${target.earn} today, it’s higher than last month.
           <br />
           Keep up your good work!
         </p>
       </div>
-      <div className="  pt-4 py-8  rounded-b-[20px]  flex justify-between text-sm text-gray-600">
+
+      <div className="pt-4 py-8 rounded-b-[20px] flex justify-between text-sm text-gray-600">
         <div className="text-center flex-1">
           <p>Target</p>
           <p className="font-semibold text-red-500">${target.target}K</p>

@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     await connectDB();
 
-    const { firstName, lastName, email, password, confirmPassword } = await req.json();
+    const { firstName, lastName, email, password, confirmPassword, role, adminSecret } = await req.json();
 
     if (password !== confirmPassword) {
       return NextResponse.json({ message: "Passwords do not match" }, { status: 400 });
@@ -20,14 +20,25 @@ export async function POST(req) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    let finalRole = "user";
+    if (role === "admin") {
+      if (adminSecret !== process.env.ADMIN_SECRET_KEY) {
+        return NextResponse.json({ message: "Unauthorized to create admin", status: 403 });
+      }
+      finalRole = "admin";
+    }
+
     const newUser = await User.create({
       firstName,
       lastName,
       email,
       password: hashedPassword,
+      role: finalRole,
     });
 
-    return NextResponse.json({ message: "Signup successful!", user: newUser }, { status: 201 });
+    const { password: _, ...safeUser } = newUser.toObject();
+    return NextResponse.json({ message: "Signup successful!", user: safeUser }, { status: 201 });
+
   } catch (error) {
     console.error("❌ Signup Error:", error);
     return NextResponse.json({ message: "Server error" }, { status: 500 });

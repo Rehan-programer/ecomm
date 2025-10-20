@@ -35,48 +35,50 @@ export default function BabyProductsPage() {
   };
 
   const handleAddProduct = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!form.title || !form.price) {
-      alert("⚠️ Please fill in product title and price.");
-      return;
-    }
+  // validation
+  if (!form.title || !form.price) {
+    alert("⚠️ Please fill in product title and price.");
+    return;
+  }
 
-    try {
-      const res = await fetch("/api/products?=men", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+  try {
+    const res = await fetch(`/api/products?category=${form.category}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message || "✅ Product added successfully!");
+      dispatch(addProduct(data.product));
+
+      setForm({
+        image: "",
+        title: "",
+        category: "",
+        price: "",
+        size: [],
+        color: [],
+        brand: "",
+        stock: "",
+        status: "In Stock",
+        active: true,
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        alert(data.message || "✅ Product added successfully!");
-        dispatch(addProduct(data.product));
-
-        setForm({
-          image: "",
-          title: "",
-          category: "",
-          price: "",
-          size: [],
-          color: [],
-          brand: "",
-          stock: "",
-          status: "In Stock",
-          active: true,
-        });
-
-        setShowModal(false);
-      } else {
-        alert("❌ Failed to add product.");
-      }
-    } catch (err) {
-      console.error("Error adding product:", err);
-      alert("❌ Error adding product.");
+      setShowModal(false);
+    } else {
+      alert("❌ Failed to add product.");
     }
-  };
+  } catch (err) {
+    console.error("Error adding product:", err);
+    alert("❌ Error adding product.");
+  }
+};
+
 
   const toggleSelect = (id) => {
     setSelectedProducts((prev) =>

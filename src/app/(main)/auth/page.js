@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,14 +9,24 @@ export default function AuthPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "admin",       
+    adminSecret: "admin",  
   });
 
-  const handleChange = (e) => {
+
+
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+   
+    if (!isLogin) {
+      form.role = "admin";       
+      form.adminSecret = "admin";  
+    }
+
     try {
       const url = isLogin ? "/api/login" : "/api/signup";
       const res = await fetch(url, {
@@ -30,14 +40,15 @@ export default function AuthPage() {
 
       if (res.ok) {
         if (isLogin) {
-          if (data.user) {
-            localStorage.setItem("user", JSON.stringify(data.user));
-          }
+          if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+         
+          
 
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-          }, 300);
+       
+          if (data.user.role === "admin") window.location.href = "/dashboard";
+          else window.location.href = "/";
         } else {
+        
           setIsLogin(true);
         }
       }
@@ -46,6 +57,7 @@ export default function AuthPage() {
       console.error("❌ Auth Error:", err);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f9fafb] px-4 py-10 overflow-hidden">
@@ -55,11 +67,9 @@ export default function AuthPage() {
             isLogin ? "translate-x-0" : "-translate-x-1/2"
           }`}
         >
+       
           <div className="w-full lg:w-1/2 flex flex-col items-start justify-center bg-white p-10">
-            <form
-              onSubmit={handleSubmit}
-              className="w-full max-w-sm flex flex-col gap-4"
-            >
+            <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-4">
               <h1 className="text-3xl font-bold text-[#17232D] text-center mb-4">
                 Login to Account
               </h1>
@@ -88,11 +98,9 @@ export default function AuthPage() {
             </form>
           </div>
 
+         
           <div className="w-full lg:w-1/2 flex flex-col items-center justify-center bg-white lg:items-end lg:justify-center p-10">
-            <form
-              onSubmit={handleSubmit}
-              className="w-full max-w-sm flex flex-col gap-4"
-            >
+            <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-4">
               <h1 className="text-3xl font-bold text-[#17232D] text-center mb-4">
                 Create Account
               </h1>
@@ -146,6 +154,7 @@ export default function AuthPage() {
           </div>
         </div>
 
+   
         <div
           className={`absolute top-0 left-0 w-1/2 h-full transition-transform duration-700 ease-in-out ${
             isLogin ? "translate-x-full" : "translate-x-0"
@@ -174,6 +183,7 @@ export default function AuthPage() {
         </div>
       </div>
 
+      {/* Mobile View */}
       <div className="block md:hidden w-full max-w-sm bg-white rounded-2xl shadow-lg p-6">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold text-[#17232D] text-center mb-2">
@@ -239,22 +249,22 @@ export default function AuthPage() {
         <p className="text-center text-sm text-gray-600 mt-4">
           {isLogin ? (
             <>
-              Already have an account?{" "}
-              <button
-                onClick={() => setIsLogin(true)}
-                className="text-[#ff3d3d] font-semibold hover:underline"
-              >
-                Login
-              </button>
-            </>
-          ) : (
-            <>
               Don’t have an account?{" "}
               <button
                 onClick={() => setIsLogin(false)}
                 className="text-[#ff3d3d] font-semibold hover:underline"
               >
                 Sign Up
+              </button>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <button
+                onClick={() => setIsLogin(true)}
+                className="text-[#ff3d3d] font-semibold hover:underline"
+              >
+                Login
               </button>
             </>
           )}

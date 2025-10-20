@@ -20,8 +20,8 @@ export async function POST(req) {
     }
 
     const { password: _, ...safeUser } = user.toObject();
-
     return NextResponse.json({ message: "Login successful!", user: safeUser }, { status: 200 });
+
   } catch (error) {
     console.error("❌ Login Error:", error);
     return NextResponse.json({ message: "Server error" }, { status: 500 });

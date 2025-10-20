@@ -32,11 +32,7 @@ export const sidebarData = [
       { title: "Baby", path: "/dashboard/baby" },
     ],
   },
-  {
-    title: "Users",
-    icon: FiUsers,
-    path: "/dashboard/users",
-  },
+
   {
     title: "Settings",
     icon: FiSettings,

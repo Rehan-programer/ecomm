@@ -1,16 +1,14 @@
 "use client";
-import {
-  FiChevronLeft,
-  FiChevronRight,
-} from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Provider } from "react-redux";
-import { store, persistor } from "../../redux/store/store"; // 👈 updated import
-import { PersistGate } from "redux-persist/integration/react"; // 👈 import this
+import { store, persistor } from "../../redux/store/store";
+import { PersistGate } from "redux-persist/integration/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import Head from "next/head";
 import Sidebar from "../../Commponents/Dashboard/Sidebar";
 import "./globals.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -20,10 +18,14 @@ const geistMono = Geist_Mono({
 
 export default function DashboardLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [user, setUser] = useState(null);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) setUser(storedUser);
+  }, []);
+
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const sidebarWidth = isSidebarOpen ? "w-64" : "w-20";
   const marginLeft = isSidebarOpen ? "ml-64" : "ml-20";
@@ -68,9 +70,18 @@ export default function DashboardLayout({ children }) {
                       Search / Breadcrumb
                     </span>
                   </div>
-                  <div className="font-semibold text-gray-800">
-                    User Profile
-                  </div>
+
+                  {user && (
+                    <Link
+                      href="/dashboard/profile"
+                      className="flex items-center gap-2 px-3 py-2  text-black"
+                    >
+                      <div className="w-8 h-8 rounded-full border-2 border-black bg-white text-green-700  flex items-center justify-center font-bold">
+                        {user.firstName.charAt(0).toUpperCase()}
+                      </div>
+                      <span>{user.firstName}</span>
+                    </Link>
+                  )}
                 </header>
 
                 <main className="mt-16 p-4 h-[calc(100vh-4rem)] overflow-auto bg-gray-50">

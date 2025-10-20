@@ -6,34 +6,51 @@ import {
   addToFavourite,
   removeFromFavourite,
 } from "../../redux/slice/favouriteslice";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CategoriesCard({ data, route }) {
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const user = useSelector((state) => state.user?.currentUser);
   const favourites = useSelector((state) => state.favourite.items);
 
-  // 🔹 State to track selected color & size per product
   const [selectedColorMap, setSelectedColorMap] = useState({});
   const [selectedSizeMap, setSelectedSizeMap] = useState({});
 
+  // ✅ FIX: Correct toggle logic
   const toggleFavourite = (item) => {
-    const exists = favourites.find((fav) => fav.id === item.id);
-    if (exists) {
-      dispatch(removeFromFavourite(item.id));
-    } else {
-      dispatch(addToFavourite(item));
-    }
+    const exists = favourites.find((fav) => fav._id === item._id);
+    if (exists) dispatch(removeFromFavourite(item)); // pass full item
+    else dispatch(addToFavourite(item));
   };
 
-  // 🔹 Handle color select
   const handleColorSelect = (productId, color) => {
     setSelectedColorMap((prev) => ({ ...prev, [productId]: color }));
   };
 
-  // 🔹 Handle size select
   const handleSizeSelect = (productId, size) => {
     setSelectedSizeMap((prev) => ({ ...prev, [productId]: size }));
+  };
+
+  const handleAddToCart = (item) => {
+    const selectedColor = selectedColorMap[item._id] || null;
+    const selectedSize = selectedSizeMap[item._id] || null;
+
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
+
+    dispatch(
+      addItem({
+        ...item,
+        selectedColor,
+        selectedSize,
+      })
+    );
   };
 
   return (
@@ -41,9 +58,9 @@ export default function CategoriesCard({ data, route }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 xl:w-[90%] m-auto w-full max-w-[2000px] px-6">
         {Array.isArray(data) &&
           data.map((item) => {
-            const isFav = favourites.some((fav) => fav.id === item.id);
+            // ✅ FIX: Use _id, not id
+            const isFav = favourites.some((fav) => fav._id === item._id);
 
-            // ✅ Convert backend strings into arrays
             const sizes = item.size
               ? Array.isArray(item.size)
                 ? item.size
@@ -56,9 +73,8 @@ export default function CategoriesCard({ data, route }) {
                 : item.color.split(",").map((c) => c.trim())
               : [];
 
-            const selectedColor = selectedColorMap[item.id] || null;
-            const selectedSize = selectedSizeMap[item.id] || null;
-            console.log("col", colors);
+            const selectedColor = selectedColorMap[item._id] || null;
+            const selectedSize = selectedSizeMap[item._id] || null;
 
             return (
               <div
@@ -66,7 +82,7 @@ export default function CategoriesCard({ data, route }) {
                 className="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
               >
                 <div className="relative w-full bg-black group overflow-hidden">
-                  {/* ❤️ Favourite Button */}
+                  {/* ✅ FIX: Toggle works properly per item */}
                   <button
                     onClick={() => toggleFavourite(item)}
                     className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-md transition border ${
@@ -75,41 +91,38 @@ export default function CategoriesCard({ data, route }) {
                         : "bg-white text-gray-600 border-gray-300"
                     }`}
                   >
-                    <Heart size={20} strokeWidth={2} />
+                    <Heart
+                      size={20}
+                      strokeWidth={2}
+                      className={`${isFav ? "fill-white" : ""}`}
+                    />
                   </button>
 
-                  {/* 🖼️ Product Image */}
-                  <Link href={`${route}/${item.id}`}>
+                  <Link href={`${route}/${item._id}`}>
                     <img
                       src={item.image || "/fallback.jpg"}
-                      alt={item.product}
+                      alt={item.title}
                       className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   </Link>
 
-                  {/* 🛒 Hover Add to Cart */}
-                  <div className="absolute bg-white bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl shadow-lg">
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:flex lg:flex">
                     <button
-                      className="flex items-center gap-2 bg-[#FF2020] cursor-pointer text-white font-medium px-4 lg:px-6 py-2 rounded-xl hover:bg-red-600 transition"
-                      onClick={() =>
-                        dispatch(
-                          addItem({
-                            ...item,
-                            selectedColor,
-                            selectedSize,
-                          })
-                        )
+                      onClick={() => handleAddToCart(item)}
+                      className="flex items-center gap-2 bg-[#FF2020] cursor-pointer text-white font-medium px-2 py-2 shadow-md hover:bg-red-600 transition disabled:opacity-50"
+                      disabled={
+                        (colors.length > 0 && !selectedColor) ||
+                        (sizes.length > 0 && !selectedSize)
                       }
                     >
-                      Add To Cart
+                      <ShoppingCart size={18} /> Add to Cart
                     </button>
                   </div>
                 </div>
 
-                {/* 📦 Product Info */}
                 <div className="p-4 flex flex-col justify-between items-center text-center">
                   <h3 className="text-lg font-semibold text-gray-800 hover:text-[#FF2020] transition">
-                    <Link href={`${route}/${item.id}`}>
+                    <Link href={`${route}/${item._id}`}>
                       {item.title || "Unnamed Product"}
                     </Link>
                   </h3>
@@ -124,12 +137,12 @@ export default function CategoriesCard({ data, route }) {
                       {colors?.map((clr, i) => (
                         <button
                           key={i}
-                          onClick={() => handleColorSelect(item.id, clr)}
-                          className={`w-6 h-6 rounded-full border-2 ${
+                          onClick={() => handleColorSelect(item._id, clr)}
+                          className={`w-6 h-6 rounded-full border-2 cursor-pointer transition ${
                             selectedColor === clr
                               ? "border-red-500 scale-110"
                               : "border-gray-300"
-                          } transition`}
+                          }`}
                           style={{ backgroundColor: clr }}
                         ></button>
                       ))}
@@ -141,7 +154,7 @@ export default function CategoriesCard({ data, route }) {
                       {sizes.map((size, i) => (
                         <button
                           key={i}
-                          onClick={() => handleSizeSelect(item.id, size)}
+                          onClick={() => handleSizeSelect(item._id, size)}
                           className={`px-3 py-1 rounded-md border text-sm ${
                             selectedSize === size
                               ? "bg-red-500 text-white border-red-500"
@@ -158,16 +171,18 @@ export default function CategoriesCard({ data, route }) {
                     ${item.price}
                   </p>
 
-                  <button
-                    className="mt-4 w-full lg:hidden text-white bg-red-500 px-5 py-2 rounded-xl hover:bg-red-600 transition duration-300 shadow-sm"
-                    disabled={
-                      (colors.length > 0 && !selectedColor) ||
-                      (sizes.length > 0 && !selectedSize)
-                    }
-                    onClick={() => dispatch(addItem(item))}
-                  >
-                    Add To Cart
-                  </button>
+                  <div className="flex justify-center mt-3 md:hidden">
+                    <button
+                      onClick={() => handleAddToCart(item)}
+                      className="flex items-center gap-2 bg-[#FF2020] text-white px-4 py-2 rounded-md hover:bg-red-600 transition disabled:opacity-50"
+                      disabled={
+                        (colors.length > 0 && !selectedColor) ||
+                        (sizes.length > 0 && !selectedSize)
+                      }
+                    >
+                      <ShoppingCart size={18} /> Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
             );
