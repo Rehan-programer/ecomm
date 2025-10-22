@@ -20,11 +20,11 @@ export default function LoginPage() {
 
     const data = await res.json();
 
-    if (res.ok) {
-      
+    if (res.ok) { 
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.user.role);
 
-   
       window.location.href = "/dashboard/users";
     } else {
       alert(data.message);
@@ -58,7 +58,9 @@ export default function LoginPage() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-[#17232D]">Password</label>
+            <label className="text-sm font-medium text-[#17232D]">
+              Password
+            </label>
             <input
               name="password"
               type="password"
@@ -78,7 +80,10 @@ export default function LoginPage() {
 
           <p className="text-center text-gray-500 text-sm">
             Don’t have an account?{" "}
-            <a href="/signup" className="text-[#ff3d3d] hover:text-[#e33636] font-medium">
+            <a
+              href="/signup"
+              className="text-[#ff3d3d] hover:text-[#e33636] font-medium"
+            >
               Sign up
             </a>
           </p>

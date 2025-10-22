@@ -20,10 +20,10 @@ export default function CategoriesCard({ data, route }) {
   const [selectedColorMap, setSelectedColorMap] = useState({});
   const [selectedSizeMap, setSelectedSizeMap] = useState({});
 
-  // ✅ FIX: Correct toggle logic
+  
   const toggleFavourite = (item) => {
     const exists = favourites.find((fav) => fav._id === item._id);
-    if (exists) dispatch(removeFromFavourite(item)); // pass full item
+    if (exists) dispatch(removeFromFavourite(item)); 
     else dispatch(addToFavourite(item));
   };
 
@@ -39,10 +39,7 @@ export default function CategoriesCard({ data, route }) {
     const selectedColor = selectedColorMap[item._id] || null;
     const selectedSize = selectedSizeMap[item._id] || null;
 
-    if (!user) {
-      router.push("/auth");
-      return;
-    }
+
 
     dispatch(
       addItem({
@@ -58,7 +55,7 @@ export default function CategoriesCard({ data, route }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 xl:w-[90%] m-auto w-full max-w-[2000px] px-6">
         {Array.isArray(data) &&
           data.map((item) => {
-            // ✅ FIX: Use _id, not id
+          
             const isFav = favourites.some((fav) => fav._id === item._id);
 
             const sizes = item.size

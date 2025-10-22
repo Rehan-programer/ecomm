@@ -6,6 +6,8 @@ import { clearCart } from "../../redux/slice/cartslice";
 
 const Checkout = () => {
   const cartItems = useSelector(({ cart }) => cart.items);
+  const currentUser = useSelector((state) => state.user.currentUser);
+
   const dispatch = useDispatch();
 
   const [form, setForm] = useState({
@@ -35,7 +37,7 @@ const Checkout = () => {
       address: form.address,
       phone: form.phone,
       items: cartItems.map((item) => ({
-        productId: item.id, 
+        productId: item.id,
         productName: item.title,
         price: item.price,
         quantity: item.quantity,
@@ -43,6 +45,7 @@ const Checkout = () => {
         size: item.selectedSize || "",
         brand: item.brand,
       })),
+      userId: currentUser?._id || "guest", 
     };
 
     try {

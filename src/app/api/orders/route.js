@@ -7,31 +7,42 @@ export async function POST(req) {
   try {
     await connectDB();
     const body = await req.json();
-    const { customer, address, phone, items, userId = "guest" } = body;
+    const {
+      customer,
+      address,
+      phone,
+      items,
+      userId, // ✅ now required from frontend
+      paymentMethod = "COD",
+    } = body;
 
     if (!customer || !address || !phone || !items?.length) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
-    } 
+    }
 
-    // Calculate total
+    // ✅ Make sure userId exists (or allow 'guest')
+    const finalUserId = userId || "guest";
+
+    // ✅ Calculate total amount
     const totalAmount = items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
-    // Create new order
+    // ✅ Create new order
     const newOrder = await Orders.create({
-      userId,
+      userId: finalUserId,
       customer,
       phone,
       address,
       totalAmount,
       items,
-      paymentMethod: "COD",
+      paymentMethod,
       status: "Pending",
+      placedAt: new Date(),
     });
 
     return NextResponse.json(
@@ -56,13 +67,18 @@ export async function GET(req) {
     await connectDB();
     const url = new URL(req.url);
     const status = url.searchParams.get("status");
+    const userId = url.searchParams.get("userId");
 
-    const filter = status ? { status } : {};
+    const filter = {};
+    if (status) filter.status = status;
+    if (userId) filter.userId = userId;
+
     const orders = await Orders.find(filter).sort({ createdAt: -1 });
 
-    // Convert Mongo objects safely for frontend
+    // ✅ Clean order objects for frontend
     const safeOrders = orders.map((order) => ({
       id: order._id.toString(),
+     userId: order.userId?.toString?.() || "guest",
       customer: order.customer,
       phone: order.phone,
       address: order.address,

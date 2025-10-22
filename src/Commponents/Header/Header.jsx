@@ -20,7 +20,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const mobileMenuRef = useRef(null);
   const router = useRouter();
-  console.log(" Current logged in user:", user);
+  console.log(" Current logged in userss:", user);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -234,12 +234,13 @@ const Header = () => {
             {user ? (
               <button
                 onClick={() => {
-                  dispatch(logout());
-                  router.push("/auth");
+                  // dispatch(logout());
+                  router.push("/dashboard");
                 }}
                 className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
               >
-                <LogOut size={18} /> Logout
+                {/* <LogOut size={18} /> Logout */}
+                Dashboard
               </button>
             ) : (
               <Link

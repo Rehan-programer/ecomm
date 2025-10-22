@@ -14,7 +14,7 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-      <h1 className="text-3xl font-bold mb-6 text-black text-center">Admin Profile</h1>
+      <h1 className="text-3xl font-bold mb-6 text-black text-center">Your Profile</h1>
 
       <div className="space-y-4 text-black">
         <div>
@@ -41,7 +41,7 @@ export default function ProfilePage() {
       <button
         onClick={() => {
           localStorage.removeItem("user"); 
-          window.location.href = "/login"; 
+          window.location.href = "/auth"; 
         }}
         className="mt-6 w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
       >

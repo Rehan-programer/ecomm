@@ -46,6 +46,21 @@ export const updateOrderStatus = createAsyncThunk(
   }
 );
 
+// ✅ Fetch only logged-in user orders
+export const fetchUserOrders = createAsyncThunk(
+  "orders/fetchUserOrders",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/api/orders?userId=${userId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch user orders"
+      );
+    }
+  }
+);
+
 const ordersSlice = createSlice({
   name: "orders",
   initialState: {
@@ -96,6 +111,10 @@ const ordersSlice = createSlice({
         if (state.selectedOrder?.id === updated.id) {
           state.selectedOrder.status = updated.status;
         }
+      })
+
+      .addCase(fetchUserOrders.fulfilled, (state, action) => {
+        state.orders = action.payload;
       });
   },
 });

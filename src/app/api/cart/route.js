@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Cart from "../../models/cart";
 import { connectDB } from "../../../lib/db";
 
-// ✅ GET: Fetch user's cart
+
 export async function GET(req) {
   try {
     await connectDB();
@@ -20,7 +20,7 @@ export async function GET(req) {
   }
 }
 
-// ✅ POST: Add or Update Cart Item
+
 export async function POST(req) {
   try {
     await connectDB();
@@ -36,7 +36,7 @@ export async function POST(req) {
       image,
     } = body;
 
-    // Find existing item
+
     const existingItem = await Cart.findOne({ userId, productId, color, size });
 
     if (existingItem) {
@@ -72,7 +72,7 @@ export async function POST(req) {
   }
 }
 
-// ✅ DELETE: Remove item from cart
+
 export async function DELETE(req) {
   try {
     await connectDB();
