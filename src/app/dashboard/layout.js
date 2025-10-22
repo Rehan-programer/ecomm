@@ -35,7 +35,7 @@ function DashboardWithRedux({ children }) {
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-500">
-        Loading User...
+       There is no user 
       </div>
     );
   }

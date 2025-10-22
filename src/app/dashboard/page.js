@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useSelector } from "react-redux";
 import StatsCard from "../../Commponents/Dashboard/StatsCard";
@@ -7,8 +8,6 @@ import TargetCard from "../../Commponents/Dashboard/TargetCard";
 import RevnueChart from "../../Commponents/Dashboard/RevnueChart";
 import UserStatsCard from "../../Commponents/Dashboard/user/UserStatsCard";
 import RecentOrders from "../../Commponents/Dashboard/user/RecentOrders";
-
-
 
 export default function DashboardPage() {
   // Get the current user from Redux
@@ -21,7 +20,6 @@ export default function DashboardPage() {
     <div className="flex">
       <div className="flex-1 flex flex-col">
         <main className="p-8 h-auto overflow-auto">
-
           {/* ----------------- Admin View ------------------ */}
           {isAdmin && (
             <>
@@ -52,24 +50,23 @@ export default function DashboardPage() {
             <>
               <div className="flex flex-col gap-6">
                 <div className="flex w-full gap-6">
-                 <UserStatsCard/>
+                  <UserStatsCard />
                 </div>
                 {/* Add more user-specific components here if needed */}
               </div>
             </>
           )}
-
         </main>
-          {isUser && (
-            <>
-              <div className="flex flex-col gap-6">
-                <div className="flex w-full gap-6">
-                 <RecentOrders/>
-                </div>
-                {/* Add more user-specific components here if needed */}
+        {isUser && (
+          <>
+            <div className="flex flex-col gap-6">
+              <div className="flex w-full gap-6">
+                <RecentOrders />
               </div>
-            </>
-          )}
+              {/* Add more user-specific components here if needed */}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
