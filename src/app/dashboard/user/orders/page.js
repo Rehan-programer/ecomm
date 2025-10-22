@@ -19,7 +19,7 @@ export default function UserOrders() {
   }
 
   if (!orders.length) {
-    return <div className="p-10 text-center text-gray-600">You haven't placed any orders yet.</div>;
+    return <div className="p-10 text-center text-gray-600">You haven&apos;t placed any orders yet.</div>;
   }
 
   return (
