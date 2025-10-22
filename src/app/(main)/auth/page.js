@@ -9,8 +9,8 @@ export default function AuthPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "admin",
-    adminSecret: "admin",
+    role: "",
+    adminSecret: "",
   });
 
   const handleChange = (e) =>

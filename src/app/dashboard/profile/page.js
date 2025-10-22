@@ -1,20 +1,30 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../redux/slice/userslice";
+import { useRouter } from "next/navigation"; // ✅ FIXED
+import { logout, setUserFromLocalStorage } from "../../../redux/slice/userslice"; 
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const dispatch = useDispatch();
+  const router = useRouter(); // ✅ FIXED
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) setUser(storedUser);
-  }, []);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      dispatch(setUserFromLocalStorage(parsedUser)); 
+    } else {
+      setTimeout(() => {
+        router.replace("/auth"); // ✅ useRouter ka replace
+      }, 300);
+    }
+  }, [dispatch, router]);
 
   const handleLogout = () => {
-    dispatch(logout()); // redux se bhi clear
-    window.location.replace("/auth"); // wapas login page pr bhejdo
+    dispatch(logout());
+    router.replace("/auth"); // ✅ replace instead of location.href
   };
 
   if (!user) return <p className="text-center mt-10">Loading...</p>;
