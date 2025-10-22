@@ -25,7 +25,7 @@ export async function POST(req) {
       if (adminSecret !== process.env.ADMIN_SECRET_KEY) {
         return NextResponse.json({ message: "Unauthorized to create admin", status: 403 });
       }
-      finalRole = "admin";
+      finalRole = "user";
     }
 
     const newUser = await User.create({
