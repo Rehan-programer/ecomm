@@ -13,14 +13,11 @@ export default function ProfilePage() {
   }, []);
 
   const handleLogout = () => {
-    dispatch(logout());
-    // Force clear cached pages
-    window.location.replace("/auth");
+    dispatch(logout()); // redux se bhi clear
+    window.location.replace("/auth"); // wapas login page pr bhejdo
   };
 
-  if (!user) {
-    window.location.replace("/auth");
-  }
+  if (!user) return <p className="text-center mt-10">Loading...</p>;
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
