@@ -2,7 +2,37 @@ import { NextResponse } from "next/server";
 import { connectDB } from "../../../lib/db";
 import Product from "../../models/product";
 
-// POST: Add new product
+export async function GET(req) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    const category = searchParams.get("category");
+
+    // ✅ If specific product requested by ID
+    if (id) {
+      const product = await Product.findById(id);
+      if (!product)
+        return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return NextResponse.json(product, { status: 200 });
+    }
+
+    // ✅ If category-based filter
+    if (category) {
+      const filter = { category: { $regex: new RegExp(`^${category}$`, "i") } };
+      const products = await Product.find(filter);
+      return NextResponse.json(products, { status: 200 });
+    }
+
+    // ✅ Default: return all products
+    const products = await Product.find();
+    return NextResponse.json(products, { status: 200 });
+  } catch (err) {
+    console.error("❌ Error fetching products:", err);
+    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+  }
+}
+
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -19,66 +49,31 @@ export async function POST(req) {
 
     await newProduct.save();
 
-    return new Response(
-      JSON.stringify({
-        message: "Product added successfully",
-        product: newProduct,
-      }),
+    return NextResponse.json(
+      { message: "Product added successfully", product: newProduct },
       { status: 201 }
     );
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Failed to add products" },
-      { status: 500 }
-    );
-  }
-}
-
-// GET: Fetch products (case-insensitive)
-export async function GET(req) {
-  try {
-    await connectDB();
-    const { searchParams } = new URL(req.url);
-    const category = searchParams.get("category");
-    console.log("Category param:", category);
-
-    let filter = {};
-    if (category) {
-      // Case-insensitive regex filter
-      filter.category = { $regex: new RegExp(`^${category}$`, 'i') };
-    }
-
-    const products = await Product.find(filter);
-    console.log("Fetched products:", products); // <-- Yahan check karo
-    return NextResponse.json(products, { status: 200 });
   } catch (err) {
-    console.error("Error fetching products:", err);
-    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+    console.error("❌ Error adding product:", err);
+    return NextResponse.json({ error: "Failed to add product" }, { status: 500 });
   }
 }
 
-
-// DELETE: Delete a product
 export async function DELETE(req) {
   try {
     await connectDB();
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     if (!id)
-      return new Response(JSON.stringify({ error: "Product ID required" }), {
-        status: 400,
-      });
+      return NextResponse.json({ error: "Product ID required" }, { status: 400 });
 
     await Product.findByIdAndDelete(id);
-    return new Response(
-      JSON.stringify({ id, message: "Product deleted successfully" }),
+    return NextResponse.json(
+      { id, message: "Product deleted successfully" },
       { status: 200 }
     );
-  } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: "Failed to delete product" }), {
-      status: 500,
-    });
+  } catch (err) {
+    console.error("❌ Error deleting product:", err);
+    return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
   }
 }

@@ -94,7 +94,7 @@ const handleScroll = (direction) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <Card filteredData={filteredData} scrollRef={scrollRef} route={activeCategory} />
+            {/* <Card filteredData={filteredData} scrollRef={scrollRef} route={activeCategory} /> */}
           </div>
 
           <button

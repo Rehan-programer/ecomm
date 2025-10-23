@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Fashion = () => {
   return (
-    <section className="bg-white  py-10">
+    <section className="bg-[#3333]  py-10">
       <div className="container max-w-[2000px] lg:w-[90%]   w-full m-auto ">
         <div className="md:flex m-auto justify-center  gap-8 ">
           {fashionData.map((item) => (

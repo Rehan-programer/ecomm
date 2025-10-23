@@ -1,13 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../../redux/slice/cartslice";
-// import { addOrder } from "../../redux/slice/orderslice";
 
 const Checkout = () => {
   const cartItems = useSelector(({ cart }) => cart.items);
   const currentUser = useSelector((state) => state.user.currentUser);
-
   const dispatch = useDispatch();
 
   const [form, setForm] = useState({
@@ -16,6 +14,20 @@ const Checkout = () => {
     phone: "",
     email: "",
   });
+
+  // ✅ Auto-fill user details when logged in
+  useEffect(() => {
+    if (currentUser) {
+      setForm({
+        name:
+          currentUser.name ||
+          `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim(),
+        email: currentUser.email || "",
+        address: currentUser.address || "",
+        phone: currentUser.phone || "",
+      });
+    }
+  }, [currentUser]);
 
   const total = cartItems.reduce(
     (sum, { price, quantity }) => sum + price * quantity,
@@ -45,7 +57,7 @@ const Checkout = () => {
         size: item.selectedSize || "",
         brand: item.brand,
       })),
-      userId: currentUser?._id || "guest", 
+      userId: currentUser?._id || "guest",
     };
 
     try {
@@ -60,7 +72,6 @@ const Checkout = () => {
       if (res.ok) {
         alert("✅ Order placed successfully!");
         console.log("✅ Order saved to DB:", data);
-
         dispatch(clearCart());
       } else {
         console.error("❌ Backend error:", data);

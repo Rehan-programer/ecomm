@@ -7,15 +7,29 @@ export async function POST(req) {
   try {
     await connectDB();
 
-    const { firstName, lastName, email, password, confirmPassword, role, adminSecret } = await req.json();
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      role,
+      adminSecret,
+    } = await req.json();
 
     if (password !== confirmPassword) {
-      return NextResponse.json({ message: "Passwords do not match" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Passwords do not match" },
+        { status: 400 }
+      );
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return NextResponse.json({ message: "Email already exists" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Email already exists" },
+        { status: 400 }
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,7 +37,10 @@ export async function POST(req) {
     let finalRole = "user";
     if (role === "admin") {
       if (adminSecret !== process.env.ADMIN_SECRET_KEY) {
-        return NextResponse.json({ message: "Unauthorized to create admin", status: 403 });
+        return NextResponse.json({
+          message: "Unauthorized to create admin",
+          status: 403,
+        });
       }
       finalRole = "user";
     }
@@ -31,14 +48,19 @@ export async function POST(req) {
     const newUser = await User.create({
       firstName,
       lastName,
+      name: `${firstName} ${lastName}`, // 👈 add this
       email,
       password: hashedPassword,
       role: finalRole,
+      phone: "", // optional now
+      address: "", // optional now
     });
 
     const { password: _, ...safeUser } = newUser.toObject();
-    return NextResponse.json({ message: "Signup successful!", user: safeUser }, { status: 201 });
-
+    return NextResponse.json(
+      { message: "Signup successful!", user: safeUser },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("❌ Signup Error:", error);
     return NextResponse.json({ message: "Server error" }, { status: 500 });

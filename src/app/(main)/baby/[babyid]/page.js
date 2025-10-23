@@ -2,67 +2,90 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Heart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem } from "../../../../redux/slice/cartslice";
+import { addItem } from "@/redux/slice/cartslice";
 import {
-  addToFavourite,
-  removeFromFavourite,
-} from "../../../../redux/slice/favouriteslice";
+  toggleFavouriteInDB,
+  fetchFavouritesFromDB,
+} from "@/redux/slice/favouriteslice";
+import { useRouter, useParams } from "next/navigation";
 
-export default function BabyProductDetails({ params }) {
-  const { babyid } = React.use(params);
+export default function BabyProductDetails() {
+  const { babyid } = useParams();
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const user = useSelector((state) => state.user.currentUser);
   const favourites = useSelector((state) => state.favourite.items);
 
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
+  // ✅ Fetch product from DB
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/products?id=${babyid}`);
+        const res = await fetch(`/api/products?id=${babyid}`, { cache: "no-store" });
         const data = await res.json();
-        setProduct(data);
+
+        if (res.ok) setProduct(data);
+        else console.error("Product fetch error:", data.error);
       } catch (err) {
         console.error("Error fetching product:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchProduct();
+    if (babyid) fetchProduct();
   }, [babyid]);
-  
-   const filter = product?.find((p) => String(p.id) === babyid);
+
+  // ✅ Fetch favourites for logged-in user
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(fetchFavouritesFromDB(user._id));
+    }
+  }, [user?._id, dispatch]);
 
   if (loading)
-    return <div className="p-8 text-gray-500">⏳ Loading product...</div>;
-  if (!filter)
-    return <div className="p-8 text-red-500">❌ Product not found</div>;
+    return <div className="p-8 text-gray-500 text-center">⏳ Loading product...</div>;
 
-  const isFav = favourites.some((fav) => fav.id === product.id);
+  if (!product)
+    return <div className="p-8 text-red-500 text-center">❌ Product not found</div>;
 
+  const isFav = favourites.some((fav) => fav._id === product._id);
+
+  // ✅ Toggle Favourite
   const toggleFavourite = (item) => {
-    const exists = favourites.find((fav) => fav.id === item.id);
-    if (exists) {
-      dispatch(removeFromFavourite(item.id));
-    } else {
-      dispatch(addToFavourite(item));
+    if (!user?._id) {
+      alert("Please login to add wishlist!");
+      router.push("/auth");
+      return;
     }
+    dispatch(toggleFavouriteInDB({ userId: user._id, productId: item._id, item }));
   };
 
+  // ✅ Add to Cart
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) return;
+    if (!selectedSize || !selectedColor) {
+      alert("Please select size and color!");
+      return;
+    }
     const itemWithSelection = { ...product, selectedSize, selectedColor };
     dispatch(addItem(itemWithSelection));
   };
 
+  // ✅ Convert DB arrays to usable format
+  const sizes = Array.isArray(product.size) ? product.size : [];
+  const colors = Array.isArray(product.color) ? product.color : [];
+
   return (
-    <div className="p-8 bg-white rounded-2xl shadow-xl max-w-5xl mx-auto flex flex-col md:flex-row gap-8">
+    <div className="p-8 bg-white rounded-2xl shadow-xl max-w-5xl mx-auto flex flex-col md:flex-row gap-8 mt-6">
+      {/* ✅ Image + Wishlist */}
       <div className="relative flex-shrink-0">
         <button
           onClick={() => toggleFavourite(product)}
-          className={`absolute top-3 right-3 cursor-pointer z-10 p-2 rounded-full shadow-md transition border ${
+          className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow-md border transition ${
             isFav
               ? "bg-red-500 text-white border-red-500"
               : "bg-white text-gray-600 border-gray-300"
@@ -72,92 +95,86 @@ export default function BabyProductDetails({ params }) {
         </button>
 
         <img
-          src={filter.Image}
-          alt={filter.Product}
-          className="w-72 h-72 object-cover rounded-xl shadow-md hover:scale-105 transition-transform duration-300"
+          src={product.image || "/fallback.jpg"}
+          alt={product.title}
+          className="w-80 h-80 object-cover rounded-xl shadow-md hover:scale-105 transition-transform duration-300"
         />
       </div>
 
+      {/* ✅ Product Details */}
       <div className="flex flex-col justify-between space-y-4 flex-1">
         <div>
           <p className="text-sm text-gray-500 uppercase tracking-wide">
-            {filter.Category}
+            {product.category}
           </p>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {filter.Product}
+            {product.title}
           </h1>
           <p className="text-gray-600 text-base leading-relaxed">
-            {filter.Description || "No description available."}
+            {product.description || "No description available."}
           </p>
         </div>
 
         <div className="flex items-center gap-4">
           <span className="text-2xl font-semibold text-green-600">
-            ${filter.Price}
+            ${product.price}
           </span>
         </div>
 
-        <div>
-          <p className="text-sm font-semibold text-gray-700 mb-2">
-            Select Size:
-          </p>
-          <div className="flex gap-2">
-            {["Small", "Medium", "Large"].map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`px-4 py-2 rounded-md border text-sm font-medium transition ${
-                  selectedSize === size
-                    ? "bg-black text-white border-black"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                {size}
-              </button>
-            ))}
+        {/* ✅ Sizes */}
+        {sizes.length > 0 && (
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Select Size:</p>
+            <div className="flex gap-2 flex-wrap">
+              {sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`px-4 py-2 rounded-md border text-sm font-medium transition ${
+                    selectedSize === size
+                      ? "bg-black text-white border-black"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-
-        <div>
-          <p className="text-sm font-semibold text-gray-700 mb-2">
-            Select Color:
-          </p>
-          <div className="flex gap-2">
-            {["Red", "Blue", "Gray", "White"].map((color) => (
-              <button
-                key={color}
-                onClick={() => setSelectedColor(color)}
-                className={`px-4 py-2 rounded-md border text-sm font-medium transition ${
-                  selectedColor === color
-                    ? "bg-black text-white border-black"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                {color}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {(!selectedSize || !selectedColor) && (
-          <p className="text-red-500 text-sm mt-2">
-            ❌ Please select size and color before adding to cart.
-          </p>
         )}
 
-        <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
-          <p>
-            <span className="font-semibold">Brand:</span> {product.Brand}
-          </p>
-          <p>
-            <span className="font-semibold">Stock:</span> {product.Stock}
-          </p>
-          <p>
-            <span className="font-semibold">Active:</span>{" "}
-            {product.Active ? "Yes" : "No"}
-          </p>
-        </div>
+        {/* ✅ Colors */}
+        {colors.length > 0 && (
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Select Color:</p>
+            <div className="flex gap-3 flex-wrap">
+              {colors.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setSelectedColor(color)}
+                  className={`w-16 h-10 rounded-md border text-xs font-medium transition-all flex items-center justify-center ${
+                    selectedColor === color
+                      ? "border-black scale-105 shadow-md"
+                      : "border-gray-300 hover:scale-105"
+                  }`}
+                  style={{
+                    backgroundColor: color.toLowerCase(),
+                    color:
+                      color.toLowerCase() === "black" ||
+                      color.toLowerCase() === "#000000"
+                        ? "white"
+                        : "black",
+                  }}
+                  title={color}
+                >
+                  {color}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
+        {/* ✅ Action Buttons */}
         <div className="flex gap-4 pt-4">
           <button
             className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md transition ${

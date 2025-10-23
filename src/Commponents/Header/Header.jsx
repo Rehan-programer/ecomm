@@ -237,7 +237,7 @@ const Header = () => {
                   // dispatch(logout());
                   router.push("/dashboard");
                 }}
-                className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                className="flex items-center cursor-pointer gap-1 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
               >
                 {/* <LogOut size={18} /> Logout */}
                 Dashboard

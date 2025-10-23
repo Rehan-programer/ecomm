@@ -5,11 +5,11 @@ import { useState } from "react";
 import {
   deleteProduct,
   addProduct,
-} from "../../../redux/slice/womenproductslice"; // ✅ Correct slice
+} from "../../../redux/slice/womenproductslice";
 
 export default function WomenProductsPage() {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.womenProducts); // ✅ Correct state
+  const { products } = useSelector((state) => state.womenProducts);
   console.log("products======>", products);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -19,7 +19,7 @@ export default function WomenProductsPage() {
   const [form, setForm] = useState({
     image: "",
     title: "",
-    category: "Women",
+    category: "",
     price: "",
     size: [],
     color: [],
@@ -34,7 +34,7 @@ export default function WomenProductsPage() {
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
-const handleAddProduct = async (e) => {
+ const handleAddProduct = async (e) => {
   e.preventDefault();
 
   // validation
@@ -88,7 +88,7 @@ const handleAddProduct = async (e) => {
 
   const toggleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedProducts(products.map((p) => p._id)); // ✅ Use _id
+      setSelectedProducts(products.map((p) => p.id));
     } else {
       setSelectedProducts([]);
     }
@@ -126,7 +126,7 @@ const handleAddProduct = async (e) => {
   return (
     <div className="bg-gray-50 min-h-screen p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl text-black font-bold">Women Products</h1>
+        <h1 className="text-2xl text-black font-bold">women Products</h1>
         <button
           onClick={() => setShowModal(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
@@ -244,7 +244,7 @@ const handleAddProduct = async (e) => {
                     </td>
                     <td className="p-3 text-center">
                       <button
-                        onClick={() => handleToggleState(item._id)}
+                        onClick={() => handleToggleState(item.id)}
                         className={`w-24 py-1 rounded-full text-white font-semibold transition-colors duration-200 ${
                           currentState
                             ? "bg-green-500 hover:bg-green-600"
@@ -276,7 +276,6 @@ const handleAddProduct = async (e) => {
             </h2>
 
             <form onSubmit={handleAddProduct} className="space-y-3">
-              {/* ✅ Same inputs as Baby/Men */}
               <input
                 type="text"
                 name="image"
@@ -295,12 +294,108 @@ const handleAddProduct = async (e) => {
               />
               <input
                 type="text"
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                placeholder="Category"
+                className="w-full border text-black p-2 rounded-md"
+              />
+              =
+              <input
+                type="number"
                 name="price"
                 value={form.price}
                 onChange={handleChange}
                 placeholder="Price"
                 className="w-full border text-black p-2 rounded-md"
               />
+              <div>
+                <p className="text-sm font-semibold text-gray-700 mb-2">
+                  Select Sizes:
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  {["S", "M", "L", "XL", "XXL"].map((size) => (
+                    <button
+                      type="button"
+                      key={size}
+                      onClick={() => {
+                        setForm((prev) => ({
+                          ...prev,
+                          size: prev.size.includes(size)
+                            ? prev.size.filter((s) => s !== size)
+                            : [...prev.size, size],
+                        }));
+                      }}
+                      className={`px-3 py-1 rounded-md border transition-all duration-150 ${
+                        form.size.includes(size)
+                          ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+
+                {form.size.length > 0 && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    Selected Sizes:{" "}
+                    <span className="font-semibold text-blue-600">
+                      {form.size.join(", ")}
+                    </span>
+                  </p>
+                )}
+              </div>
+              <div className="mt-3">
+                <p className="text-sm font-semibold text-gray-700 mb-2">
+                  Select Colors:
+                </p>
+                <div className="flex gap-3 flex-wrap items-center">
+                  {[
+                    "#000",
+                    "#fffff",
+                    "#0000FF",
+                    "#FF0000",
+                    "#008000",
+                    "#808080",
+                    "beige",
+                  ].map((clr) => (
+                    <div
+                      key={clr}
+                      onClick={() =>
+                        setForm((prev) => ({
+                          ...prev,
+                          color: prev.color.includes(clr)
+                            ? prev.color.filter((c) => c !== clr)
+                            : [...prev.color, clr],
+                        }))
+                      }
+                      className={`w-8 h-8 rounded-full border-2 cursor-pointer transition-all duration-200 ${
+                        form.color.includes(clr)
+                          ? "border-blue-600 scale-110 shadow-md"
+                          : "border-gray-300 hover:scale-105"
+                      }`}
+                      style={{ backgroundColor: clr }}
+                    ></div>
+                  ))}
+                </div>
+
+                {form.color.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    {form.color.map((clr) => (
+                      <div key={clr} className="flex items-center gap-1">
+                        <div
+                          className="w-5 h-5 rounded-full border"
+                          style={{ backgroundColor: clr }}
+                        ></div>
+                        <span className="text-sm text-gray-700 capitalize">
+                          {clr}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
               <input
                 type="text"
                 name="brand"
@@ -309,27 +404,43 @@ const handleAddProduct = async (e) => {
                 placeholder="Brand"
                 className="w-full border text-black p-2 rounded-md"
               />
-
               <input
-                type="text"
+                type="number"
                 name="stock"
                 value={form.stock}
                 onChange={handleChange}
                 placeholder="Quantity"
                 className="w-full border text-black p-2 rounded-md"
               />
-
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleChange}
+                className="w-full border text-black p-2 rounded-md"
+              >
+                <option value="In Stock">In Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="active"
+                  checked={form.active}
+                  onChange={handleChange}
+                />
+                <span>Active</span>
+              </label>
               <div className="flex justify-end gap-3 mt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 transition"
+                  className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
                 >
                   Add Product
                 </button>

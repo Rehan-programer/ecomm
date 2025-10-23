@@ -55,48 +55,21 @@ export const SidebarData = [
   },
   {
     title: "Wishlist",
-    path: "/dashboard#wishlist",
+    path: "/dashboard/user/favourite",
     icon: FiHeart,
-    role: ["user", "Individual"],
+    role: ["user"],
   },
-  {
-    title: "Cart",
-    path: "/dashboard#cart",
-    icon: FiShoppingCart,
-    role: ["user", "Individual"],
-  },
-  {
-    title: "Address Book",
-    path: "/dashboard#address",
-    icon: FiMapPin,
-    role: ["user", "Individual"],
-  },
-  {
-    title: "Payment",
-    path: "/dashboard#payment",
-    icon: FiCreditCard,
-    role: ["user", "Individual"],
-  },
-  {
-    title: "Notifications",
-    path: "/dashboard#notifications",
-    icon: FiBell,
-    role: ["user", "Individual"],
-  },
+
+
   {
     title: "Loyalty Points",
     path: "/dashboard#loyalty",
     icon: FiStar,
     role: ["user", "Individual"],
   },
+  
   {
-    title: "Account",
-    path: "/dashboard#account",
-    icon: FiSettings,
-    role: ["user", "Individual"],
-  },
-  {
-    title: "Settings",
+    title: "Account Settings",
     path: "/settings",
     icon: FiSettings,
     role: ["admin", "user", "Company", "Individual"],

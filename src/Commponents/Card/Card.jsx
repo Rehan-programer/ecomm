@@ -2,10 +2,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "../../redux/slice/cartslice";  
-import {
-  addToFavourite,
-  removeFromFavourite,
-} from "../../redux/slice/favouriteslice";
+// import {
+//  addFavouriteToDB, removeFavouriteFromDB 
+// } from "../../redux/slice/favouriteslice";
 import { ShoppingCart, Heart } from "lucide-react";
 import Link from "next/link";
 
@@ -16,9 +15,9 @@ const Card = ({ filteredData, scrollRef, route }) => {
   const toggleFavourite = (item) => {
     const exists = favourites.find((fav) => fav.id === item.id);
     if (exists) {
-      dispatch(removeFromFavourite(item.id));
+      dispatch(removeFavouriteFromDB (item.id));
     } else {
-      dispatch(addToFavourite(item));
+      dispatch( addFavouriteToDB(item));
     }
   };
 
