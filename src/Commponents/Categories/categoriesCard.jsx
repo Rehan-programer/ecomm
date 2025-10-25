@@ -2,7 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addItem } from "@/redux/slice/cartslice";
-import { toggleFavouriteInDB, fetchFavouritesFromDB, clearFavourites } from "@/redux/slice/favouriteslice";
+import {
+  fetchFavouritesFromDB,
+  toggleFavouriteInDB,
+  toggleLocalFavourite,
+  clearFavourites,
+} from "@/redux/slice/favouriteslice";
 import { Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,6 +21,7 @@ export default function CategoriesCard({ data, route }) {
   const [selectedColorMap, setSelectedColorMap] = useState({});
   const [selectedSizeMap, setSelectedSizeMap] = useState({});
 
+  // Load favourites for logged-in user
   useEffect(() => {
     if (user?._id) {
       dispatch(fetchFavouritesFromDB(user._id));
@@ -30,7 +36,8 @@ export default function CategoriesCard({ data, route }) {
       router.push("/auth");
       return;
     }
-    dispatch(toggleFavouriteInDB({ userId: user._id, productId: item._id, item }));
+    dispatch(toggleLocalFavourite(item));
+    dispatch(toggleFavouriteInDB({ userId: user._id, productId: item._id }));
   };
 
   const handleColorSelect = (productId, color) => {
@@ -57,8 +64,11 @@ export default function CategoriesCard({ data, route }) {
         const selectedSize = selectedSizeMap[item._id] || null;
 
         return (
-          <div key={item._id} className="relative bg-white rounded-2xl shadow-md overflow-hidden group">
-            {/* Image + Favourite Icon */}
+          <div
+            key={item._id}
+            className="relative bg-white rounded-2xl shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300"
+          >
+            {/* Image + Heart */}
             <div className="relative w-full h-64 overflow-hidden">
               <img
                 src={item.image || "/fallback.jpg"}
@@ -74,7 +84,7 @@ export default function CategoriesCard({ data, route }) {
                 <Heart size={20} />
               </button>
 
-              {/* Add to Cart Button — visible on hover (desktop) */}
+              {/* Add to Cart — Large screens, visible on hover */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:flex">
                 <button
                   onClick={() => handleAddToCart(item)}
@@ -88,23 +98,23 @@ export default function CategoriesCard({ data, route }) {
 
             {/* Product Info */}
             <div className="p-4 text-center">
-              <h3 className="text-lg font-semibold hover:text-red-500">
+              <h3 className="text-lg font-semibold hover:text-red-500 transition">
                 <Link href={`/${route}/${item._id}`}>{item.title}</Link>
               </h3>
               <p className="text-sm text-gray-600 mt-1">{item.brand}</p>
 
               {/* Colors */}
               {colors.length > 0 && (
-                <div className="flex justify-center gap-2 mt-2">
+                <div className="flex justify-center gap-2 mt-2 flex-wrap">
                   {colors.map((clr, i) => (
                     <button
                       key={i}
                       onClick={() => handleColorSelect(item._id, clr)}
-                      className={`w-6 h-6 rounded-full border-2 cursor-pointer transition ${
+                      className={`w-6 h-6 rounded-full border-2 transition-transform ${
                         selectedColor === clr ? "border-red-500 scale-110" : "border-gray-300"
                       }`}
                       style={{ backgroundColor: clr }}
-                    ></button>
+                    />
                   ))}
                 </div>
               )}
@@ -117,9 +127,7 @@ export default function CategoriesCard({ data, route }) {
                       key={i}
                       onClick={() => handleSizeSelect(item._id, size)}
                       className={`px-3 py-1 rounded-md border text-sm ${
-                        selectedSize === size
-                          ? "bg-red-500 text-white border-red-500"
-                          : "bg-white text-gray-700 border-gray-300"
+                        selectedSize === size ? "bg-red-500 text-white border-red-500" : "bg-white text-gray-700 border-gray-300"
                       }`}
                     >
                       {size}
@@ -131,11 +139,11 @@ export default function CategoriesCard({ data, route }) {
               {/* Price */}
               <p className="mt-3 text-lg font-bold text-gray-900">${item.price}</p>
 
-              {/* Add to Cart — visible only on mobile/tablet */}
+              {/* Add to Cart — Mobile/Tablet, always visible */}
               <div className="mt-3 flex lg:hidden justify-center">
                 <button
                   onClick={() => handleAddToCart(item)}
-                  className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full max-w-[200px]"
+                  className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full max-w-[200px] justify-center"
                   disabled={(colors.length > 0 && !selectedColor) || (sizes.length > 0 && !selectedSize)}
                 >
                   <ShoppingCart size={18} /> Add to Cart
