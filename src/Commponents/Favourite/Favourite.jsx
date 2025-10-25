@@ -60,7 +60,7 @@ const favourites = useSelector((state) => state.favourite?.items) || [];
   if (!user?._id)
     return (
       <p className="text-center py-10 text-gray-500">
-        Please login to see favourites.
+        Please,login to see favourites.
       </p>
     );
   if (favourites.length === 0)
