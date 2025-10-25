@@ -44,7 +44,7 @@ const RecentOrders = () => {
             key={order._id}
             className="border rounded-lg shadow-sm hover:shadow-md transition p-4 flex justify-between items-center"
           >
-            <div className="grid grid-cols-1 md:grid-cols-5 w-full text-sm text-gray-700">
+            <div className="grid grid-cols-1 md:grid-cols-5  w-[90%] text-sm text-gray-700">
               <p className="font-medium">ID: {order._id}</p>
               <p>Total: ₹{order.totalAmount}</p>
               <p>Payment: {order.paymentMethod}</p>
@@ -63,7 +63,7 @@ const RecentOrders = () => {
             </div>
 
             <button
-              className=" text-[14px] bg-amber-200 hover:underline "
+              className=" text-[14px] text-black hover:underline "
               onClick={() => setSelectedOrder(order)}
             >
               View More 

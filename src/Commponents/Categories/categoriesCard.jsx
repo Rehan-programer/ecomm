@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addItem } from "@/redux/slice/cartslice";
 import { toggleFavouriteInDB, fetchFavouritesFromDB, clearFavourites } from "@/redux/slice/favouriteslice";
-
 import { Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,13 +16,13 @@ export default function CategoriesCard({ data, route }) {
   const [selectedColorMap, setSelectedColorMap] = useState({});
   const [selectedSizeMap, setSelectedSizeMap] = useState({});
 
-useEffect(() => {
-  if (user?._id) {
-    dispatch(fetchFavouritesFromDB(user._id));
-  } else {
-    dispatch(clearFavourites()); 
-  }
-}, [user?._id, dispatch]);
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(fetchFavouritesFromDB(user._id));
+    } else {
+      dispatch(clearFavourites());
+    }
+  }, [user?._id, dispatch]);
 
   const toggleFavourite = (item) => {
     if (!user?._id) {
@@ -51,7 +50,7 @@ useEffect(() => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-6 py-10">
       {data.map((item) => {
-        const isFav = favourites.some((fav) => fav._id === item._id); // ✅ user-specific
+        const isFav = favourites.some((fav) => fav._id === item._id);
         const colors = Array.isArray(item.color) ? item.color : item.color?.split(",") || [];
         const sizes = Array.isArray(item.size) ? item.size : item.size?.split(",") || [];
         const selectedColor = selectedColorMap[item._id] || null;
@@ -59,6 +58,7 @@ useEffect(() => {
 
         return (
           <div key={item._id} className="relative bg-white rounded-2xl shadow-md overflow-hidden group">
+            {/* Image + Favourite Icon */}
             <div className="relative w-full h-64 overflow-hidden">
               <img
                 src={item.image || "/fallback.jpg"}
@@ -74,6 +74,7 @@ useEffect(() => {
                 <Heart size={20} />
               </button>
 
+              {/* Add to Cart Button — visible on hover (desktop) */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:flex">
                 <button
                   onClick={() => handleAddToCart(item)}
@@ -85,12 +86,14 @@ useEffect(() => {
               </div>
             </div>
 
+            {/* Product Info */}
             <div className="p-4 text-center">
               <h3 className="text-lg font-semibold hover:text-red-500">
                 <Link href={`/${route}/${item._id}`}>{item.title}</Link>
               </h3>
               <p className="text-sm text-gray-600 mt-1">{item.brand}</p>
 
+              {/* Colors */}
               {colors.length > 0 && (
                 <div className="flex justify-center gap-2 mt-2">
                   {colors.map((clr, i) => (
@@ -106,6 +109,7 @@ useEffect(() => {
                 </div>
               )}
 
+              {/* Sizes */}
               {sizes.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-2 mt-2">
                   {sizes.map((size, i) => (
@@ -113,7 +117,9 @@ useEffect(() => {
                       key={i}
                       onClick={() => handleSizeSelect(item._id, size)}
                       className={`px-3 py-1 rounded-md border text-sm ${
-                        selectedSize === size ? "bg-red-500 text-white border-red-500" : "bg-white text-gray-700 border-gray-300"
+                        selectedSize === size
+                          ? "bg-red-500 text-white border-red-500"
+                          : "bg-white text-gray-700 border-gray-300"
                       }`}
                     >
                       {size}
@@ -122,7 +128,19 @@ useEffect(() => {
                 </div>
               )}
 
+              {/* Price */}
               <p className="mt-3 text-lg font-bold text-gray-900">${item.price}</p>
+
+              {/* Add to Cart — visible only on mobile/tablet */}
+              <div className="mt-3 flex lg:hidden justify-center">
+                <button
+                  onClick={() => handleAddToCart(item)}
+                  className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full max-w-[200px]"
+                  disabled={(colors.length > 0 && !selectedColor) || (sizes.length > 0 && !selectedSize)}
+                >
+                  <ShoppingCart size={18} /> Add to Cart
+                </button>
+              </div>
             </div>
           </div>
         );

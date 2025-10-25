@@ -9,27 +9,33 @@ export async function GET(req) {
     const id = searchParams.get("id");
     const category = searchParams.get("category");
 
-    // ✅ If specific product requested by ID
     if (id) {
       const product = await Product.findById(id);
       if (!product)
-        return NextResponse.json({ error: "Product not found" }, { status: 404 });
+        return NextResponse.json(
+          { error: "Product not found" },
+          { status: 404 }
+        );
       return NextResponse.json(product, { status: 200 });
     }
 
-    // ✅ If category-based filter
     if (category) {
-      const filter = { category: { $regex: new RegExp(`^${category}$`, "i") } };
+      const filter = {
+        category: { $regex: new RegExp(`^${category}$`, "i") },
+        active: true, // 👈 only show active products on website
+      };
       const products = await Product.find(filter);
       return NextResponse.json(products, { status: 200 });
     }
 
-    // ✅ Default: return all products
     const products = await Product.find();
     return NextResponse.json(products, { status: 200 });
   } catch (err) {
     console.error("❌ Error fetching products:", err);
-    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch products" },
+      { status: 500 }
+    );
   }
 }
 
@@ -55,7 +61,52 @@ export async function POST(req) {
     );
   } catch (err) {
     console.error("❌ Error adding product:", err);
-    return NextResponse.json({ error: "Failed to add product" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to add product" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req) {
+  try {
+    await connectDB();
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Product ID required" },
+        { status: 400 }
+      );
+    }
+
+    const body = await req.json();
+
+    // ✅ safer for both ObjectId and string `_id`
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: id },
+      { ...body },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      console.log("⚠️ Product not found for ID:", id);
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    console.log("✅ Product updated successfully:", updatedProduct._id);
+
+    return NextResponse.json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (err) {
+    console.error("❌ Error updating product:", err);
+    return NextResponse.json(
+      { error: "Failed to update product" },
+      { status: 500 }
+    );
   }
 }
 
@@ -65,7 +116,10 @@ export async function DELETE(req) {
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     if (!id)
-      return NextResponse.json({ error: "Product ID required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Product ID required" },
+        { status: 400 }
+      );
 
     await Product.findByIdAndDelete(id);
     return NextResponse.json(
@@ -74,6 +128,9 @@ export async function DELETE(req) {
     );
   } catch (err) {
     console.error("❌ Error deleting product:", err);
-    return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete product" },
+      { status: 500 }
+    );
   }
 }

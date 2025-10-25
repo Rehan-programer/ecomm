@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+// ✅ Fetch baby products from API
 export const fetchBabyProducts = createAsyncThunk(
   "babyProducts/fetchBabyProducts",
   async () => {
@@ -24,6 +25,15 @@ const babyProductsSlice = createSlice({
         (product) => product._id !== action.payload
       );
     },
+    updateProduct: (state, action) => {
+      const updated = action.payload;
+      const index = state.products.findIndex(
+        (product) => product._id === updated._id
+      );
+      if (index !== -1) {
+        state.products[index] = updated;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -40,5 +50,7 @@ const babyProductsSlice = createSlice({
   },
 });
 
-export const { addProduct, deleteProduct } = babyProductsSlice.actions;
+export const { addProduct, deleteProduct, updateProduct } =
+  babyProductsSlice.actions;
+
 export default babyProductsSlice.reducer;

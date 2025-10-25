@@ -290,25 +290,6 @@ const Header = () => {
                 </button>
               );
             })}
-            {user ? (
-              <button
-                onClick={() => {
-                  dispatch(logout());
-                  router.push("/auth");
-                }}
-                className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-              >
-                <LogOut size={18} /> Logout
-              </button>
-            ) : (
-              <Link
-                href="/auth"
-                className="p-2 rounded-full hover:bg-gray-100 transition"
-                title="Login"
-              >
-                <User className="w-6 h-6 text-gray-700 hover:text-[#FF2020]" />
-              </Link>
-            )}
           </div>
 
           <button
@@ -397,6 +378,24 @@ const Header = () => {
               </div>
             ))}
           </nav>
+          {user ? (
+            <button
+              onClick={() => {
+                router.push("/dashboard");
+              }}
+              className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            >
+              Dashboard
+            </button>
+          ) : (
+            <Link
+              href="/auth"
+              className="p-2 rounded-full hover:bg-gray-100 transition"
+              title="Login"
+            >
+              <User className="w-6 h-6 text-gray-700 hover:text-[#FF2020]" />
+            </Link>
+          )}
         </div>
       )}
     </header>

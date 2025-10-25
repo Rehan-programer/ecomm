@@ -24,7 +24,7 @@ function OrdersTable({ orders }) {
 
   return (
     <table className="min-w-full border text-left">
-      <thead className="bg-yellow-100">
+      <thead className="">
         <tr className="text-black">
           <th className="p-2 border">ID</th>
           <th className="p-2 border">Customer</th>

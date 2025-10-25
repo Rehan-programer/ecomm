@@ -110,7 +110,7 @@ export default function StatsCard() {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-[80%] lg:w-full">
       {/* Total Orders */}
       <div className="bg-white rounded-2xl shadow-sm p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-md">
        <div className="flex flex-col items-start gap-3 mb-4">

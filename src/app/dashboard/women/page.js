@@ -1,20 +1,21 @@
 "use client";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   deleteProduct,
   addProduct,
+  updateProduct,
 } from "../../../redux/slice/womenproductslice";
 
 export default function WomenProductsPage() {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.womenProducts);
-  console.log("products======>", products);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productStates, setProductStates] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   const [form, setForm] = useState({
     image: "",
@@ -29,32 +30,57 @@ export default function WomenProductsPage() {
     active: true,
   });
 
+  // 🧠 Initialize active state from products
+  useEffect(() => {
+    const initialStates = {};
+    products.forEach((p) => (initialStates[p._id] = p.active));
+    setProductStates(initialStates);
+  }, [products]);
+
+  // 🧩 Handle input change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
- const handleAddProduct = async (e) => {
+// 🟢 Add or Update Product (Fixed)
+// 🟢 Add or Update Product (Debug version)
+const handleSaveProduct = async (e) => {
   e.preventDefault();
 
-  // validation
   if (!form.title || !form.price) {
     alert("⚠️ Please fill in product title and price.");
     return;
   }
 
+  // Clean form (remove Mongo internal fields)
+  const { _id, __v, createdAt, updatedAt, ...cleanForm } = form;
+
+  const method = editingProduct ? "PUT" : "POST";
+  const url = editingProduct
+    ? `/api/products?id=${editingProduct._id}`
+    : `/api/products?category=${form.category}`;
+
+  console.log("🧩 Editing Product:", editingProduct);
+  console.log("📦 Sending URL:", url);
+  console.log("📦 Method:", method);
+  console.log("📦 Data Sent:", cleanForm);
+
   try {
-    const res = await fetch(`/api/products?category=${form.category}`, {
-      method: "POST",
+    const res = await fetch(url, {
+      method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(cleanForm),
     });
 
     const data = await res.json();
+    console.log("📥 Response:", data);
 
     if (res.ok) {
-      alert(data.message || "✅ Product added successfully!");
-      dispatch(addProduct(data.product));
+      alert(editingProduct ? "✅ Product updated!" : "✅ Product added!");
+      editingProduct
+        ? dispatch(updateProduct(data.product))
+        : dispatch(addProduct(data.product));
 
       setForm({
         image: "",
@@ -69,67 +95,78 @@ export default function WomenProductsPage() {
         active: true,
       });
 
+      setEditingProduct(null);
       setShowModal(false);
     } else {
-      alert("❌ Failed to add product.");
+      alert("❌ Something went wrong.");
     }
   } catch (err) {
-    console.error("Error adding product:", err);
-    alert("❌ Error adding product.");
+    console.error("❌ Error saving product:", err);
+    alert("❌ Error saving product.");
   }
 };
 
-
-  const toggleSelect = (id) => {
-    setSelectedProducts((prev) =>
-      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
-    );
-  };
-
-  const toggleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedProducts(products.map((p) => p.id));
-    } else {
-      setSelectedProducts([]);
-    }
-  };
-
+  // 🗑️ Delete multiple products
   const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete selected products?")) {
-      try {
-        console.log("Deleting IDs:", selectedProducts);
-
-        await Promise.all(
-          selectedProducts.map((id) =>
-            fetch(`/api/products?id=${id}`, { method: "DELETE" })
-          )
-        );
-
-        selectedProducts.forEach((id) => dispatch(deleteProduct(id)));
-
-        alert("🗑️ Selected products deleted successfully!");
-        setSelectedProducts([]);
-      } catch (error) {
-        console.error("Error deleting products:", error);
-        alert("❌ Failed to delete products.");
-      }
+    if (!confirm("Are you sure you want to delete selected products?")) return;
+    try {
+      await Promise.all(
+        selectedProducts.map((id) =>
+          fetch(`/api/products?id=${id}`, { method: "DELETE" })
+        )
+      );
+      selectedProducts.forEach((id) => dispatch(deleteProduct(id)));
+      alert("🗑️ Products deleted!");
+      setSelectedProducts([]);
+    } catch (err) {
+      console.error("Error deleting products:", err);
     }
   };
 
-  const handleToggleState = (id) => {
-    setProductStates((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  // ✅ Toggle active/inactive
+  const handleToggleState = async (item) => {
+    const newActive = !item.active;
+    setProductStates((prev) => ({ ...prev, [item._id]: newActive }));
+
+    try {
+      const res = await fetch(`/api/products?id=${item._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...item, active: newActive }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        dispatch(updateProduct(data.product));
+      }
+    } catch (err) {
+      console.error("Error updating state:", err);
+    }
+  };
+
+  const toggleSelect = (id) =>
+    setSelectedProducts((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+
+  const toggleSelectAll = (e) =>
+    setSelectedProducts(e.target.checked ? products.map((p) => p._id) : []);
+
+  const openEditModal = (item) => {
+    setEditingProduct(item);
+    setForm(item);
+    setShowModal(true);
   };
 
   return (
     <div className="bg-gray-50 min-h-screen p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl text-black font-bold">women Products</h1>
+        <h1 className="text-2xl text-black font-bold">Women Products</h1>
         <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          onClick={() => {
+            setShowModal(true);
+            setEditingProduct(null);
+          }}
+          className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition"
         >
           + Add Product
         </button>
@@ -138,18 +175,18 @@ export default function WomenProductsPage() {
       {selectedProducts.length > 0 && (
         <div className="flex items-center gap-3 mb-4 bg-white shadow-md rounded-lg p-3">
           <p className="font-medium text-gray-700">
-            {selectedProducts.length} item
-            {selectedProducts.length > 1 ? "s" : ""} selected
+            {selectedProducts.length} selected
           </p>
           <button
             onClick={handleDelete}
-            className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 transition"
+            className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
           >
             Delete
           </button>
         </div>
       )}
 
+      {/* Table */}
       <div className="overflow-x-auto bg-white shadow-md rounded-xl">
         <table className="w-full text-left border-separate border-spacing-y-2">
           <thead>
@@ -174,92 +211,96 @@ export default function WomenProductsPage() {
               <th className="p-3">Qty</th>
               <th className="p-3 text-center">Stock</th>
               <th className="p-3 text-center">Active</th>
+              <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {products.length > 0 ? (
-              products.map((item) => {
-                const currentState = productStates[item._id] ?? true;
-                return (
-                  <tr
-                    key={item._id}
-                    className={`transition-all duration-150 ${
-                      selectedProducts.includes(item._id)
-                        ? "bg-blue-50"
-                        : "hover:bg-gray-50"
-                    }`}
-                  >
-                    <td className="p-3 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedProducts.includes(item._id)}
-                        onChange={() => toggleSelect(item._id)}
-                      />
-                    </td>
-                    <td className="p-3">
-                      <img
-                        src={item.image || "/img/no-image.png"}
-                        alt={item.title}
-                        className="w-16 h-16 object-cover rounded-md shadow-sm"
-                      />
-                    </td>
-                    <td className="p-3 font-medium text-black">{item.title}</td>
-                    <td className="p-3 text-gray-600">{item.category}</td>
-                    <td className="p-3 text-gray-700 font-semibold">
-                      ${item.price}
-                    </td>
-                    <td className="p-3 text-gray-600">
-                      {Array.isArray(item.size)
-                        ? item.size.join(", ")
-                        : item.size}
-                    </td>
-                    <td className="p-3">
-                      <div className="flex gap-1">
-                        {Array.isArray(item.color)
-                          ? item.color.map((clr, i) => (
-                              <div
-                                key={i}
-                                className="w-5 h-5 rounded-full border border-gray-300"
-                                style={{ backgroundColor: clr }}
-                                title={clr}
-                              ></div>
-                            ))
-                          : item.color}
-                      </div>
-                    </td>
-
-                    <td className="p-3 text-gray-600">{item.brand}</td>
-                    <td className="p-3 text-gray-600">{item.stock}</td>
-                    <td className="p-3 text-center">
-                      <span
-                        className={
-                          item.stock > 0
-                            ? "text-green-600 font-semibold"
-                            : "text-red-600 font-semibold"
-                        }
-                      >
-                        {item.stock > 0 ? "In Stock" : "Out of Stock"}
-                      </span>
-                    </td>
-                    <td className="p-3 text-center">
-                      <button
-                        onClick={() => handleToggleState(item.id)}
-                        className={`w-24 py-1 rounded-full text-white font-semibold transition-colors duration-200 ${
-                          currentState
-                            ? "bg-green-500 hover:bg-green-600"
-                            : "bg-red-500 hover:bg-red-600"
-                        }`}
-                      >
-                        {currentState ? "Active" : "Inactive"}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
+              products.map((item) => (
+                <tr
+                  key={item._id}
+                  className={`transition-all duration-150 ${
+                    selectedProducts.includes(item._id)
+                      ? "bg-pink-50"
+                      : "hover:bg-gray-50"
+                  }`}
+                >
+                  <td className="p-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedProducts.includes(item._id)}
+                      onChange={() => toggleSelect(item._id)}
+                    />
+                  </td>
+                  <td className="p-3">
+                    <img
+                      src={item.image || "/img/no-image.png"}
+                      alt={item.title}
+                      className="w-16 h-16 object-cover rounded-md shadow-sm"
+                    />
+                  </td>
+                  <td className="p-3 font-medium text-black">{item.title}</td>
+                  <td className="p-3 text-gray-600">{item.category}</td>
+                  <td className="p-3 text-gray-700 font-semibold">
+                    ${item.price}
+                  </td>
+                  <td className="p-3 text-gray-600">
+                    {Array.isArray(item.size)
+                      ? item.size.join(", ")
+                      : item.size}
+                  </td>
+                  <td className="p-3">
+                    <div className="flex gap-1">
+                      {Array.isArray(item.color)
+                        ? item.color.map((clr, i) => (
+                            <div
+                              key={i}
+                              className="w-5 h-5 rounded-full border border-gray-300"
+                              style={{ backgroundColor: clr }}
+                            ></div>
+                          ))
+                        : item.color}
+                    </div>
+                  </td>
+                  <td className="p-3 text-gray-600">{item.brand}</td>
+                  <td className="p-3 text-gray-600">{item.stock}</td>
+                  <td className="p-3 text-center">
+                    <span
+                      className={
+                        item.stock > 0
+                          ? "text-green-600 font-semibold"
+                          : "text-red-600 font-semibold"
+                      }
+                    >
+                      {item.stock > 0 ? "In Stock" : "Out of Stock"}
+                    </span>
+                  </td>
+                  <td className="p-3 text-center">
+                    <button
+                      onClick={() => handleToggleState(item)}
+                      className={`w-24 py-1 rounded-full text-white font-semibold transition ${
+                        productStates[item._id]
+                          ? "bg-green-500 hover:bg-green-600"
+                          : "bg-red-500 hover:bg-red-600"
+                      }`}
+                    >
+                      {productStates[item._id] ? "Active" : "Inactive"}
+                    </button>
+                  </td>
+                  <td className="p-3 text-center">
+                    <button
+                      onClick={() => openEditModal(item)}
+                      className="text-pink-600 font-semibold hover:underline"
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              ))
             ) : (
               <tr>
-                <td colSpan="11" className="text-center p-6 text-gray-500">
+                <td colSpan="12" className="text-center p-6 text-gray-500">
                   No products found
                 </td>
               </tr>
@@ -268,14 +309,15 @@ export default function WomenProductsPage() {
         </table>
       </div>
 
+      {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[450px] relative">
             <h2 className="text-xl font-bold mb-4 text-gray-800">
-              Add New Product
+              {editingProduct ? "Edit Product" : "Add New Product"}
             </h2>
 
-            <form onSubmit={handleAddProduct} className="space-y-3">
+            <form onSubmit={handleSaveProduct} className="space-y-3">
               <input
                 type="text"
                 name="image"
@@ -300,7 +342,6 @@ export default function WomenProductsPage() {
                 placeholder="Category"
                 className="w-full border text-black p-2 rounded-md"
               />
-              =
               <input
                 type="number"
                 name="price"
@@ -309,6 +350,8 @@ export default function WomenProductsPage() {
                 placeholder="Price"
                 className="w-full border text-black p-2 rounded-md"
               />
+
+              {/* Sizes */}
               <div>
                 <p className="text-sm font-semibold text-gray-700 mb-2">
                   Select Sizes:
@@ -326,34 +369,27 @@ export default function WomenProductsPage() {
                             : [...prev.size, size],
                         }));
                       }}
-                      className={`px-3 py-1 rounded-md border transition-all duration-150 ${
+                      className={`px-3 py-1 rounded-md border ${
                         form.size.includes(size)
-                          ? "bg-blue-600 text-white border-blue-600 shadow-md"
-                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                          ? "bg-pink-600 text-white border-pink-600"
+                          : "bg-white text-gray-700 border-gray-300"
                       }`}
                     >
                       {size}
                     </button>
                   ))}
                 </div>
-
-                {form.size.length > 0 && (
-                  <p className="text-sm text-gray-600 mt-2">
-                    Selected Sizes:{" "}
-                    <span className="font-semibold text-blue-600">
-                      {form.size.join(", ")}
-                    </span>
-                  </p>
-                )}
               </div>
-              <div className="mt-3">
+
+              {/* Colors */}
+              <div>
                 <p className="text-sm font-semibold text-gray-700 mb-2">
                   Select Colors:
                 </p>
                 <div className="flex gap-3 flex-wrap items-center">
                   {[
-                    "#000",
-                    "#fffff",
+                    "#000000",
+                    "#ffffff",
                     "#0000FF",
                     "#FF0000",
                     "#008000",
@@ -370,32 +406,17 @@ export default function WomenProductsPage() {
                             : [...prev.color, clr],
                         }))
                       }
-                      className={`w-8 h-8 rounded-full border-2 cursor-pointer transition-all duration-200 ${
+                      className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
                         form.color.includes(clr)
-                          ? "border-blue-600 scale-110 shadow-md"
-                          : "border-gray-300 hover:scale-105"
+                          ? "border-pink-600 scale-110"
+                          : "border-gray-300"
                       }`}
                       style={{ backgroundColor: clr }}
                     ></div>
                   ))}
                 </div>
-
-                {form.color.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2 mt-2">
-                    {form.color.map((clr) => (
-                      <div key={clr} className="flex items-center gap-1">
-                        <div
-                          className="w-5 h-5 rounded-full border"
-                          style={{ backgroundColor: clr }}
-                        ></div>
-                        <span className="text-sm text-gray-700 capitalize">
-                          {clr}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
+
               <input
                 type="text"
                 name="brand"
@@ -430,19 +451,23 @@ export default function WomenProductsPage() {
                 />
                 <span>Active</span>
               </label>
+
               <div className="flex justify-end gap-3 mt-4">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false);
+                    setEditingProduct(null);
+                  }}
                   className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                  className="px-4 py-2 rounded-md bg-pink-600 text-white hover:bg-pink-700"
                 >
-                  Add Product
+                  {editingProduct ? "Update" : "Add"}
                 </button>
               </div>
             </form>

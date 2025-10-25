@@ -24,6 +24,16 @@ const menProductsSlice = createSlice({
         (product) => product._id !== action.payload
       );
     },
+    // ✅ ADD THIS NEW FUNCTION
+    updateProduct: (state, action) => {
+      const updated = action.payload;
+      const index = state.products.findIndex(
+        (product) => product._id === updated._id
+      );
+      if (index !== -1) {
+        state.products[index] = updated;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -40,5 +50,5 @@ const menProductsSlice = createSlice({
   },
 });
 
-export const { addProduct, deleteProduct } = menProductsSlice.actions;
+export const { addProduct, deleteProduct, updateProduct } = menProductsSlice.actions;
 export default menProductsSlice.reducer;

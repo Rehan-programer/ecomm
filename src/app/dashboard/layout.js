@@ -23,11 +23,10 @@ function DashboardWithRedux({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
-  const pathname = usePathname(); // ✅ Get current route path
+  const pathname = usePathname(); 
 
-  const isProfilePage = pathname === "/dashboard/profile"; // ✅ Check if on profile page
+  const isProfilePage = pathname === "/dashboard/profile"; 
 
-  // Initialize user from localStorage (for first load)
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser && !user) {
@@ -39,7 +38,6 @@ function DashboardWithRedux({ children }) {
   const sidebarWidth = isSidebarOpen ? "w-64" : "w-20";
   const marginLeft = isSidebarOpen ? "ml-64" : "ml-20";
 
-  // Wait for user to be loaded
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-500">
@@ -49,10 +47,10 @@ function DashboardWithRedux({ children }) {
   }
 
   return (
-    <div className="flex">
+    <div className="flex  max-w-[2000px] m-auto">
       {/* ✅ Sidebar */}
       <div
-        className={`h-screen fixed left-0 top-0 bg-white shadow transition-all duration-300 ease-in-out ${sidebarWidth}`}
+        className={`h-screen fixed left-0 top-0 bg-red-500 shadow transition-all duration-300 ease-in-out ${sidebarWidth}`}
       >
         <Sidebar open={isSidebarOpen} toggleSidebar={toggleSidebar} />
       </div>
@@ -105,7 +103,7 @@ function DashboardWithRedux({ children }) {
         </header>
 
         {/* ✅ Page content */}
-        <main className="mt-16 p-4 h-[calc(100vh-4rem)] overflow-auto bg-gray-50">
+        <main className="mt-16 p-2 h-[calc(100vh-4rem)] max-w-[2000px] m-auto overflow-auto">
           {children}
         </main>
       </div>
