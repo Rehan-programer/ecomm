@@ -15,8 +15,9 @@ import { useRouter } from "next/navigation";
 export default function CategoriesCard({ data, route }) {
   const dispatch = useDispatch();
   const router = useRouter();
-  const user = useSelector((state) => state.user.currentUser);
-  const favourites = useSelector((state) => state.favourite.items);
+const user = useSelector((state) => state.user?.currentUser);
+const favourites = useSelector((state) => state.favourite?.items) || [];
+
 
   const [selectedColorMap, setSelectedColorMap] = useState({});
   const [selectedSizeMap, setSelectedSizeMap] = useState({});

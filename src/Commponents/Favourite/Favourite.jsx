@@ -16,8 +16,9 @@ export default function FavouriteList() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const favourites = useSelector((state) => state.favourite.items) || [];
-  const user = useSelector((state) => state.user.currentUser);
+const user = useSelector((state) => state.user?.currentUser);
+const favourites = useSelector((state) => state.favourite?.items) || [];
+
 
   const [selectedColorMap, setSelectedColorMap] = useState({});
   const [selectedSizeMap, setSelectedSizeMap] = useState({});

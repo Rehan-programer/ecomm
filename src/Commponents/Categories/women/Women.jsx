@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import CategoriesCard from "../categoriesCard";
+import dynamic from "next/dynamic";
+
+// ✅ Client-side only import
+const CategoriesCard = dynamic(() => import("../categoriesCard"), { ssr: false });
 
 const Women = () => {
   const [womenProducts, setWomenProducts] = useState([]);
@@ -12,15 +15,16 @@ const Women = () => {
         const data = await res.json();
         if (res.ok) {
           setWomenProducts(data);
+        } else {
+          console.error("Failed to fetch women products:", data);
         }
       } catch (error) {
-        console.error("Error fetching men products:", error);
+        console.error("Error fetching women products:", error);
       }
     };
 
     fetchProducts();
   }, []);
-
 
   return (
     <section>
@@ -34,7 +38,8 @@ const Women = () => {
           </p>
         </div>
 
-        <CategoriesCard data={womenProducts} route={"women"} />
+        {/* ✅ Render CategoriesCard */}
+        <CategoriesCard data={womenProducts} route="women" />
       </div>
     </section>
   );
