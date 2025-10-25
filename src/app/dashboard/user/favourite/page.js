@@ -1,8 +1,14 @@
 "use client";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Favourite from "../../../../Commponents/Favourite/Favourite";
+import dynamic from "next/dynamic";
 import { fetchFavouritesFromDB } from "@/redux/slice/favouriteslice";
+
+// Client-side only import
+const Favourite = dynamic(
+  () => import("../../../../Commponents/Favourite/Favourite"),
+  { ssr: false }
+);
 
 export default function FavouritePage() {
   const dispatch = useDispatch();
