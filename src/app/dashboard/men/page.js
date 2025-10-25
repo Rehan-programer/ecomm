@@ -1,11 +1,7 @@
 "use client";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import {
-  deleteProduct,
-  addProduct,
-  updateProduct,
-} from "../../../redux/slice/menproductslice";
+import { deleteProduct, addProduct, updateProduct } from "../../../redux/slice/menproductslice";
 
 export default function MenProductsPage() {
   const dispatch = useDispatch();
@@ -29,20 +25,17 @@ export default function MenProductsPage() {
     active: true,
   });
 
-  // 🧠 Load productStates from products (active/inactive)
   useEffect(() => {
     const initialStates = {};
     products.forEach((p) => (initialStates[p._id] = p.active));
     setProductStates(initialStates);
   }, [products]);
 
-  // 🧩 Handle input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
-  // 🟢 Add or Update Product
   const handleSaveProduct = async (e) => {
     e.preventDefault();
     if (!form.title || !form.price) {
@@ -91,7 +84,6 @@ export default function MenProductsPage() {
     }
   };
 
-  // 🗑️ Delete Products
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete selected products?")) return;
     try {
@@ -108,7 +100,6 @@ export default function MenProductsPage() {
     }
   };
 
-  // ✅ Active/Inactive Toggle
   const handleToggleState = async (item) => {
     const newActive = !item.active;
     setProductStates((prev) => ({ ...prev, [item._id]: newActive }));
@@ -143,9 +134,9 @@ export default function MenProductsPage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl text-black font-bold">Men Products</h1>
+    <div className="bg-gray-50 min-h-screen p-4 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-3">
+        <h1 className="text-2xl md:text-3xl text-black font-bold">Men Products</h1>
         <button
           onClick={() => {
             setShowModal(true);
@@ -159,9 +150,7 @@ export default function MenProductsPage() {
 
       {selectedProducts.length > 0 && (
         <div className="flex items-center gap-3 mb-4 bg-white shadow-md rounded-lg p-3">
-          <p className="font-medium text-gray-700">
-            {selectedProducts.length} selected
-          </p>
+          <p className="font-medium text-gray-700">{selectedProducts.length} selected</p>
           <button
             onClick={handleDelete}
             className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
@@ -171,18 +160,16 @@ export default function MenProductsPage() {
         </div>
       )}
 
-      <div className="overflow-x-auto bg-white shadow-md rounded-xl">
+      {/* Desktop Table */}
+      <div className="hidden lg:block overflow-x-auto bg-white shadow-md rounded-xl">
         <table className="w-full text-left border-separate border-spacing-y-2">
-          <thead>
-            <tr className="bg-gray-100 text-black">
+          <thead className="bg-gray-100 text-black">
+            <tr>
               <th className="p-3">
                 <input
                   type="checkbox"
                   onChange={toggleSelectAll}
-                  checked={
-                    products.length > 0 &&
-                    selectedProducts.length === products.length
-                  }
+                  checked={products.length > 0 && selectedProducts.length === products.length}
                 />
               </th>
               <th className="p-3">Image</th>
@@ -198,261 +185,141 @@ export default function MenProductsPage() {
               <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
-
           <tbody>
             {products.length > 0 ? (
               products.map((item) => (
-                <tr
-                  key={item._id}
-                  className={`transition-all duration-150 ${
-                    selectedProducts.includes(item._id)
-                      ? "bg-blue-50"
-                      : "hover:bg-gray-50"
-                  }`}
-                >
+                <tr key={item._id} className={`transition-all duration-150 ${selectedProducts.includes(item._id) ? "bg-blue-50" : "hover:bg-gray-50"}`}>
                   <td className="p-3 text-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedProducts.includes(item._id)}
-                      onChange={() => toggleSelect(item._id)}
-                    />
+                    <input type="checkbox" checked={selectedProducts.includes(item._id)} onChange={() => toggleSelect(item._id)} />
                   </td>
                   <td className="p-3">
-                    <img
-                      src={item.image || "/img/no-image.png"}
-                      alt={item.title}
-                      className="w-16 h-16 object-cover rounded-md shadow-sm"
-                    />
+                    <img src={item.image || "/img/no-image.png"} alt={item.title} className="w-16 h-16 object-cover rounded-md shadow-sm" />
                   </td>
-                  <td className="p-3 font-medium text-black">{item.title}</td>
+                  <td className="p-3 font-medium">{item.title}</td>
                   <td className="p-3 text-gray-600">{item.category}</td>
-                  <td className="p-3 text-gray-700 font-semibold">
-                    ${item.price}
-                  </td>
-                  <td className="p-3 text-gray-600">
-                    {Array.isArray(item.size)
-                      ? item.size.join(", ")
-                      : item.size}
-                  </td>
+                  <td className="p-3 text-gray-700 font-semibold">${item.price}</td>
+                  <td className="p-3 text-gray-600">{Array.isArray(item.size) ? item.size.join(", ") : item.size}</td>
                   <td className="p-3">
                     <div className="flex gap-1">
                       {Array.isArray(item.color)
-                        ? item.color.map((clr, i) => (
-                            <div
-                              key={i}
-                              className="w-5 h-5 rounded-full border border-gray-300"
-                              style={{ backgroundColor: clr }}
-                            ></div>
-                          ))
+                        ? item.color.map((clr, i) => <div key={i} className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: clr }}></div>)
                         : item.color}
                     </div>
                   </td>
                   <td className="p-3 text-gray-600">{item.brand}</td>
                   <td className="p-3 text-gray-600">{item.stock}</td>
                   <td className="p-3 text-center">
-                    <span
-                      className={
-                        item.stock > 0
-                          ? "text-green-600 font-semibold"
-                          : "text-red-600 font-semibold"
-                      }
-                    >
+                    <span className={`${item.stock > 0 ? "text-green-600" : "text-red-600"} font-semibold`}>
                       {item.stock > 0 ? "In Stock" : "Out of Stock"}
                     </span>
                   </td>
                   <td className="p-3 text-center">
                     <button
                       onClick={() => handleToggleState(item)}
-                      className={`w-24 py-1 rounded-full text-white font-semibold transition ${
-                        productStates[item._id]
-                          ? "bg-green-500 hover:bg-green-600"
-                          : "bg-red-500 hover:bg-red-600"
-                      }`}
+                      className={`w-24 py-1 rounded-full text-white font-semibold transition ${productStates[item._id] ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}`}
                     >
                       {productStates[item._id] ? "Active" : "Inactive"}
                     </button>
                   </td>
                   <td className="p-3 text-center">
-                    <button
-                      onClick={() => openEditModal(item)}
-                      className="text-blue-600 font-semibold hover:underline"
-                    >
-                      Edit
-                    </button>
+                    <button onClick={() => openEditModal(item)} className="text-blue-600 font-semibold hover:underline">Edit</button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="12" className="text-center p-6 text-gray-500">
-                  No products found
-                </td>
+                <td colSpan="12" className="text-center p-6 text-gray-500">No products found</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* ✅ Add/Edit Modal */}
+      {/* Mobile Cards */}
+      <div className="lg:hidden space-y-4">
+        {products.map((item) => (
+          <div key={item._id} className="bg-white text-black rounded-lg shadow-sm p-3">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">{item.title}</span>
+              <input type="checkbox" checked={selectedProducts.includes(item._id)} onChange={() => toggleSelect(item._id)} />
+            </div>
+            <img src={item.image || "/img/no-image.png"} alt={item.title} className="w-full h-40 object-cover rounded-md" />
+            <p><strong>Category:</strong> {item.category}</p>
+            <p><strong>Price:</strong> ${item.price}</p>
+            <p><strong>Sizes:</strong> {Array.isArray(item.size) ? item.size.join(", ") : item.size}</p>
+            <p className="flex items-center gap-1">
+              <strong>Colors:</strong>
+              {Array.isArray(item.color) ? item.color.map((clr, i) => (
+                <div key={i} className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: clr }}></div>
+              )) : item.color}
+            </p>
+            <p><strong>Brand:</strong> {item.brand}</p>
+            <p><strong>Qty:</strong> {item.stock}</p>
+            <p className={`font-semibold ${item.stock > 0 ? "text-green-600" : "text-red-600"}`}>{item.stock > 0 ? "In Stock" : "Out of Stock"}</p>
+            <div className="flex gap-2 justify-between mt-2">
+              <button
+                onClick={() => handleToggleState(item)}
+                className={`flex-1 py-1 rounded-full text-white font-semibold transition ${productStates[item._id] ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}`}
+              >
+                {productStates[item._id] ? "Active" : "Inactive"}
+              </button>
+              <button
+                onClick={() => openEditModal(item)}
+                className="flex-1 text-blue-600 font-semibold hover:underline"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-[450px] relative">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 p-4">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md relative overflow-y-auto max-h-[90vh]">
             <h2 className="text-xl font-bold mb-4 text-gray-800">
               {editingProduct ? "Edit Product" : "Add New Product"}
             </h2>
 
             <form onSubmit={handleSaveProduct} className="space-y-3">
-              <input
-                type="text"
-                name="image"
-                value={form.image}
-                onChange={handleChange}
-                placeholder="Image URL"
-                className="w-full border text-black p-2 rounded-md"
-              />
-              <input
-                type="text"
-                name="title"
-                value={form.title}
-                onChange={handleChange}
-                placeholder="Product Name"
-                className="w-full border text-black p-2 rounded-md"
-              />
-              <input
-                type="text"
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                placeholder="Category"
-                className="w-full border text-black p-2 rounded-md"
-              />
-              <input
-                type="number"
-                name="price"
-                value={form.price}
-                onChange={handleChange}
-                placeholder="Price"
-                className="w-full border text-black p-2 rounded-md"
-              />
+              <input type="text" name="image" value={form.image} onChange={handleChange} placeholder="Image URL" className="w-full border text-black p-2 rounded-md" />
+              <input type="text" name="title" value={form.title} onChange={handleChange} placeholder="Product Name" className="w-full border text-black p-2 rounded-md" />
+              <input type="text" name="category" value={form.category} onChange={handleChange} placeholder="Category" className="w-full border text-black p-2 rounded-md" />
+              <input type="number" name="price" value={form.price} onChange={handleChange} placeholder="Price" className="w-full border text-black p-2 rounded-md" />
 
-              {/* ✅ Sizes */}
               <div>
-                <p className="text-sm font-semibold text-gray-700 mb-2">
-                  Select Sizes:
-                </p>
+                <p className="text-sm font-semibold text-gray-700 mb-2">Select Sizes:</p>
                 <div className="flex gap-2 flex-wrap">
-                  {["S", "M", "L", "XL", "XXL"].map((size) => (
-                    <button
-                      type="button"
-                      key={size}
-                      onClick={() => {
-                        setForm((prev) => ({
-                          ...prev,
-                          size: prev.size.includes(size)
-                            ? prev.size.filter((s) => s !== size)
-                            : [...prev.size, size],
-                        }));
-                      }}
-                      className={`px-3 py-1 rounded-md border ${
-                        form.size.includes(size)
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "bg-white text-gray-700 border-gray-300"
-                      }`}
-                    >
-                      {size}
-                    </button>
+                  {["S","M","L","XL","XXL"].map(size => (
+                    <button type="button" key={size} onClick={() => setForm(prev => ({...prev, size: prev.size.includes(size) ? prev.size.filter(s => s!==size) : [...prev.size, size]}))} className={`px-3 py-1 rounded-md border ${form.size.includes(size) ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"}`}>{size}</button>
                   ))}
                 </div>
               </div>
 
-              {/* ✅ Colors */}
               <div>
-                <p className="text-sm font-semibold text-gray-700 mb-2">
-                  Select Colors:
-                </p>
+                <p className="text-sm font-semibold text-gray-700 mb-2">Select Colors:</p>
                 <div className="flex gap-3 flex-wrap items-center">
-                  {[
-                    "#000000",
-                    "#ffffff",
-                    "#0000FF",
-                    "#FF0000",
-                    "#008000",
-                    "#808080",
-                    "beige",
-                  ].map((clr) => (
-                    <div
-                      key={clr}
-                      onClick={() =>
-                        setForm((prev) => ({
-                          ...prev,
-                          color: prev.color.includes(clr)
-                            ? prev.color.filter((c) => c !== clr)
-                            : [...prev.color, clr],
-                        }))
-                      }
-                      className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
-                        form.color.includes(clr)
-                          ? "border-blue-600 scale-110"
-                          : "border-gray-300"
-                      }`}
-                      style={{ backgroundColor: clr }}
-                    ></div>
+                  {["#000","#fff","#00f","#f00","#008000","#808080","beige"].map(clr => (
+                    <div key={clr} onClick={() => setForm(prev => ({...prev, color: prev.color.includes(clr) ? prev.color.filter(c => c!==clr) : [...prev.color, clr]}))} className={`w-8 h-8 rounded-full border-2 cursor-pointer ${form.color.includes(clr) ? "border-blue-600 scale-110" : "border-gray-300"}`} style={{backgroundColor: clr}}></div>
                   ))}
                 </div>
               </div>
 
-              <input
-                type="text"
-                name="brand"
-                value={form.brand}
-                onChange={handleChange}
-                placeholder="Brand"
-                className="w-full border text-black p-2 rounded-md"
-              />
-              <input
-                type="number"
-                name="stock"
-                value={form.stock}
-                onChange={handleChange}
-                placeholder="Quantity"
-                className="w-full border text-black p-2 rounded-md"
-              />
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                className="w-full border text-black p-2 rounded-md"
-              >
+              <input type="text" name="brand" value={form.brand} onChange={handleChange} placeholder="Brand" className="w-full border text-black p-2 rounded-md" />
+              <input type="number" name="stock" value={form.stock} onChange={handleChange} placeholder="Quantity" className="w-full border text-black p-2 rounded-md" />
+              <select name="status" value={form.status} onChange={handleChange} className="w-full border text-black p-2 rounded-md">
                 <option value="In Stock">In Stock</option>
                 <option value="Out of Stock">Out of Stock</option>
               </select>
               <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="active"
-                  checked={form.active}
-                  onChange={handleChange}
-                />
+                <input type="checkbox" name="active" checked={form.active} onChange={handleChange} />
                 <span>Active</span>
               </label>
 
               <div className="flex justify-end gap-3 mt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowModal(false);
-                    setEditingProduct(null);
-                  }}
-                  className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  {editingProduct ? "Update" : "Add"}
-                </button>
+                <button type="button" onClick={() => { setShowModal(false); setEditingProduct(null); }} className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400">Cancel</button>
+                <button type="submit" className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">{editingProduct ? "Update" : "Add"}</button>
               </div>
             </form>
           </div>

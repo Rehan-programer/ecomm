@@ -11,8 +11,10 @@ export default function CompleteOrders() {
   }, []);
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-green-600 mb-4">Completed Orders</h1>
+    <div className="p-4 md:p-6">
+      <h1 className="text-2xl md:text-3xl font-bold text-green-600 mb-4 md:mb-6">
+        Completed Orders
+      </h1>
       <OrdersTable orders={orders} />
     </div>
   );
@@ -23,23 +25,46 @@ function OrdersTable({ orders }) {
     return <p className="text-gray-500">No completed orders.</p>;
 
   return (
-    <table className="min-w-full border text-left">
-      <thead className="bg-green-100">
-        <tr className="text-black">
-          <th className="p-2 border">ID</th>
-          <th className="p-2 border">Customer</th>
-          <th className="p-2 border">Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.map((order) => (
-          <tr key={order.id} className="text-black">
-            <td className="p-2 border">{order.id}</td>
-            <td className="p-2 border">{order.customer}</td>
-            <td className="p-2 border">${order.totalAmount}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="space-y-4">
+      {orders.map((order) => (
+        <div
+          key={order.id}
+          className="border rounded-lg p-4 md:p-2 bg-white shadow-sm hover:shadow-md transition-shadow"
+        >
+          {/* Desktop / Tablet Table */}
+          <div className="hidden md:block">
+            <table className="min-w-full border text-left table-auto">
+              <thead className="bg-green-100 text-black">
+                <tr>
+                  <th className="p-2 border">ID</th>
+                  <th className="p-2 border">Customer</th>
+                  <th className="p-2 border">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="p-2 border">{order.id}</td>
+                  <td className="p-2 border">{order.customer}</td>
+                  <td className="p-2 border">${order.totalAmount}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card Layout */}
+          <div className="md:hidden space-y-1">
+            <p>
+              <strong>ID:</strong> {order.id}
+            </p>
+            <p>
+              <strong>Customer:</strong> {order.customer}
+            </p>
+            <p>
+              <strong>Amount:</strong> ${order.totalAmount}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

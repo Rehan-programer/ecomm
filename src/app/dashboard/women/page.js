@@ -30,83 +30,70 @@ export default function WomenProductsPage() {
     active: true,
   });
 
-  // 🧠 Initialize active state from products
+  // Initialize product states
   useEffect(() => {
     const initialStates = {};
     products.forEach((p) => (initialStates[p._id] = p.active));
     setProductStates(initialStates);
   }, [products]);
 
-  // 🧩 Handle input change
+  // Handle input change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
-// 🟢 Add or Update Product (Fixed)
-// 🟢 Add or Update Product (Debug version)
-const handleSaveProduct = async (e) => {
-  e.preventDefault();
-
-  if (!form.title || !form.price) {
-    alert("⚠️ Please fill in product title and price.");
-    return;
-  }
-
-  // Clean form (remove Mongo internal fields)
-  const { _id, __v, createdAt, updatedAt, ...cleanForm } = form;
-
-  const method = editingProduct ? "PUT" : "POST";
-  const url = editingProduct
-    ? `/api/products?id=${editingProduct._id}`
-    : `/api/products?category=${form.category}`;
-
-  console.log("🧩 Editing Product:", editingProduct);
-  console.log("📦 Sending URL:", url);
-  console.log("📦 Method:", method);
-  console.log("📦 Data Sent:", cleanForm);
-
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cleanForm),
-    });
-
-    const data = await res.json();
-    console.log("📥 Response:", data);
-
-    if (res.ok) {
-      alert(editingProduct ? "✅ Product updated!" : "✅ Product added!");
-      editingProduct
-        ? dispatch(updateProduct(data.product))
-        : dispatch(addProduct(data.product));
-
-      setForm({
-        image: "",
-        title: "",
-        category: "",
-        price: "",
-        size: [],
-        color: [],
-        brand: "",
-        stock: "",
-        status: "In Stock",
-        active: true,
-      });
-
-      setEditingProduct(null);
-      setShowModal(false);
-    } else {
-      alert("❌ Something went wrong.");
+  // Save or Update product
+  const handleSaveProduct = async (e) => {
+    e.preventDefault();
+    if (!form.title || !form.price) {
+      alert("⚠️ Please fill in product title and price.");
+      return;
     }
-  } catch (err) {
-    console.error("❌ Error saving product:", err);
-    alert("❌ Error saving product.");
-  }
-};
 
-  // 🗑️ Delete multiple products
+    const { _id, __v, createdAt, updatedAt, ...cleanForm } = form;
+    const method = editingProduct ? "PUT" : "POST";
+    const url = editingProduct
+      ? `/api/products?id=${editingProduct._id}`
+      : `/api/products?category=${form.category}`;
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cleanForm),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(editingProduct ? "✅ Product updated!" : "✅ Product added!");
+        editingProduct
+          ? dispatch(updateProduct(data.product))
+          : dispatch(addProduct(data.product));
+
+        setForm({
+          image: "",
+          title: "",
+          category: "",
+          price: "",
+          size: [],
+          color: [],
+          brand: "",
+          stock: "",
+          status: "In Stock",
+          active: true,
+        });
+
+        setEditingProduct(null);
+        setShowModal(false);
+      } else alert("❌ Something went wrong.");
+    } catch (err) {
+      console.error("❌ Error saving product:", err);
+      alert("❌ Error saving product.");
+    }
+  };
+
+  // Delete multiple products
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete selected products?")) return;
     try {
@@ -123,7 +110,7 @@ const handleSaveProduct = async (e) => {
     }
   };
 
-  // ✅ Toggle active/inactive
+  // Toggle Active/Inactive
   const handleToggleState = async (item) => {
     const newActive = !item.active;
     setProductStates((prev) => ({ ...prev, [item._id]: newActive }));
@@ -159,6 +146,7 @@ const handleSaveProduct = async (e) => {
 
   return (
     <div className="bg-gray-50 min-h-screen p-4">
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl text-black font-bold">Women Products</h1>
         <button
@@ -172,6 +160,7 @@ const handleSaveProduct = async (e) => {
         </button>
       </div>
 
+      {/* Selected products toolbar */}
       {selectedProducts.length > 0 && (
         <div className="flex items-center gap-3 mb-4 bg-white shadow-md rounded-lg p-3">
           <p className="font-medium text-gray-700">
@@ -186,8 +175,8 @@ const handleSaveProduct = async (e) => {
         </div>
       )}
 
-      {/* Table */}
-      <div className="overflow-x-auto bg-white shadow-md rounded-xl">
+      {/* Table for large screens */}
+      <div className="hidden lg:block overflow-x-auto bg-white shadow-md rounded-xl">
         <table className="w-full text-left border-separate border-spacing-y-2">
           <thead>
             <tr className="bg-gray-100 text-black">
@@ -309,15 +298,98 @@ const handleSaveProduct = async (e) => {
         </table>
       </div>
 
+      {/* Cards for mobile/tablet */}
+ {/* Mobile/Tablet Cards - Women Products */}
+<div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
+  {products.map((item) => (
+    <div
+      key={item._id}
+      className="bg-white rounded-2xl shadow-lg overflow-hidden relative transition-transform hover:scale-105"
+    >
+      {/* Product Image */}
+      <div className="relative">
+        <img
+          src={item.image || "/img/no-image.png"}
+          alt={item.title}
+          className="w-full h-40 object-cover"
+        />
+        {/* Select Checkbox */}
+        <button
+          onClick={() => toggleSelect(item._id)}
+          className={`absolute top-2 right-2 p-2 rounded-full border transition ${
+            selectedProducts.includes(item._id)
+              ? "bg-pink-600 border-pink-600 text-white"
+              : "bg-white border-gray-300 text-gray-700"
+          }`}
+        >
+          {selectedProducts.includes(item._id) ? "✓" : "+"}
+        </button>
+      </div>
+
+      {/* Product Details */}
+      <div className="p-4 flex flex-col gap-1">
+        <h3 className="text-lg font-bold text-gray-900">{item.title}</h3>
+        <p className="text-gray-500 text-sm">{item.category}</p>
+        <p className="font-semibold text-gray-700">${item.price}</p>
+        <p className="text-gray-600 text-sm">
+          Sizes: {Array.isArray(item.size) ? item.size.join(", ") : item.size}
+        </p>
+        {/* Color Chips */}
+        <div className="flex gap-1 my-1">
+          {Array.isArray(item.color) &&
+            item.color.map((clr, i) => (
+              <span
+                key={i}
+                className="w-5 h-5 rounded-full border"
+                style={{ backgroundColor: clr }}
+              ></span>
+            ))}
+        </div>
+        <p className="text-gray-600 text-sm">Brand: {item.brand}</p>
+        <p className="text-gray-600 text-sm">Qty: {item.stock}</p>
+        <p
+          className={`font-semibold text-sm ${
+            item.stock > 0 ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {item.stock > 0 ? "In Stock" : "Out of Stock"}
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="flex justify-between items-center px-4 pb-4">
+        <button
+          onClick={() => handleToggleState(item)}
+          className={`px-3 py-1 rounded-full text-white text-sm font-semibold transition ${
+            productStates[item._id]
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-red-500 hover:bg-red-600"
+          }`}
+        >
+          {productStates[item._id] ? "Active" : "Inactive"}
+        </button>
+        <button
+          onClick={() => openEditModal(item)}
+          className="text-pink-600 font-semibold text-sm hover:underline"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
+
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-[450px] relative">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 p-2">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full sm:w-[450px] relative max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 text-gray-800">
               {editingProduct ? "Edit Product" : "Add New Product"}
             </h2>
 
             <form onSubmit={handleSaveProduct} className="space-y-3">
+              {/* Image, Title, Category, Price */}
               <input
                 type="text"
                 name="image"
@@ -387,33 +459,27 @@ const handleSaveProduct = async (e) => {
                   Select Colors:
                 </p>
                 <div className="flex gap-3 flex-wrap items-center">
-                  {[
-                    "#000000",
-                    "#ffffff",
-                    "#0000FF",
-                    "#FF0000",
-                    "#008000",
-                    "#808080",
-                    "beige",
-                  ].map((clr) => (
-                    <div
-                      key={clr}
-                      onClick={() =>
-                        setForm((prev) => ({
-                          ...prev,
-                          color: prev.color.includes(clr)
-                            ? prev.color.filter((c) => c !== clr)
-                            : [...prev.color, clr],
-                        }))
-                      }
-                      className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
-                        form.color.includes(clr)
-                          ? "border-pink-600 scale-110"
-                          : "border-gray-300"
-                      }`}
-                      style={{ backgroundColor: clr }}
-                    ></div>
-                  ))}
+                  {[ "#000000","#ffffff","#0000FF","#FF0000","#008000","#808080","beige",].map(
+                    (clr) => (
+                      <div
+                        key={clr}
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            color: prev.color.includes(clr)
+                              ? prev.color.filter((c) => c !== clr)
+                              : [...prev.color, clr],
+                          }))
+                        }
+                        className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
+                          form.color.includes(clr)
+                            ? "border-pink-600 scale-110"
+                            : "border-gray-300"
+                        }`}
+                        style={{ backgroundColor: clr }}
+                      ></div>
+                    )
+                  )}
                 </div>
               </div>
 

@@ -25,8 +25,11 @@ export const fetchFavouritesFromDB = createAsyncThunk(
 );
 
 const initialState = {
-  items: [], // always start empty
+  items: [],
+  loading: false,
+  error: null,
 };
+
 
 const favouriteSlice = createSlice({
   name: "favourite",

@@ -7,8 +7,7 @@ import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { openProductModal } from "../../redux/slice/productslice";
-import { LogOut, User } from "lucide-react";
-import { logout } from "../../redux/slice/userslice";
+import {  User } from "lucide-react";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);

@@ -66,7 +66,7 @@ const RecentOrders = () => {
               className=" text-[14px] text-black hover:underline "
               onClick={() => setSelectedOrder(order)}
             >
-              View More 
+              View More
             </button>
           </div>
         ))}
@@ -88,10 +88,12 @@ const RecentOrders = () => {
               </h3>
               <div className="mb-4 text-sm text-gray-600">
                 <p>
-                  <span className="font-medium text-gray-800">Total:</span> ₹{selectedOrder.totalAmount}
+                  <span className="font-medium text-gray-800">Total:</span> ₹
+                  {selectedOrder.totalAmount}
                 </p>
                 <p>
-                  <span className="font-medium text-gray-800">Payment:</span> {selectedOrder.paymentMethod}
+                  <span className="font-medium text-gray-800">Payment:</span>{" "}
+                  {selectedOrder.paymentMethod}
                 </p>
                 <p>
                   <span className="font-medium text-gray-800">Status:</span>{" "}
@@ -107,24 +109,34 @@ const RecentOrders = () => {
                     {selectedOrder.status}
                   </span>
                 </p>
-                <p className="text-gray-500">Placed: {new Date(selectedOrder.placedAt).toLocaleDateString()}</p>
+                <p className="text-gray-500">
+                  Placed:{" "}
+                  {new Date(selectedOrder.placedAt).toLocaleDateString()}
+                </p>
               </div>
 
-              <h4 className="font-semibold text-gray-800 mb-3">Ordered Items:</h4>
+              <h4 className="font-semibold text-gray-800 mb-3">
+                Ordered Items:
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {selectedOrder.items.map((item, index) => (
+                {selectedOrder.items.map((item) => (
                   <div
-                    key={index}
+                    key={item._id || item.productId} // use a unique field
                     className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md flex flex-col justify-between transition"
                   >
-                    <p className="font-medium text-gray-800 text-lg">{item.productName}</p>
-                    <p className="text-gray-500 text-sm mt-1">Brand: {item.brand}</p>
+                    <p className="font-medium text-gray-800 text-lg">
+                      {item.productName}
+                    </p>
+                    <p className="text-gray-500 text-sm mt-1">
+                      Brand: {item.brand}
+                    </p>
                     <p className="text-gray-600 text-sm mt-2">
                       Price: ₹{item.price} × {item.quantity}
                     </p>
                     <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
                       <span>Size: {item.size}</span>
-                      <span>Color: 
+                      <span>
+                        Color:
                         <span
                           style={{
                             backgroundColor: item.color,
@@ -133,7 +145,7 @@ const RecentOrders = () => {
                             height: 18,
                             borderRadius: "50%",
                             marginLeft: 5,
-                            border: "1px solid #ccc"
+                            border: "1px solid #ccc",
                           }}
                         ></span>
                       </span>

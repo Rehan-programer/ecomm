@@ -1,31 +1,23 @@
 "use client";
 
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiMenu } from "react-icons/fi";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import { store, persistor } from "../../redux/store/store";
 import { PersistGate } from "redux-persist/integration/react";
-import { Geist, Geist_Mono } from "next/font/google";
 import Sidebar from "../../Commponents/Dashboard/Sidebar";
 import "./globals.css";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { setUserFromLocalStorage } from "../../redux/slice/userslice";
-import { usePathname } from "next/navigation"; // ✅ FIXED import
-
-// Fonts
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { usePathname } from "next/navigation";
 
 function DashboardWithRedux({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // desktop
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); // mobile/tablet
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
-  const pathname = usePathname(); 
-
-  const isProfilePage = pathname === "/dashboard/profile"; 
+  const pathname = usePathname();
+  const isProfilePage = pathname === "/dashboard/profile";
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -35,8 +27,7 @@ function DashboardWithRedux({ children }) {
   }, [dispatch, user]);
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
-  const sidebarWidth = isSidebarOpen ? "w-64" : "w-20";
-  const marginLeft = isSidebarOpen ? "ml-64" : "ml-20";
+  const toggleMobileSidebar = () => setIsMobileSidebarOpen((prev) => !prev);
 
   if (!user) {
     return (
@@ -47,26 +38,52 @@ function DashboardWithRedux({ children }) {
   }
 
   return (
-    <div className="flex  max-w-[2000px] m-auto">
-      {/* ✅ Sidebar */}
+    <div className="flex max-w-[2000px] m-auto">
+      {/* Desktop Sidebar */}
       <div
-        className={`h-screen fixed left-0 top-0 bg-red-500 shadow transition-all duration-300 ease-in-out ${sidebarWidth}`}
+        className={`hidden md:flex  items-center h-screen fixed left-0 md:top-16 bg-red-500 shadow transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "w-64" : "w-16"
+        }`}
       >
-        <Sidebar open={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <Sidebar
+          open={isSidebarOpen}
+          isMobile={true} // or dynamically based on window width
+          toggleSidebar={toggleSidebar}
+        />
       </div>
 
-      {/* ✅ Main content */}
+      {/* Mobile Sidebar Overlay */}
       <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${marginLeft}`}
+        className={`md:hidden fixed inset-0 bg-black/40 z-40 transition-opacity ${
+          isMobileSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={toggleMobileSidebar}
+      ></div>
+
+      {/* Mobile Sidebar Drawer */}
+      <div
+        className={`md:hidden fixed top-0 left-0 h-full bg-red-500 shadow-lg z-50 transform transition-transform duration-300 ${
+          isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } w-64`}
       >
-        {/* ✅ Header */}
+        <Sidebar open={true} toggleSidebar={toggleMobileSidebar} />
+      </div>
+
+      {/* Main Content */}
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "md:ml-64" : "md:ml-20"
+        }`}
+      >
+        {/* Header */}
         <header
-          className={`h-16 fixed top-0 right-0 left-0 bg-white p-4 shadow flex justify-between items-center z-10 transition-all duration-300 ease-in-out ${marginLeft}`}
+          className={`h-16 fixed top-0 right-0 left-0 bg-white p-4 shadow flex justify-between items-center z-30 transition-all duration-300`}
         >
           <div className="flex items-center gap-4">
+            {/* Desktop toggle */}
             <button
               onClick={toggleSidebar}
-              className="flex items-center justify-center w-10 h-10 rounded-md bg-gray-800 hover:bg-blue-600 text-white shadow-md transition-all duration-200"
+              className="hidden md:flex items-center justify-center w-10 h-10 rounded-md bg-gray-800 hover:bg-blue-600 text-white shadow-md transition-all duration-200"
             >
               {isSidebarOpen ? (
                 <FiChevronLeft size={20} />
@@ -74,12 +91,21 @@ function DashboardWithRedux({ children }) {
                 <FiChevronRight size={20} />
               )}
             </button>
+
+            {/* Mobile toggle */}
+            <button
+              onClick={toggleMobileSidebar}
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-md bg-gray-800 hover:bg-blue-600 text-white shadow-md transition-all duration-200"
+            >
+              <FiMenu size={20} />
+            </button>
+
             <span className="text-gray-600 font-medium">
               Search / Breadcrumb
             </span>
           </div>
 
-          {/* ✅ User profile icon */}
+          {/* User Profile */}
           {user && (
             <Link
               href="/dashboard/profile"
@@ -96,14 +122,13 @@ function DashboardWithRedux({ children }) {
                   {user.firstName?.charAt(0).toUpperCase()}
                 </div>
               )}
-
               <span>{user.firstName}</span>
             </Link>
           )}
         </header>
 
-        {/* ✅ Page content */}
-        <main className="mt-16 p-2 h-[calc(100vh-4rem)] max-w-[2000px] m-auto overflow-auto">
+        {/* Page Content */}
+        <main className="mt-16 p-2 md:p-4 h-[calc(100vh-4rem)] overflow-auto">
           {children}
         </main>
       </div>
