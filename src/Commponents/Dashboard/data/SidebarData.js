@@ -69,8 +69,8 @@ export const SidebarData = [
   },
   
   {
-    title: "Account Settings",
-    path: "/settings",
+    title: " Settings",
+    path: "/dashboard/profile",
     icon: FiSettings,
     role: ["admin", "user", "Company", "Individual"],
   },

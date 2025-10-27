@@ -74,84 +74,138 @@ const RecentOrders = () => {
 
       {/* Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-4xl shadow-lg overflow-y-auto max-h-[80vh] relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl w-full max-w-5xl shadow-2xl overflow-y-auto max-h-[85vh] relative border border-gray-200">
+            {/* Close Button */}
             <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
               onClick={() => setSelectedOrder(null)}
             >
-              <X size={24} />
+              <X size={26} />
             </button>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                Order ID: {selectedOrder._id}
-              </h3>
-              <div className="mb-4 text-sm text-gray-600">
-                <p>
-                  <span className="font-medium text-gray-800">Total:</span> ₹
-                  {selectedOrder.totalAmount}
+
+            <div className="p-6 md:p-8">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-4 mb-6">
+                <h3 className="text-2xl font-bold text-gray-800">
+                  Order ID:{" "}
+                  <span className="text-blue-600">{selectedOrder.id}</span>
+                </h3>
+                <p className="text-gray-500 text-sm mt-2 sm:mt-0">
+                  Placed on{" "}
+                  <span className="font-medium text-gray-700">
+                    {new Date(selectedOrder.placedAt).toLocaleString()}
+                  </span>
                 </p>
-                <p>
-                  <span className="font-medium text-gray-800">Payment:</span>{" "}
-                  {selectedOrder.paymentMethod}
-                </p>
-                <p>
-                  <span className="font-medium text-gray-800">Status:</span>{" "}
-                  <span
-                    className={`font-medium ${
+              </div>
+
+              {/* Order Summary Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700 mb-8">
+                <div className="bg-gray-50 border rounded-xl p-4">
+                  <p className="font-semibold text-gray-800 mb-1">
+                    Total Amount
+                  </p>
+                  <p className="text-lg font-bold text-green-600">
+                    ₹{selectedOrder.totalAmount}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 border rounded-xl p-4">
+                  <p className="font-semibold text-gray-800 mb-1">
+                    Payment Method
+                  </p>
+                  <p className="text-gray-700">{selectedOrder.paymentMethod}</p>
+                </div>
+
+                <div className="bg-gray-50 border rounded-xl p-4">
+                  <p className="font-semibold text-gray-800 mb-1">Status</p>
+                  <p
+                    className={`font-semibold ${
                       selectedOrder.status === "Pending"
                         ? "text-yellow-600"
                         : selectedOrder.status === "Completed"
                         ? "text-green-600"
-                        : "text-red-500"
+                        : "text-red-600"
                     }`}
                   >
                     {selectedOrder.status}
-                  </span>
-                </p>
-                <p className="text-gray-500">
-                  Placed:{" "}
-                  {new Date(selectedOrder.placedAt).toLocaleDateString()}
-                </p>
+                  </p>
+                </div>
               </div>
 
-              <h4 className="font-semibold text-gray-800 mb-3">
-                Ordered Items:
+              {/* Ordered Items */}
+              <h4 className="text-xl font-semibold text-gray-800 mb-4">
+                Ordered Items
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+              {/* Items Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {selectedOrder.items.map((item) => (
                   <div
-                    key={item._id || item.productId} // use a unique field
-                    className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md flex flex-col justify-between transition"
+                    key={item._id || item.productId}
+                    className="flex flex-row items-start gap-4 border border-gray-200 rounded-2xl bg-white shadow-sm hover:shadow-lg transition-all transform hover:-translate-y-1 hover:border-gray-300 p-4"
                   >
-                    <p className="font-medium text-gray-800 text-lg">
-                      {item.productName}
-                    </p>
-                    <p className="text-gray-500 text-sm mt-1">
-                      Brand: {item.brand}
-                    </p>
-                    <p className="text-gray-600 text-sm mt-2">
-                      Price: ₹{item.price} × {item.quantity}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-                      <span>Size: {item.size}</span>
-                      <span>
-                        Color:
-                        <span
-                          style={{
-                            backgroundColor: item.color,
-                            display: "inline-block",
-                            width: 18,
-                            height: 18,
-                            borderRadius: "50%",
-                            marginLeft: 5,
-                            border: "1px solid #ccc",
-                          }}
-                        ></span>
-                      </span>
+                    {/* Product Image (optional, only if available) */}
+                    <div className="w-20 h-20 flex-shrink-0 rounded-lg bg-gray-100 overflow-hidden border border-gray-200">
+                      {item.Image ? (
+                        <img
+                          src={item.Image}
+                          alt={item.productName}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                          No Image
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Product Details */}
+                    <div className="flex flex-col justify-between w-full">
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-800 leading-tight">
+                          {item.productName}
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Brand:{" "}
+                          <span className="font-medium text-gray-700">
+                            {item.brand || "N/A"}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div className="mt-3 text-sm text-gray-700">
+                        <p className="mb-1">
+                          <span className="font-medium">Price:</span> ₹
+                          {item.price} × {item.quantity}
+                        </p>
+                        <div className="flex items-center gap-4">
+                          <span>
+                            <span className="font-medium">Size:</span>{" "}
+                            {item.size || "N/A"}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <span className="font-medium">Color:</span>
+                            <span
+                              className="inline-block w-5 h-5 rounded-full border border-gray-300"
+                              style={{ backgroundColor: item.color }}
+                            ></span>
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-end mt-8">
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
