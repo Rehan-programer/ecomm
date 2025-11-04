@@ -2,11 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../../redux/slice/cartslice";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const Checkout = () => {
   const cartItems = useSelector(({ cart }) => cart.items);
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [form, setForm] = useState({
     name: "",
@@ -40,7 +43,7 @@ const Checkout = () => {
 
   const placeOrder = async () => {
     if (!form.name || !form.address || !form.phone) {
-      alert("⚠️ Please fill all the fields before placing order");
+      toast.error("⚠️ Please fill all the fields before placing the order");
       return;
     }
 
@@ -70,22 +73,25 @@ const Checkout = () => {
       const data = await res.json();
 
       if (res.ok) {
-        alert("✅ Order placed successfully!");
+        toast.success("✅ Order placed successfully!");
         console.log("✅ Order saved to DB:", data);
         dispatch(clearCart());
+
+        // Redirect after short delay
+        setTimeout(() => router.push("/dashboard/orders"), 1000);
       } else {
         console.error("❌ Backend error:", data);
-        alert("Failed to place order. Try again later!");
+        toast.error("❌ Failed to place order. Try again later!");
       }
     } catch (error) {
       console.error("❌ Error placing order:", error);
-      alert("Something went wrong while placing order.");
+      toast.error("❌ Something went wrong while placing order.");
     }
   };
 
   if (cartItems.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto bg-[#F3EAD8] rounded shadow text-center text-gray-600">
+      <div className="max-w-4xl mx-auto bg-[#F3EAD8] rounded shadow text-center text-gray-600 py-8 text-lg">
         Your cart is empty.
       </div>
     );

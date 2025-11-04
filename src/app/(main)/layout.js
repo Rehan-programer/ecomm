@@ -8,8 +8,11 @@ import Footer from "../../Commponents/Footer/Footer";
 import { Provider, useDispatch } from "react-redux";
 import { store } from "../../redux/store/store";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setUserFromLocalStorage } from "../../redux/slice/userslice";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "react-hot-toast";
 
 // ✅ Custom wrapper to restore user from localStorage
 function ReduxInitializer({ children }) {
@@ -36,6 +39,20 @@ const geistMono = Geist_Mono({
 });
 
 export default function RootLayout({ children }) {
+  // ✅ Initialize React Query Client (once)
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false, // don’t refetch when switching tabs
+            retry: 1, // retry failed requests once
+            staleTime: 1000 * 60 * 5, // cache valid for 5 mins
+          },
+        },
+      })
+  );
+
   return (
     <html lang="en">
       <Head>
@@ -46,14 +63,21 @@ export default function RootLayout({ children }) {
         ></script>
       </Head>
 
-      <body>
-        <Provider store={store}>
-          <ReduxInitializer>
-            <Header />
-            {children}
-            <Footer />
-          </ReduxInitializer>
-        </Provider>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <Toaster position="top-center" reverseOrder={false} />
+        {/* ✅ Wrap everything in React Query + Redux */}
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <ReduxInitializer>
+              <Header />
+              {children}
+              <Footer />
+            </ReduxInitializer>
+          </Provider>
+
+          {/* Optional Devtools — disable in production if you want */}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </body>
     </html>
   );

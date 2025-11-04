@@ -75,6 +75,15 @@ body {
   max-height: 500px; /* apne content ke liye adjust karo */
 }
 
+@layer base {
+  button,
+  a,
+  [role="button"] {
+    @apply cursor-pointer;
+  }
+}
+
+
 
 
 /* @layer utilities {

@@ -11,6 +11,10 @@ import Link from "next/link";
 import { setUserFromLocalStorage } from "../../redux/slice/userslice";
 import { usePathname } from "next/navigation";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
 function DashboardWithRedux({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // desktop
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); // mobile/tablet
@@ -39,20 +43,18 @@ function DashboardWithRedux({ children }) {
 
   return (
     <div className="flex max-w-[2000px] m-auto">
-      {/* Desktop Sidebar */}
       <div
-        className={`hidden md:flex  items-center h-screen fixed left-0 md:top-16 bg-red-500 shadow transition-all duration-300 ease-in-out ${
+        className={`hidden md:flex items-center h-screen fixed left-0 md:top-16 bg-red-500 shadow transition-all duration-300 ease-in-out ${
           isSidebarOpen ? "w-64" : "w-16"
         }`}
       >
         <Sidebar
           open={isSidebarOpen}
-          isMobile={true} // or dynamically based on window width
+          isMobile={true}
           toggleSidebar={toggleSidebar}
         />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       <div
         className={`md:hidden fixed inset-0 bg-black/40 z-40 transition-opacity ${
           isMobileSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
@@ -60,7 +62,6 @@ function DashboardWithRedux({ children }) {
         onClick={toggleMobileSidebar}
       ></div>
 
-      {/* Mobile Sidebar Drawer */}
       <div
         className={`md:hidden fixed top-0 left-0 h-full bg-red-500 shadow-lg z-50 transform transition-transform duration-300 ${
           isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -69,18 +70,15 @@ function DashboardWithRedux({ children }) {
         <Sidebar open={true} toggleSidebar={toggleMobileSidebar} />
       </div>
 
-      {/* Main Content */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
           isSidebarOpen ? "md:ml-64" : "md:ml-20"
         }`}
       >
-        {/* Header */}
         <header
           className={`h-16 fixed top-0 right-0 left-0 bg-white p-4 shadow flex justify-between items-center z-30 transition-all duration-300`}
         >
           <div className="flex items-center gap-4">
-            {/* Desktop toggle */}
             <button
               onClick={toggleSidebar}
               className="hidden md:flex items-center justify-center w-10 h-10 rounded-md bg-gray-800 hover:bg-blue-600 text-white shadow-md transition-all duration-200"
@@ -92,7 +90,6 @@ function DashboardWithRedux({ children }) {
               )}
             </button>
 
-            {/* Mobile toggle */}
             <button
               onClick={toggleMobileSidebar}
               className="md:hidden flex items-center justify-center w-10 h-10 rounded-md bg-gray-800 hover:bg-blue-600 text-white shadow-md transition-all duration-200"
@@ -105,7 +102,6 @@ function DashboardWithRedux({ children }) {
             </span>
           </div>
 
-          {/* User Profile */}
           {user && (
             <Link
               href="/dashboard/profile"
@@ -127,7 +123,6 @@ function DashboardWithRedux({ children }) {
           )}
         </header>
 
-        {/* Page Content */}
         <main className="mt-16 p-2 md:p-4 h-[calc(100vh-4rem)] overflow-auto">
           {children}
         </main>
@@ -145,7 +140,9 @@ export default function DashboardLayout({ children }) {
             loading={<div>Loading Redux...</div>}
             persistor={persistor}
           >
-            <DashboardWithRedux>{children}</DashboardWithRedux>
+            <QueryClientProvider client={queryClient}>
+              <DashboardWithRedux>{children}</DashboardWithRedux>
+            </QueryClientProvider>
           </PersistGate>
         </Provider>
       </body>

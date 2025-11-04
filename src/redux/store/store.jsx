@@ -1,51 +1,38 @@
-// redux/store/store.js
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
-
-// slices
+// Slices
 import cartReducer from "../slice/cartslice";
 import favouriteReducer from "../slice/favouriteslice";
-import productReducer from "../slice/productslice";
-import menProductsReducer from "../slice/menproductslice";
-import womenProductsReducer from "../slice/womenproductslice";
-import babyProductsReducer from "../slice/babyproductslice";
-import collectionProductsReducer from "../slice/collectionslice";
+import productsReducer from "../slice/productslice";
 import orderReducer from "../slice/orderslice";
 import userReducer from "../slice/userslice";
 
-
+// Root reducer
 const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
   favourite: favouriteReducer,
-  product: productReducer,
-  menProducts: menProductsReducer,
-  womenProducts: womenProductsReducer,
-  babyProducts: babyProductsReducer,
-  collectionProducts: collectionProductsReducer,
+  products: productsReducer, // <- unified slice
   orders: orderReducer,
 });
 
-
+// Persist config
 const persistConfig = {
   key: "root",
   storage,
- whitelist: ["orders","menProducts","womenProducts","babyProducts","user","favourite"]
-
+  whitelist: ["orders", "cart", "user", "favourite"], // products NOT persisted (optional)
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, 
-    })
+      serializableCheck: false,
+    }),
 });
-
 
 export const persistor = persistStore(store);

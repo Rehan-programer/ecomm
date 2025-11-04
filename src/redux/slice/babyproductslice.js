@@ -17,6 +17,9 @@ const babyProductsSlice = createSlice({
     status: "idle",
   },
   reducers: {
+    setBabyProducts: (state, action) => {
+      state.products = action.payload;
+    },
     addProduct: (state, action) => {
       state.products.unshift(action.payload);
     },
@@ -50,7 +53,7 @@ const babyProductsSlice = createSlice({
   },
 });
 
-export const { addProduct, deleteProduct, updateProduct } =
+export const { addProduct, deleteProduct, updateProduct ,setBabyProducts } =
   babyProductsSlice.actions;
 
 export default babyProductsSlice.reducer;

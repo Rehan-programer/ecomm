@@ -15,9 +15,8 @@ import { useRouter } from "next/navigation";
 export default function CategoriesCard({ data, route }) {
   const dispatch = useDispatch();
   const router = useRouter();
-const user = useSelector((state) => state.user?.currentUser);
-const favourites = useSelector((state) => state.favourite?.items) || [];
-
+  const user = useSelector((state) => state.user?.currentUser);
+  const favourites = useSelector((state) => state.favourite?.items) || [];
 
   const [selectedColorMap, setSelectedColorMap] = useState({});
   const [selectedSizeMap, setSelectedSizeMap] = useState({});
@@ -55,9 +54,11 @@ const favourites = useSelector((state) => state.favourite?.items) || [];
     dispatch(addItem({ ...item, selectedColor, selectedSize }));
   };
 
+  const items = Array.isArray(data) ? data : [];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-6 py-10">
-      {data.map((item) => {
+      {items.map((item) => {
         const isFav = favourites.some((fav) => fav._id === item._id);
         const colors = Array.isArray(item.color) ? item.color : item.color?.split(",") || [];
         const sizes = Array.isArray(item.size) ? item.size : item.size?.split(",") || [];
@@ -100,7 +101,7 @@ const favourites = useSelector((state) => state.favourite?.items) || [];
             {/* Product Info */}
             <div className="p-4 text-center">
               <h3 className="text-lg font-semibold hover:text-red-500 transition">
-                <Link href={`/${route}/${item._id}`}>{item.title}</Link>
+                <Link href={`/${route}/${item.title}`}>{item.title}</Link>
               </h3>
               <p className="text-sm text-gray-600 mt-1">{item.brand}</p>
 

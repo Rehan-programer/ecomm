@@ -76,6 +76,15 @@ body {
 }
 
 
+@layer base {
+  button,
+  a,
+  [role="button"] {
+    @apply cursor-pointer;
+  }
+}
+
+
 
 /* @layer utilities {
   .animate-slideUp {

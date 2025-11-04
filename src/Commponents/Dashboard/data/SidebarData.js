@@ -36,9 +36,9 @@ export const SidebarData = [
     icon: FiShoppingBag,
     role: ["admin"],
     submenu: [
-      { title: "Mens", path: "/dashboard/men" },
-      { title: "Women", path: "/dashboard/women" },
-      { title: "Baby", path: "/dashboard/baby" },
+      { title: "Mens", path: "/dashboard/collection/men" },
+      { title: "Women", path: "/dashboard/collection/women" },
+      { title: "Baby", path: "/dashboard/collection/baby" },
     ],
   },
   {
@@ -52,6 +52,18 @@ export const SidebarData = [
     path: "/dashboard/user/orders",
     icon: FiShoppingBag,
     role: ["user", "Individual"],
+  },
+    {
+    title: "subcategory",
+    path: "/dashboard/subcategory",
+    icon: FiUser,
+    role: ["admin",],
+  },
+   {
+    title: "ProductType",
+    path: "/dashboard/producttype",
+    icon: FiUser,
+    role: ["admin",],
   },
   {
     title: "Wishlist",

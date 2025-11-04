@@ -58,7 +58,7 @@ export default function Sidebar({ open }) {
         ) : (
           // Closed state: Only icon centered
           <div className="flex items-center justify-center w-full">
-            <div className="bg-blue-500 w-10 h-10 r ounded-full flex items-center justify-center text-white font-bold">
+            <div className="bg-blue-500 w-10 h-10 r   ounded-full flex items-center justify-center text-white font-bold">
               E
             </div>
           </div>

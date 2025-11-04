@@ -16,6 +16,9 @@ const menProductsSlice = createSlice({
     status: "idle",
   },
   reducers: {
+    setMenProducts: (state, action) => {
+      state.products = action.payload;
+    },
     addProduct: (state, action) => {
       state.products.unshift(action.payload);
     },
@@ -50,5 +53,6 @@ const menProductsSlice = createSlice({
   },
 });
 
-export const { addProduct, deleteProduct, updateProduct } = menProductsSlice.actions;
+export const { setMenProducts, addProduct, deleteProduct, updateProduct } =
+  menProductsSlice.actions;
 export default menProductsSlice.reducer;
